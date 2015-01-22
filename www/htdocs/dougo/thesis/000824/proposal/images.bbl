@@ -1,0 +1,37 @@
+\begin{thebibliography}{KdRB91}
+
+\bibitem[AC96]{theory-of-objects}
+Mart{\'\i}n Abadi and Luca Cardelli.
+\newblock {\em A Theory of Objects}.
+\newblock Springer, 1996.
+
+\bibitem[Cur97]{MOO}
+Pavel Curtis.
+\newblock {\em LambdaMOO Programmer's Manual for version 1.8.0p6}, March 1997.
+\newblock Available from \htmladdnormallinkfoot{the MOO home
+  page}{http://www.moo.mud.org/}.
+
+\bibitem[Gil]{ColdC}
+Brandon Gillespie.
+\newblock {\em ColdC 1.1 Reference Manual}.
+\newblock Available from \htmladdnormallinkfoot{the Cold Software Project home
+  page}{http://web.cold.org/}.
+
+\bibitem[KdRB91]{AMOP}
+Gregor Kiczales, Jim des Rivi{\`e}res, and Daniel~G. Bobrow.
+\newblock {\em The Art of the Metaobject Protocol}.
+\newblock The MIT Press, 1991.
+
+\bibitem[Ree93a]{LPC-interm}
+George Reese.
+\newblock {\em Intermediate LPC}, November 1993.
+\newblock Available from \htmladdnormallink{Descartes of Borg's LPC
+  Textbooks}{http://www.mars.org/home/rob/docs/descartes-index.html}.
+
+\bibitem[Ree93b]{LPC-basic}
+George Reese.
+\newblock {\em LPC Basics}, April 1993.
+\newblock Available from \htmladdnormallinkfoot{Descartes of Borg's LPC
+  Textbooks}{http://www.mars.org/home/rob/docs/descartes-index.html}.
+
+\end{thebibliography}

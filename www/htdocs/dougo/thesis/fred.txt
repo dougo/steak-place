@@ -1,0 +1,61 @@
+prog  = block
+block = defn* expr+
+expr  = const | var | "(" expr* ")" | "(let (" bind* ")" block ")"
+bind  = "(" var expr ")"
+
+defn  = "(define" var expr ")"
+      | "(define-gf" var ")"
+      | "(define-method" pred func ")"
+      | "(define-around" pred func ")"
+
+pred  = "(pred (" var ")" pred-expr ")"
+pred-expr = ...
+func  = "(func (" var ")" block ")"
+
+
+Env = [Var -> Val] x Meth*
+Meth = Kind x Pred x Func
+Kind = {method, around}
+Pred = JP -> ([Var -> Val] + {Fail})
+Func = JP -> Val
+
+
+eval : Expr x Env -> Val
+eval(var, env) = env(var)
+eval("(" expr* ")"
+
+----------------------------------------------------------------
+
+v \in Val
+l \in Loc
+s \in Sto = [Loc -> Val]
+id \in Id
+
+jp \in JP
+jp ::= <> | <v*, jp>
+
+\pi \in Pred = (JP x Env x Sto) -> (Env + {Fail})
+\chi \in Clo = (JP x Env x Sto x M* x Clo) -> Val
+\rho \in Env = [Id -> Loc]
+
+m \in M = K x Pred x Clo
+k \in K = { method, around }
+
+
+u \in Unit = (Env x M*) -> (Env x M* x Clo)
+
+
+expr ::= "(unit" imports exports defns expr ")"
+      |  "(compound" imports exports links ")"
+      |  "(invoke" expr invoke-link ")"
+      |  "(send" expr* ")"
+      |  id
+
+imports ::= "(" id* ")"
+exports ::= "(" id* ")"
+defns   ::= "(" (defn | method)* ")"
+defn    ::= "(define" id e ")"
+method  ::= "(method" pred func ")"
+         |  "(around" pred func ")"
+pred    ::= "(pred (" id ")" pred-expr ")"
+func    ::= "(func (" id ")" expr ")"

@@ -1,0 +1,65 @@
+\begin{thebibliography}{10}
+
+\bibitem{java-tip:reflective-visitor}
+Jeremy Blosser.
+\newblock Java {Tip} 98: Reflect on the visitor design pattern.
+\newblock {\em JavaWorld}, July 2000.
+
+\bibitem{rational:UML-LUG}
+Grady Booch, James Rumbaugh, and Ivar Jacobson.
+\newblock {\em The Unified Modeling Language User Guide}.
+\newblock Object Technology Series. Addison Wesley, 1999.
+\newblock ISBN 0-201-57168-4.
+
+\bibitem{XML-schema}
+David~C. Fallside.
+\newblock {\em XML Schema Part 0: Primer}.
+\newblock W3C, October 2000.
+
+\bibitem{gang-of-4}
+Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides.
+\newblock {\em Design Patterns: Elements of Reusable Object-Oriented Software}.
+\newblock Addison-Wesley, 1995.
+
+\bibitem{java-reflection}
+JavaSoft.
+\newblock {\em Java Core Reflection}, 1998.
+
+\bibitem{Collections}
+JavaSoft.
+\newblock {\em Collections Framework Overview}, 1999.
+
+\bibitem{palsberg:jay}
+Barry Jay and Jens Palsberg.
+\newblock The essence of the visitor pattern.
+\newblock In {\em COMPSAC'98, 22nd Annual International Computer Software and
+  Applications Conference}, pages 9--15, Vienna, 1998.
+
+\bibitem{demeter-book}
+Karl~J. Lieberherr.
+\newblock {\em Adaptive Object-Oriented Software: The Demeter Method with
+  Propagation Patterns}.
+\newblock PWS Publishing Company, Boston, 1996.
+\newblock 616 pages, ISBN 0-534-94602-X.
+
+\bibitem{cse:preventive}
+Karl~J. Lieberherr and Doug Orleans.
+\newblock Preventive program maintenance in {Demeter/Java} (research
+  demonstration).
+\newblock In {\em International Conference on Software Engineering}, pages
+  604--605, Boston, MA, 1997. ACM Press.
+
+\bibitem{strategies}
+Karl~J. Lieberherr and Boaz Patt-Shamir.
+\newblock {Traversals of Object Structures: Specification and Efficient
+  Implementation}.
+\newblock Technical Report {NU-CCS-97-15}, College of Computer Science,
+  Northeastern University, Boston, MA, Sep. 1997.
+
+\bibitem{AOM}
+Joseph~W. Yoder and Reza Razavi.
+\newblock Metadata and adaptive object-models.
+\newblock In {\em ECOOP 2000 Workshop Reader}, volume 1964 of {\em Lecture
+  Notes in Computer Science}. Springer Verlag, 2000.
+
+\end{thebibliography}

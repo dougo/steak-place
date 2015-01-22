@@ -1,0 +1,22 @@
+\newcommand{\defn}[1]{\textbf{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+
+% Grammar environment
+
+\newenvironment{grammar}{
+  \renewcommand{\:}{\goesto{}}
+  \renewcommand{\|}{$\vert$}
+  \tt \frenchspacing
+  \begin{tabbing}
+    %\qquad\quad \= 
+    \qquad \= $\vert$ \= \kill
+  }{\unskip\end{tabbing}}
+
+% Commands for grammars
+\newcommand{\arbno}[1]{#1\hbox{\rm*}}  
+\newcommand{\atleastone}[1]{#1\hbox{$^+$}}
+
+\newcommand{\goesto}{$\longrightarrow$}
+
+% non-terminal in a grammar
+\newcommand{\nt}[1]{{\noindent\hbox{\rm$\langle$#1$\rangle$}}}

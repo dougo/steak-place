@@ -1,0 +1,6 @@
+aspect Counting {
+  declare strategy:
+    certainEs: "{ source: A -> D  bypassing -> B,z,Z   D -> target: E  A -> Z  bypassing -> A,d,D  Z -> E  bypassing A }";
+
+  declare traversal: int CountCertainEs(): certainEs(CountingVisitor);
+}

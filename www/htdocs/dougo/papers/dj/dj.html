@@ -1,0 +1,757 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 99.2beta8 (1.42)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>DJ: Dynamic Adaptive Programming in Java</TITLE>
+<META NAME="description" CONTENT="DJ: Dynamic Adaptive Programming in Java">
+<META NAME="keywords" CONTENT="dj">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v99.2beta8">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="dj.css">
+
+</HEAD>
+
+<BODY >
+
+<P>
+This paper is also available in
+<A NAME="tex2html2"
+  HREF="dj.ps">postscript</A>
+form.
+To appear at the
+<A NAME="tex2html3"
+  HREF="http://www.openjit.org/reflection2001/">Reflection 2001</A>
+conference.
+An earlier (longer) version of this paper is available as
+<A NAME="tex2html4"
+  HREF="techreport">Northeastern University Tech Report NU-CCS-2001-02</A>.
+<H1 ALIGN="CENTER">DJ: Dynamic Adaptive Programming in Java</H1>
+<P ALIGN="CENTER"><STRONG>Doug Orleans  - Karl Lieberherr</STRONG></P>
+<P ALIGN="CENTER"><SMALL>Northeastern University, Boston, MA 02115, USA
+<BR></SMALL></P>
+<P ALIGN="LEFT"><SMALL><A NAME="tex2html1"
+  HREF="mailto: {dougo ,lieber }@ccs.neu.edu">{dougo ,lieber }@ccs.neu.edu</A></SMALL></P>
+
+<P>
+
+<H3>Abstract:</H3>
+<DIV>
+
+DJ is a new pure-Java library for adaptive programming that allows
+traversal strategies to be constructed and interpreted dynamically at
+run-time, as opposed to existing adaptive programming tools that are
+strictly static.  Traversal strategies can be used with adaptive
+visitors (similar to the Visitor pattern) or in a generic programming
+style by adapting them to the Java Collections framework.  The DJ
+library makes heavy use of Java reflection and we give some details of
+this implementation.
+</DIV>
+<P>
+
+<P>
+
+<H1><A NAME="SECTION00010000000000000000">
+1 Introduction</A>
+</H1>
+
+<P>
+
+<P>
+Traversing complex object structures is a common operation in
+object-oriented programs, yet traversal code can be tedious to write
+and is often brittle with respect to an evolving object model.
+<B>Adaptive programming</B> [<A
+ HREF="dj.html#demeter-book">8</A>] is a development
+method in which each traversal is specified succinctly as a
+<B>traversal strategy</B>&nbsp;[<A
+ HREF="dj.html#strategies">10</A>].  A traversal strategy
+describes a traversal at a high level, only referring to the minimal
+number of classes in the program's object model: the root of the
+traversal, the target classes, and waypoints and constraints in
+between to restrict the traversal to follow only the desired set of
+paths.  The methods needed to implement a traversal can be generated
+from a traversal strategy and a description of the object model,
+either by hand or automatically with a tool such as
+DemeterJ&nbsp;[<A
+ HREF="dj.html#cse:preventive">9</A>].  If the object model changes, often
+the traversal strategy doesn't need to be changed; the traversal
+methods can simply be re-generated in accordance with the new model,
+and the behavior can adapt to the new structure.
+
+<P>
+With the addition of reflection to Java&nbsp;[<A
+ HREF="dj.html#java-reflection">5</A>], it
+became possible to interpret a traversal strategy at run-time.  DJ is
+a pure-Java library developed by the Demeter team that provides this
+capability.  This makes it easier to add traversal strategies to a
+Java program, because there is no need to modify the compilation
+process to run the DemeterJ code generator or to convert the source
+code to its input language syntax.  Instead traversal strategies can
+simply be expressed as literal strings in ordinary Java code, or even
+constructed dynamically from an external source not known at compile
+time.
+
+<P>
+This paper begins by presenting an example program that uses
+the DJ library, leading into
+an overview of the interface of DJ.  The relation of DJ to DemeterJ is
+discussed, followed by some details of the implementation, a survey of
+related work, and a brief indication of future research directions.
+
+<P>
+
+<H1><A NAME="SECTION00020000000000000000">
+2 Example</A>
+</H1>
+
+<P>
+The example domain for this paper will be that of processing XML
+Schema definitions&nbsp;[<A
+ HREF="dj.html#XML-schema">3</A>].  An XML schema defines the
+structure of a class of XML documents, by enumerating the element
+types allowed and what attributes and subelements they may contain.
+The relation between an XML schema and a conforming XML document is
+analogous to an object model and a graph of instance objects.  An XML
+document consists of a list of elements, each with a list of
+attributes (name/value pairs) and a list of subelements (which may
+themselves contain attributes and subelements).  An XML schema (which
+is itself an XML document) consists of a list of type definitions and
+element and attribute declarations.  A simple type definition defines a
+type of attribute or element with no subelements, while a complex
+type definition defines a type of element with subelements; each type
+definition has a name, stored as the value of an attribute with name
+<TT>name</TT>.  An element or attribute declaration has a name and a
+type, stored as values of attributes with names <TT>name</TT> and
+<TT>type</TT>; an element declaration may contain a local type
+definition instead of a reference to a previously defined type.
+Figure&nbsp;<A HREF="dj.html#fig:UML">1</A> shows a UML&nbsp;[<A
+ HREF="dj.html#rational:UML-LUG">2</A>] class diagram
+that represents a small subset of the XML Schema definition language.
+
+<P>
+
+<P></P>
+<DIV ALIGN="CENTER"><A NAME="fig:UML"></A><A NAME="51"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figure 1:</STRONG>
+UML diagram for XML schemas.</CAPTION>
+<TR><TD><IMG
+ WIDTH="552" HEIGHT="312" BORDER="0"
+ SRC="img1.gif"
+ ALT="\begin{figure}\epsfig{file=XML.eps,width=\textwidth}\end{figure}"></TD></TR>
+</TABLE>
+</DIV><P></P>
+
+<P>
+A simple task that one might want to implement is checking a schema
+for undefined types.  This task involves two traversals of the object
+structure representing the schema definition: one to collect all the
+types defined in the schema, and one to check each type referenced by
+a declaration to see if it's in the set of defined types.
+Figure&nbsp;<A HREF="dj.html#fig:DJ">2</A> shows some definitions on the <TT>Schema</TT>
+class that implement these two traversals.
+
+<P>
+
+<P>
+
+<P></P>
+<DIV ALIGN="CENTER"><A NAME="fig:DJ"></A><A NAME="301"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figure 2:</STRONG>
+Using <TT>traverse</TT> from the DJ library.</CAPTION>
+<TR><TD><TABLE  WIDTH="100%">
+<TR><TD>
+<PRE>
+static final ClassGraph cg = new ClassGraph();
+public Set getDefinedTypeNames()
+{ final Set def = new HashSet();
+  cg.traverse(this, "from Schema via -&gt;TypeDef,attrs,* to Attribute",
+              new Visitor() { void before(Attribute host)
+                                { if (host.name.equals("name"))
+                                    def.add(host.value); }});
+  return def; }
+public Set getUndefinedTypeNames()
+{ final Set def = getDefinedTypeNames(), undef = new HashSet();
+  cg.traverse(this, "from Schema via -&gt;Decl,attrs,* to Attribute",
+              new Visitor() { void before(Attribute host)
+                                { if (host.name.equals("type")
+                                      &amp;&amp; !def.contains(host.value))
+                                    undef.add(host.value); }});
+  return undef; }
+</PRE></TD></TR>
+</TABLE></TD></TR>
+</TABLE>
+</DIV><P></P>
+
+<P>
+The <TT>getDefinedTypeNames</TT> method collects the set of all type
+definition names in a schema: it traverses the object structure rooted at
+the <TT>Schema</TT> object to every <TT>Attribute</TT> object reachable
+through the <TT>attrs</TT> field of a <TT>TypeDef</TT> object, and adds
+the attribute value if the attribute name is <TT>"name"</TT>.  The
+<TT>getUndefinedTypeNames</TT> method collects the set of all type
+references which are not in the set of defined names: it traverses to
+every <TT>Attribute</TT> object reachable through the <TT>attrs</TT> field
+of a <TT>Decl</TT> object, and adds the attribute value if the attribute
+name is <TT>"type"</TT> and the value is not the name of a defined type.
+
+<P>
+The static <TT>cg</TT> variable in Fig.&nbsp;<A HREF="dj.html#fig:DJ">2</A> is
+initialized to the default class graph, which consists of all the
+classes in the default package.
+A <TT>ClassGraph</TT> object is a simplified representation of a UML
+class diagram; its nodes are types (classes and
+primitive types) and its edges are associations (has-a relations) and generalizations (is-a relations).
+
+A traversal is performed by calling the <TT>traverse</TT> method on a
+<TT>ClassGraph</TT> object.  It takes three arguments: the root of the
+object structure to be traversed; a string specifying the traversal
+strategy to be used; and an <B>adaptive visitor</B> object
+describing what to do at points in the traversal.
+
+<P>
+A traversal strategy specifies the end points of the traversal, using
+the <TT>from</TT> keyword for the source and the <TT>to</TT>
+keyword for the target(s).  In between, any number of constraints can be
+specified with <TT>via</TT> or <TT>bypassing</TT>.  The two
+traversals in figure&nbsp;<A HREF="dj.html#fig:DJ">2</A> both traverse from <TT>Schema</TT> to
+<TT>Attribute</TT>, but differ in their constraints: the first traversal
+only looks at attributes of type definitions (<TT>TypeDef</TT> objects),
+while the second traversal only looks at attributes of declarations
+(<TT>Decl</TT> objects).  The <TT>-&gt;TypeDef,attrs,*</TT> syntax is a
+pattern specifying the set of association edges in the object graph
+whose source is a <TT>TypeDef</TT> object and whose label (field name)
+is <TT>attrs</TT>; the asterisk means that an edge in the set can have
+any target type.
+
+<P>
+Traversal strategy interpretation is done as described in
+[<A
+ HREF="dj.html#strategies">10</A>], with a few modifications whose details will
+be presented in a future paper.  The general idea is that the object
+structure is traversed recursively, but associations (including inherited
+associations) which cannot possibly lead to a target object (subject to
+any constraints specified in the traversal strategy) are skipped.
+For example, in our XML Schema example, a
+<TT>Schema</TT> object contains a collection of
+<TT>SchemaItem</TT> objects; this collection may contain <TT>TypeDef</TT>
+objects, since <TT>TypeDef</TT> is a subclass of <TT>SchemaItem</TT>, so
+the elements of the collection are traversed as part of the
+<TT>getDefinedTypes</TT> traversal.  However, some of the elements may
+be <TT>AttributeDecl</TT> objects, and there is no possible path to a
+<TT>TypeDef</TT> object; if one of these elements is encountered in the
+collection, no further traversal of that object is performed.  The
+<TT>adecls</TT> association of <TT>ComplexType</TT> is never traversed at
+all, since it can only contain a collection of <TT>AttributeDecl</TT> objects.
+
+<P>
+An adaptive visitor class is a subtype of the <TT>Visitor</TT> class in
+the DJ library; it implements the Adaptive Visitor pattern described
+in&nbsp;[<A
+ HREF="dj.html#demeter-book">8</A>, pp.&nbsp;426-427].  The Adaptive Visitor pattern
+differs from the Visitor pattern as presented in&nbsp;[<A
+ HREF="dj.html#gang-of-4">4</A>]
+in two ways: only a minimal set of methods needs to be defined, namely
+those describing the functional behavior to be performed at points
+along the traversal, rather than one method each for every class in
+the traversal; and no <TT>accept</TT> methods need to be defined on the
+classes being traversed, nor does traversal behavior need to be
+defined in the visitor methods.  These two differences result in a
+unit of behavior that can adapt both to changes in the object model
+and to changes in the traversal.
+
+<P>
+In place of the <TT>visitFoo</TT> methods in the Visitor pattern, an
+adaptive visitor can define one or more <TT>before</TT> or <TT>after</TT>
+methods, each with a single argument of the type being visited.  These
+are executed at the beginning and ending, respectively, of
+traversals of objects of that type.  The <TT>Visitor</TT>
+subclasses defined inline in figure&nbsp;<A HREF="dj.html#fig:DJ">2</A> define one
+<TT>before</TT> method each, which is executed at <TT>Attribute</TT>
+objects, the end point of the traversal.
+
+<P>
+DJ also can be used with Java's Collections
+framework&nbsp;[<A
+ HREF="dj.html#Collections">6</A>]: the <TT>asList</TT> method on
+<TT>ClassGraph</TT> makes a <TT>List</TT> from an object structure and
+a traversal strategy.  The object structure is viewed as a list
+of objects whose type is the target of the traversal strategy; the
+list iterator performs the traversal incrementally (lazily) with each
+call to <TT>next</TT> (or even backwards, with <TT>previous</TT>).
+Changes to the <TT>List</TT> object ``write through'' to the object
+structure.  This allows a traversal to be performed anywhere a
+<TT>List</TT> is generically traversed, such as the algorithms provided
+by the Collections framework like <TT>sort</TT>, <TT>reverse</TT>, or
+<TT>shuffle</TT>.  
+
+<P>
+
+<H1><A NAME="SECTION00030000000000000000">
+3 DJ and DemeterJ</A>
+</H1>
+
+<P>
+The DJ library is based on DemeterJ, a development tool for adaptive
+programming.  DemeterJ takes as input a <B>class dictionary file</B>,
+which is a textual definition of a class diagram, along with one or
+more <B>behavior files</B>, which contain method definitions.  The
+methods defined in the behavior files can be plain Java methods or
+<B>adaptive methods</B>; an adaptive method definition consists of a
+method signature, a traversal strategy, and a set of visitor methods
+to be executed during the traversal.  From these input files, DemeterJ
+generates a set of plain Java files, which can then be compiled by an
+ordinary Java compiler.
+
+<P>
+DJ is not meant to replace DemeterJ, but to complement it.  For those
+programmers who can't or don't want to develop in a language other
+than plain Java, the DJ library provides an easy way to integrate
+adaptive programming into their code.  DJ also allows more flexible
+dynamic traversals than DemeterJ can support, due to being able to
+build class graphs and interpret traversal strategies at run-time; for
+example, classes can be loaded at run-time, perhaps downloaded from the
+network or constructed dynamically, and traversed using DJ.  Traversal
+strategies might be defined at run-time as well, perhaps based on user
+input such as a database query.  Also, this reification of adaptive
+programming concepts enables the creation of more generic traversal
+components with DJ: a method that performs a traversal can take as
+parameters the class graph, the traversal strategy, the list of
+classes to be visited, or visitor method callbacks.
+
+<P>
+However, these dynamic traversals suffer from the performance penalty
+of using Java's reflection facilities.  Preliminary timing tests have
+indicated that a DJ traversal runs approximately 25 to 30 times slower
+than the corresponding DemeterJ traversal; however, we conjecture that
+this can be improved to be only 10 times slower.  There is also the
+space overhead of keeping the reified objects in memory.  The other
+main advantage of using DemeterJ is that it provides more development
+support by being able to automatically generate class definitions from
+the class dictionary file, as well as generate utility methods for
+parsing, printing, copying, and comparing object structures.  Of
+course DemeterJ and DJ can be used together, since DJ is just a Java
+package, adding the dynamic flexibility benefits of DJ to a regular
+DemeterJ program.
+
+<P>
+Three features of DJ are new additions to adaptive programming--they
+are not in DemeterJ currently but could be added.  One is the ability
+to traverse classes for which the programmer does not have source
+code, or is not able or willing to modify the source code; DemeterJ
+only generates traversal code on the classes defined in the class
+dictionary file, but it could allow traversal strategies to ``cut
+across'' library packages by generating traversal code that uses the
+public interface of the packages.  For example, an adaptive method
+could traverse a compound GUI object made up of classes from the Swing
+library.  The second is the <TT>asList</TT> method that makes a
+<TT>List</TT> view of a traversal; there is no easy way to
+pause an adaptive method, or go backwards, but the list iterator 
+does exactly this.  Third is the ability to create a new
+class graph that is a subgraph of another class graph, determined by a
+traversal strategy; in essence, this allows strategies to be composed
+by intersection, which is not supported in DemeterJ.  For example, if
+you have a complicated strategy <TT>from A via B via
+C</TT>...<TT>to Z</TT> but you want to bypass all edges named
+<TT>cache</TT>, in DemeterJ you would have to add the bypassing
+constraint between each pair of classes in the traversal strategy; in
+DJ, you could create a new <TT>ClassGraph</TT> object from the main
+class graph and the traversal strategy <TT>from * bypassing
+-&gt;*,cache,* to *</TT> and then traverse that class graph using the other
+traversal strategy.
+
+<P>
+
+<H1><A NAME="SECTION00040000000000000000">
+4 Implementation Details</A>
+</H1>
+
+<P>
+When the <TT>ClassGraph</TT> constructor is called, it creates a graph
+object containing reflective information about all the classes in a
+package.
+
+For each class in the package,
+it calls <TT>Class.forName</TT> with the class name, which causes the
+JVM to load the class if it hasn't already been loaded.
+
+Once a <TT>Class</TT> object is obtained, its fields are retrieved using
+<TT>getDeclaredFields</TT>; then, for each <TT>Field</TT> object, its
+name and type class are retrieved using <TT>getName</TT> and
+<TT>getType</TT>, respectively.  A corresponding association edge from the
+defining class to the type class is then added to the graph, labeled
+with the field name.  (Optionally, a class's accessor methods can be
+used instead of or in addition to the fields.  This allows for
+extra computation to be performed when traversing an edge, as well as
+allowing ``virtual'' edges in the class graph.)  Generalization edges
+are also added for each superclass and interface, retrieved from a
+<TT>Class</TT> object using <TT>getSuperclasses</TT> and
+<TT>getInterfaces</TT>, respectively.
+
+<P>
+
+<P>
+Given an object <IMG
+ WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img2.gif"
+ ALT="$o$"> of class <IMG
+ WIDTH="17" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img3.gif"
+ ALT="$C$"> to be traversed and a visitor object
+<IMG
+ WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img4.gif"
+ ALT="$v$"> of class <IMG
+ WIDTH="17" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img5.gif"
+ ALT="$V$">, the <TT>traverse</TT> method
+
+performs the following steps: first, for each class <IMG
+ WIDTH="21" HEIGHT="16" ALIGN="BOTTOM" BORDER="0"
+ SRC="img6.gif"
+ ALT="$C'$"> starting at
+<TT>Object</TT> and going down the inheritance hierarchy to <IMG
+ WIDTH="17" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img3.gif"
+ ALT="$C$">, and for
+each class <IMG
+ WIDTH="21" HEIGHT="16" ALIGN="BOTTOM" BORDER="0"
+ SRC="img7.gif"
+ ALT="$V'$"> starting at <IMG
+ WIDTH="17" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img5.gif"
+ ALT="$V$"> and going up the inheritance hierarchy
+to <TT>Visitor</TT>, the <TT>Class</TT> object for <IMG
+ WIDTH="21" HEIGHT="16" ALIGN="BOTTOM" BORDER="0"
+ SRC="img7.gif"
+ ALT="$V'$"> is queried using
+<TT>getDeclaredMethod</TT> to see if there is a method named
+<TT>before</TT> with one argument of type <IMG
+ WIDTH="21" HEIGHT="16" ALIGN="BOTTOM" BORDER="0"
+ SRC="img6.gif"
+ ALT="$C'$">.  (The query result is
+cached, to avoid repeated introspection, because it is very expensive
+in Java--an exception is thrown if there is no such method, and even
+though the exception is immediately caught, the JVM must fill in the
+complete stack trace on the exception object.  There is no
+<TT>hasDeclaredMethod</TT> to determine whether a method exists without
+throwing an exception.)  If a <TT>before</TT> method exists, it is
+run using <TT>invoke(</TT><IMG
+ WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img4.gif"
+ ALT="$v$"><TT>,</TT><IMG
+ WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img2.gif"
+ ALT="$o$"><TT>)</TT> on the <TT>Method</TT>
+object.
+
+<P>
+Then, for each class <IMG
+ WIDTH="15" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img8.gif"
+ ALT="$S$"> starting at <IMG
+ WIDTH="17" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img3.gif"
+ ALT="$C$"> and going back up the
+inheritance hierarchy to <TT>Object</TT>, and for each edge
+
+to be traversed from <IMG
+ WIDTH="15" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img8.gif"
+ ALT="$S$">,
+the corresponding field or accessor
+method is retrieved from the <TT>Class</TT> object for <IMG
+ WIDTH="15" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img8.gif"
+ ALT="$S$"> using
+<TT>getDeclaredField</TT> or <TT>getDeclaredMethod</TT> (these are also kept in
+a cache to avoid repeated introspection).  The target object <IMG
+ WIDTH="16" HEIGHT="16" ALIGN="BOTTOM" BORDER="0"
+ SRC="img9.gif"
+ ALT="$o'$"> of
+the edge is then retrieved by either calling <TT>get(</TT><IMG
+ WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img2.gif"
+ ALT="$o$"><TT>)</TT> on the
+<TT>Field</TT> object or <TT>invoke(</TT><IMG
+ WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img2.gif"
+ ALT="$o$"><TT>,null)</TT> on the <TT>Method</TT>
+object; <IMG
+ WIDTH="16" HEIGHT="16" ALIGN="BOTTOM" BORDER="0"
+ SRC="img9.gif"
+ ALT="$o'$"> is then recursively traversed with <IMG
+ WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img4.gif"
+ ALT="$v$">.
+
+<P>
+Finally, for each class <IMG
+ WIDTH="25" HEIGHT="16" ALIGN="BOTTOM" BORDER="0"
+ SRC="img10.gif"
+ ALT="$C''$"> starting at <IMG
+ WIDTH="17" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img3.gif"
+ ALT="$C$"> and going up the
+inheritance hierarchy to <TT>Object</TT>, and for each class <IMG
+ WIDTH="25" HEIGHT="16" ALIGN="BOTTOM" BORDER="0"
+ SRC="img11.gif"
+ ALT="$V''$">
+starting at <IMG
+ WIDTH="17" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img5.gif"
+ ALT="$V$"> and going up the inheritance hierarchy to
+<TT>Visitor</TT>, the <TT>Class</TT> object for <IMG
+ WIDTH="25" HEIGHT="16" ALIGN="BOTTOM" BORDER="0"
+ SRC="img11.gif"
+ ALT="$V''$"> is queried to see if
+there is a method named <TT>after</TT> with one argument of type <IMG
+ WIDTH="25" HEIGHT="16" ALIGN="BOTTOM" BORDER="0"
+ SRC="img10.gif"
+ ALT="$C''$">.
+If such a method exists, it is run using
+<TT>invoke(</TT><IMG
+ WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img4.gif"
+ ALT="$v$"><TT>,</TT><IMG
+ WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img2.gif"
+ ALT="$o$"><TT>)</TT> on the <TT>Method</TT> object.
+
+<P>
+The implementation of <TT>asList</TT> is somewhat trickier than regular
+traversal: the list iterator must return in the middle of the
+traversal whenever a target object is reached, and then resume where
+it left off (perhaps going backwards) when <TT>next</TT> is called
+again.  An earlier version
+created an ad-hoc continuation-like object that was saved and restored
+at each iteration, but this was error-prone and not very efficient;
+the current version uses a separate Java thread as a coroutine,
+suspending and resuming at each iteration.  An additional provided method
+<TT>gather</TT> can be used to copy all the target objects into an
+<TT>ArrayList</TT>, which is faster still, but the list returned by
+<TT>asList</TT> has two advantages: calls to <TT>set</TT> on the
+iterator can replace target objects in the original object structure,
+and modifications made to the object structure while a
+traversal is paused can be seen when the traversal resumes.
+
+<P>
+
+<P>
+
+<H1><A NAME="SECTION00050000000000000000">
+5 Related Work</A>
+</H1>
+
+<P>
+An Adaptive Object-Model&nbsp;[<A
+ HREF="dj.html#AOM">11</A>] is an object model that is
+interpreted at run-time.  If an object model is changed, the system
+changes its behavior.  Java's object model can't be changed at
+run-time (other than dynamic class loading) but DJ interprets the
+object model when doing traversals.
+
+<P>
+DJ's <TT>Visitor</TT> class is similar to the reflective visitor
+described by Blosser&nbsp;[<A
+ HREF="dj.html#java-tip:reflective-visitor">1</A>] and the
+<TT>Walkabout</TT> class of Jay and Palsberg&nbsp;[<A
+ HREF="dj.html#palsberg:jay">7</A>], though
+all three approaches were developed independently.
+Blosser describes a programming technique for implementing the Visitor
+pattern that uses reflection to choose which visitor method to call at
+each visit in the traversal.  Jay and Palsberg improve on this by
+making a single generic <TT>Walkabout</TT> class that handles the
+reflective lookup and can be subclassed to provide the visitor
+methods.  In addition, the <TT>Walkabout</TT> class performs the
+traversal of the object structure, also using reflection.  However,
+it can only traverse the entire object structure; there is no
+mechanism analogous to traversal strategies for customizing the
+traversal to a particular subgraph.
+
+<P>
+
+<P>
+
+<P>
+
+<H1><A NAME="SECTION00060000000000000000">
+6 Summary and Future Work</A>
+</H1>
+
+<P>
+We have presented DJ, a pure-Java library supporting dynamic adaptive
+programming.    It is more flexible and
+dynamic than the preprocessing approach taken by DemeterJ, by
+interpreting traversal strategies at run-time and using reflection to
+traverse object structures with adaptive visitors, at the expense of
+performance.
+
+<P>
+The Demeter team is currently working on a number of enhancements to
+DJ.  One is the ability to write visitor methods that get executed
+whenever certain edges in the class graph are traversed (currently,
+visitor method execution depends only on the class of the object being
+traversed).  Another is the ability to write <TT>around</TT> methods on
+visitors that are executed in place of a traversal step and get passed
+a thunk that can be executed to continue the traversal.  Both of these
+enhancements would allow visitors to have more control over the
+behavior that gets executed during a traversal.
+
+<P>
+
+<P>
+There are many optimizations that could be made to traversal
+interpretation.  Some of the reflective overhead of calling
+<TT>Field.get</TT> and <TT>Method.invoke</TT> could be
+avoided by generating a new class (at run-time) that invokes the
+appropriate fields and methods directly; although generating a class
+would be a one-time performance hit, overall performance would be much
+better if the same visitor and traversal strategy were used together
+multiple times.  Other applications of partial evaluation to speed up
+the traversal may be possible as well.
+
+<P>
+
+<P>
+Visit the Demeter home page for more information about DJ, DemeterJ,
+and adaptive programming:
+<A NAME="tex2html7"
+  HREF="http://www.ccs.neu.edu/research/demeter/"><TT>http://www.ccs.neu.edu/research/demeter/</TT></A>.
+
+<P>
+
+<H1><A NAME="SECTION00070000000000000000">
+7 Acknowledgements</A>
+</H1>
+
+<P>
+Josh Marshall designed and implemented the early versions of DJ.
+Johan Ovlinger designed and implemented the predecessor to DJ, TAO
+(Traversals As Objects), and suggested the run-time generation of a
+class to avoid reflective overhead.  Pengcheng Wu is implementing
+several enhancements to DJ, including <TT>around</TT> visitor methods
+and visitor methods on edges.  Thanks to Lars Hansen for suggesting
+the use of threads as coroutines for the <TT>asList</TT> iterator.  The
+XML Schema example is a simplified version of an XML-Schema-to-Java
+tool being developed by Adak Prasenjit.  Thanks to Erik Ostrom, Robert
+Stroud, Greg Sullivan, and the anonymous reviewers, who provided many
+insightful comments and suggestions.  Research supported by Defense
+Advanced Research Projects Agency under agreement F33615-00-C-1694
+(PCES Program).
+
+<P>
+
+<H2><A NAME="SECTION00080000000000000000">
+Bibliography</A>
+</H2><DL COMPACT><DD><P></P><DT><A NAME="java-tip:reflective-visitor">1</A>
+<DD>
+Jeremy Blosser.
+<BR>Java Tip 98: Reflect on the visitor design pattern.
+<BR><EM>JavaWorld</EM>, July 2000.
+
+<P></P><DT><A NAME="rational:UML-LUG">2</A>
+<DD>
+Grady Booch, James Rumbaugh, and Ivar Jacobson.
+<BR><EM>The Unified Modeling Language User Guide</EM>.
+<BR>Object Technology Series. Addison Wesley, 1999.
+<BR>ISBN 0-201-57168-4.
+
+<P></P><DT><A NAME="XML-schema">3</A>
+<DD>
+David&nbsp;C. Fallside.
+<BR><EM>XML Schema Part 0: Primer</EM>.
+<BR>W3C, October 2000.
+
+<P></P><DT><A NAME="gang-of-4">4</A>
+<DD>
+Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides.
+<BR><EM>Design Patterns: Elements of Reusable Object-Oriented Software</EM>.
+<BR>Addison-Wesley, 1995.
+
+<P></P><DT><A NAME="java-reflection">5</A>
+<DD>
+JavaSoft.
+<BR><EM>Java Core Reflection</EM>, 1998.
+
+<P></P><DT><A NAME="Collections">6</A>
+<DD>
+JavaSoft.
+<BR><EM>Collections Framework Overview</EM>, 1999.
+
+<P></P><DT><A NAME="palsberg:jay">7</A>
+<DD>
+Barry Jay and Jens Palsberg.
+<BR>The essence of the visitor pattern.
+<BR>In <EM>COMPSAC'98, 22nd Annual International Computer Software and
+  Applications Conference</EM>, pages 9-15, Vienna, 1998.
+
+<P></P><DT><A NAME="demeter-book">8</A>
+<DD>
+Karl&nbsp;J. Lieberherr.
+<BR><EM>Adaptive Object-Oriented Software: The Demeter Method with
+  Propagation Patterns</EM>.
+<BR>PWS Publishing Company, Boston, 1996.
+<BR>616 pages, ISBN 0-534-94602-X.
+
+<P></P><DT><A NAME="cse:preventive">9</A>
+<DD>
+Karl&nbsp;J. Lieberherr and Doug Orleans.
+<BR>Preventive program maintenance in Demeter/Java (research
+  demonstration).
+<BR>In <EM>International Conference on Software Engineering</EM>, pages
+  604-605, Boston, MA, 1997. ACM Press.
+
+<P></P><DT><A NAME="strategies">10</A>
+<DD>
+Karl&nbsp;J. Lieberherr and Boaz Patt-Shamir.
+<BR>Traversals of Object Structures: Specification and Efficient
+  Implementation.
+<BR>Technical Report NU-CCS-97-15, College of Computer Science,
+  Northeastern University, Boston, MA, Sep. 1997.
+
+<P></P><DT><A NAME="AOM">11</A>
+<DD>
+Joseph&nbsp;W. Yoder and Reza Razavi.
+<BR>Metadata and adaptive object-models.
+<BR>In <EM>ECOOP 2000 Workshop Reader</EM>, volume 1964 of <EM>Lecture
+  Notes in Computer Science</EM>. Springer Verlag, 2000.
+</DL>
+
+<P>
+
+<H1><A NAME="SECTION00090000000000000000">
+About this document ...</A>
+</H1>
+ <STRONG>DJ: Dynamic Adaptive Programming in Java</STRONG><P>
+This document was generated using the
+<A HREF="http://www-dsed.llnl.gov/files/programs/unix/latex2html/manual/"><STRONG>LaTeX</STRONG>2<tt>HTML</tt></A> translator Version 99.2beta8 (1.42)
+<P>
+Copyright &#169; 1993, 1994, 1995, 1996,
+<A HREF="http://cbl.leeds.ac.uk/nikos/personal.html">Nikos Drakos</A>, 
+Computer Based Learning Unit, University of Leeds.
+<BR>Copyright &#169; 1997, 1998, 1999,
+<A HREF="http://www.maths.mq.edu.au/~ross/">Ross Moore</A>, 
+Mathematics Department, Macquarie University, Sydney.
+<P>
+The command line arguments were: <BR>
+ <STRONG>latex2html</STRONG> <TT>-split 0 -no_navigation -show_section_numbers -white dj</TT>
+<P>
+The translation was initiated by Doug Orleans on 2001-07-07<BR><HR>
+<ADDRESS>
+Doug Orleans
+2001-07-07
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,587 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 99.2beta8 (1.42)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Feature overview</TITLE>
+<META NAME="description" CONTENT="Feature overview">
+<META NAME="keywords" CONTENT="proposal">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v99.2beta8">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="proposal.css">
+
+<LINK REL="next" HREF="node3.html">
+<LINK REL="previous" HREF="node1.html">
+<LINK REL="up" HREF="proposal.html">
+<LINK REL="next" HREF="node3.html">
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<A NAME="tex2html37"
+  HREF="node3.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.gif"></A> 
+<A NAME="tex2html35"
+  HREF="proposal.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.gif"></A> 
+<A NAME="tex2html29"
+  HREF="node1.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.gif"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html38"
+  HREF="node3.html">Evaluation</A>
+<B> Up:</B> <A NAME="tex2html36"
+  HREF="proposal.html">Ph.D. Thesis Proposal: A</A>
+<B> Previous:</B> <A NAME="tex2html30"
+  HREF="node1.html">Introduction</A>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+<!--Table of Child-Links-->
+<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+
+<UL>
+<LI><A NAME="tex2html39"
+  HREF="node2.html#SECTION00021000000000000000">Common features</A>
+<LI><A NAME="tex2html40"
+  HREF="node2.html#SECTION00022000000000000000">MOO</A>
+<LI><A NAME="tex2html41"
+  HREF="node2.html#SECTION00023000000000000000">ColdC</A>
+<LI><A NAME="tex2html42"
+  HREF="node2.html#SECTION00024000000000000000">LPC/DGD</A>
+</UL>
+<!--End of Table of Child-Links-->
+<HR>
+
+<H1><A NAME="SECTION00020000000000000000">
+Feature overview</A>
+</H1>
+
+<P>
+In order to design a next-generation collaborative programming
+language, I am studying current collaborative languages to see what
+features I need to include and what needs to be improved.  What follows
+is an overview of the basic features of some of the more widely-used
+languages; my dissertation will include a more in-depth survey of the
+features of these and other languages.
+
+<H2><A NAME="SECTION00021000000000000000"></A>
+<A NAME="features"></A>
+<BR>
+Common features
+</H2>
+Before getting into the details of a particular collaborative
+programming language, I will start with an overview of what the
+languages I am studying have in common.  First of all, by definition,
+they allow multiple programmers to collaborate.  In practice, this
+means that they act as servers, accepting input from multiple network
+sockets asynchronously, and allow code (i.e.&nbsp;behavior) to be added or
+modified dynamically based on this input.  (A digression: the features
+I discuss may appear to be features of a programming language
+<I>environment</I>, rather than of a programming language; however, the
+line between the two is often blurred, even in more mainstream
+languages-- the interactive environment is fairly integral to the
+Smalltalk and Lisp families of languages, and the Java language
+specification covers the class loading process in detail.  More
+importantly, however, a collaborative programming language typically
+<I>reifies</I> the concept of the programmer into a structure that is
+part of the semantics of the language, so features that usually are
+part of the environment really are part of the language.)  This
+feature, asynchronous dynamic behavior modification, requires a number
+of other features: type safety and garbage collection, so that a wild
+pointer or memory leak caused by one programmer can't cause the whole
+server to crash; multitasking and resource control, so that one
+programmer's code can't monopolize the server by, for instance,
+running a tight infinite loop; persistence, so that the programmers
+don't have to re-upload all their code when the server is shutdown and
+restarted; and reflection, so that programmers can examine the code
+that's already on the server (their own or others').
+
+<P>
+Another feature that collaborative programming languages usually have
+is security: a programmer owns code and data that he creates, and can
+control access to it; however, while this can be useful for enforcing
+abstraction barriers (much like access control in other languages,
+e.g. the <TT>private</TT>, <TT>protected</TT>, and <TT>public</TT>
+keywords in C++ and Java), it is not strictly necessary for
+collaboration, and is often not used at all.  Collaborative
+programming languages are often (perhaps predominantly) used in
+another setting than collaboration, though, which I will call
+<I>community programming</I>: programmers share code and data dynamically,
+yet they may not always be collaborating in the sense of working
+towards a common goal, and in fact may not trust each other at all; in
+this situation, access control mechanisms are essential.
+
+<P>
+The collaborative programming languages I am studying share another
+feature that is not essential to collaboration: they are all
+single-dispatch classless object-oriented languages.  That is, they
+have objects, which have fields and methods, and which may inherit
+fields and methods from other objects.  These languages are probably
+object-oriented because they were designed for the multi-user
+simulation environment domain, and OO languages are well suited for
+simulations; the fact that they are all also classless may be
+coincidence, but it may also be due to the dynamicity properties of
+the language: it's easier to modify a field or method on an object,
+which is dynamically inherited by the object's descendant objects,
+than it is to modify a field or method on a class and update all the
+instances of the class.  Interestingly, recent versions of several of
+these languages have added mechanisms that can simulate the
+class-instance relation.
+
+<P>
+
+<H2><A NAME="SECTION00022000000000000000">
+MOO</A>
+</H2>
+
+<P>
+The MOO programming language is idiosyncratic in that it is a mud
+language, and its terminology reflects that fact: users are called
+<I>players</I>, super-users are called <I>wizards</I>, object
+methods are called <I>verbs</I> (because they are used to execute
+the verbs in commands, such as <TT><TT><B>look</B></TT> in
+mirror</TT>, <TT><B>get</B> key</TT>, or <TT><B>put</B> book on
+shelf</TT>), and object fields are called <I>properties</I>.  There are
+also a number of aspects to the language that are irrelevant to a
+general-purpose collaborative programming language: for example, all
+objects have <TT>name</TT>, <TT>location</TT>, and <TT>contents</TT>
+properties, and all user input is processed by default by a command
+parser that tries to match words in the command to objects in the same
+location as the player.  In general I will ignore mud-specific aspects
+of the language in this paper, but occasionally they have an impact on
+other parts of the language.
+
+<P>
+All program code in MOO lives in the verbs; there are no global
+functions or static code blocks.  The MOO server has a built-in
+command for programming a verb that accepts the code of the verb
+terminated by a single period on a line by itself.  Typically
+programmers can also evaluate single expressions or sequences of
+statements with an <TT>eval</TT> command.  The syntax is somewhat
+similar to C++ or Java, with semicolon-terminated statements and infix
+arithmetic; object properties are referenced with a dot,
+e.g.&nbsp;<TT>player.name</TT>, while verbs are invoked with a colon,
+e.g.&nbsp;<TT>player:name()</TT>.  The server provides a set of
+<I>builtin functions</I> (analogous to system calls) which are
+invoked as if they were global functions,
+e.g.&nbsp;<TT>notify(</TT><I>p</I><TT>,&nbsp;"Hello,&nbsp;world!")</TT> sends the
+string ``Hello,&nbsp;world!'' to player <I>p</I>'s connection.  Variables
+are untyped and do not need to be declared ahead of time; using a
+variable before it has been initialized results in a ``Variable not
+found'' exception.  There are no formal named arguments to a verb;
+instead a single special variable <TT>args</TT> holds the list of
+actual arguments used in the verb invocation.  Scattering assignment
+can be used (as in perl) to assign the arguments to a list of
+variables, e.g.&nbsp;<TT>{a,&nbsp;b,&nbsp;c}&nbsp;=&nbsp;@args</TT>.  Other special variables
+include <TT>this</TT>, which is the receiver object of the
+current verb invocation, just like in C++ or Java 
+(<TT>this</TT> must be explicitly used when referring to properties
+and verbs on the current object);
+<TT>caller</TT>, which is what the value of <TT>this</TT> was when the
+current verb was invoked; and <TT>player</TT>, which by default is the
+player who entered the command currently executing (but the value of
+<TT>player</TT> can be changed by a verb running with wizard
+permissions--see the paragraph on security below).
+
+<P>
+As mentioned in the overview, MOO is a single-dispatch classless
+object-oriented (sometimes referred to as object-based) language.
+Objects inherit from each other, singly; thus, each object has a
+parent, and when a verb or property is referenced on an object, if
+it's not defined on that object, the object's parent is searched.  A
+verb can call the builtin function <TT>pass()</TT> to re-send the
+current verb call to the object's parent.  [TBD: discuss property
+inheritance and clear properties] Each object has a unique
+fixed integer associated with it, known as its <I>object number</I>,
+or <I>objnum</I>; all objects can be referred to in code with a
+literal objnum expression <TT>#</TT><I>objnum</I>.  Objnums are
+assigned at object creation time in increasing order starting with
+<TT>#0</TT> 
+for the system object.  A shorthand exists for referring to properties 
+and verbs on the system object: <TT>$foo</TT> is equivalent to
+<TT>#0.foo</TT>, and <TT>$bar(x,&nbsp;y)</TT> is equivalent to
+<TT>#0:bar(x,&nbsp;y)</TT>.  This allows for a global namespace of sorts;
+a useful object can be given a name by adding a property to
+<TT>#0</TT> with the object as its value, so that, e.g.,
+<TT>$player</TT> can be used to refer to the generic player object
+that is used as the parent of all player objects.
+
+<P>
+Objects are not garbage-collected; objects must be deleted explicitly.
+Objnums referring to deleted objects (as well as negative objnums) are
+referred to as <I>invalid</I>.  Deletion of objects leaves ``holes''
+at these invalid objnums; there is a <TT>renumber()</TT> builtin
+function that reassigns an object's number to be the lowest
+nonnegative invalid objnum, but this is not used in practice (except
+in special cases) because it does not fix existing references to the
+object's old number (in properties or in verb code).  Instead, the
+custom is to never actually delete an object, but to strip all verbs
+and properties from it and put it onto a free list of ``garbage''
+objects that can be reused when new objects are needed.
+
+<P>
+There are other, non-object values in MOO, such as integers, strings,
+and lists; list values are immutable heterogenous arrays and are
+garbage-collected, using a simple reference-counting scheme.  Lists
+are often used for data structures, because objects are heavyweight,
+both conceptually and in time and space overhead, due to the cost of
+recycling and the allocation of builtin properties such as name and
+location that are only useful for objects representing virtual
+entities.  A recent experimental extension to the language adds a new
+value called <I>waifs</I>; this extension in essence treats normal
+MOO objects as classes, with waifs acting as instance objects.  Each
+waif value has a class (an objnum) and a list of values corresponding
+to its class's list of defined properties.  Verbs are invoked on waifs
+just as they are on objects, by dynamically looking up the class's
+inheritance chain; waifs cannot define their own verbs or properties.
+Waifs, like lists, are garbage-collected, but are mutable, like
+objects, providing the best of both worlds, although the current
+implementation imposes the limitation that circular waif structures
+cannot be created, so that reference-counting garbage collection can
+still work.
+
+<P>
+MOO is single-threaded, but has multitasking; each command received
+from a player starts a task, and additional tasks may be created with a
+<TT>fork...endfork</TT> statement.  Task switching is done
+cooperatively: a task may surrender control to other tasks for a given
+minimum number of seconds <I>n</I> (which may be&nbsp;0) by calling the
+builtin function <TT>suspend(</TT><I>n</I><TT>)</TT>; a suspended task may be
+resumed before its time by calling the builtin function
+<TT>resume(</TT><I>id</I><TT>)</TT>, where <I>id</I> is the task-id of the
+suspended task (a unique integer).  The
+<TT>read(</TT><I>p</I><TT>)</TT> builtin function also
+suspends the current task, resuming when a line of input has been read
+from player <I>p</I>'s connection.  In order to prevent a task from
+monopolizing the server by not suspending, however, the server
+interrupts a task if it has run for more than a certain amount of time
+or number of instructions (<I>ticks</I>); the default threshold
+amounts are 5 seconds and 30,000 ticks (for command tasks), which can
+be overridden by setting special properties on the system object
+(<TT>#0</TT>).  When a task is interrupted by the server, an
+uncatchable exception is thrown and printed to the player who typed
+the command that created the task (this behavior can also be
+overridden by adding a special verb to the system object).  Usually, a
+task that has a loop that might run a large number of times will call
+the builtin function
+<TT>ticks_left()</TT> each time through the loop to determine whether
+it needs to suspend.
+
+<P>
+In addition to time restrictions on a task, the amount of space used
+by a player can be restricted; if a property named
+<TT>ownership_quota</TT> exists on a player, then when that player
+calls the builtin function <TT>create()</TT> to make a new object, the
+value of the property is decremented by one if it's positive, or else
+a ``Resource limit exceeded'' exception is thrown.  The value is
+likewise incremented whenever an object is destroyed with the
+<TT>recycle()</TT> builtin function.  (If a ``garbage'' list is used
+as described above, this value can also be adjusted whenever objects
+are added to or removed from the list.)  The builtin function
+<TT>object_bytes()</TT> can also be used to measure the size of an
+object, if a more finer-grained quota policy needs to be implemented.
+There are also restrictions on the number of nested verb calls in a
+task stack and the number of forked or suspended tasks owned by any
+one player.
+
+<P>
+The heap of allocated objects is known as the <I>database</I>, or
+<I>db</I>, although the db does not have much resemblance to a
+conventional database; the db is kept entirely in memory in a single
+process, and must be periodically checkpointed by calling the
+<TT>dump_database()</TT> builtin function, which saves
+the db to disk in a format that can be reloaded if the system needs to
+be restarted after being shut down (or crashing).  A version of the
+MOO server called LPMOO is implemented on top of another mud server,
+DGD (in its language, LPC), which itself provides more continuous
+persistence, as well as smaller process size, by keeping all objects
+on disk and loading them into memory only when needed; only the
+working set of cached objects need be written to disk when
+checkpointing, which can then be done more often since it's much
+faster.
+
+<P>
+There are a number of builtin functions that provide reflective
+capabilities.  For introspection, there are builtin functions to
+determine an object's parent, its children, its defined properties or
+verbs, or whether an object is a player object; there are builtin
+functions to inspect a property or verb definition's name, owner, and
+permission flags (see next paragraph), or about a builtin function, or
+to retrieve a verb's code; and there are builtin functions to get the
+list of player objects, the maximum object number, or the list of
+currently queued tasks.  For invocation, there are builtin functions
+to change an object's parent, to make an object a player or not a
+player, to add or delete a property or verb from an object, to set a
+property or verb definition's name, owner, or permission flags, or to
+set the code of a verb; there are also builtin functions to call a
+builtin function given its name in a string, or to evaluate an
+arbitrary expression given in a string.  In addition, properties can
+be referenced using a computed name with special syntax,
+e.g.&nbsp;<TT>obj.(propname)</TT> will read the property whose name is the
+value of <TT>propname</TT> (which must be a string) on the object
+<TT>obj</TT>; verbs can be invoked with a similar syntax,
+e.g.&nbsp;<TT>obj:(verbname)()</TT> will invoke the verb whose name is the
+value of <TT>verbname</TT> on the object <TT>obj</TT>.  There is a
+limited form of intercession, as well: whenever a builtin function
+<I>fun</I> is called, if there is a verb on the system object whose
+name is <TT>bf_</TT><I>fun</I>, it is invoked instead.  There is no
+way to intercede on a property reference or a verb invocation,
+however.
+
+<P>
+Security in MOO is accomplished with a simplified Unix-style
+permission system.  Tasks always run with the permissions of a single
+player, similar to the effective user id of a process in Unix.  Every
+object, verb, and property has an owner and <TT>r</TT> and <TT>w</TT>
+flags that determine if tasks running with permissions other than the
+owner (or a wizard) can read or write them.  Each object also has an
+<TT>f</TT> flag (``fertile'') that determines if tasks running with
+permissions other than the owner may create children of the object.
+Each verb also has an <TT>x</TT> flag that determines if tasks running with
+permissions other than the owner can execute it.  However, verbs
+always run with the permission of the owner of the verb, rather than
+the permissions in effect when the verb is invoked, so that a verb
+owned by a player can always access properties owned by that player as
+well.  This is the reverse of the normal Unix case; it is as if all
+programs in Unix had their set-user-ID bit on.  [TBD: <TT>c</TT> flag on
+properties] Tasks running with wizard permissions, i.e.&nbsp;verbs owned by
+wizards, can call
+<TT>set_task_perms(</TT><I>p</I><TT>)</TT> to change the current
+task's permissions to player <I>p</I>; this is often used to run
+with the caller's permissions, by setting them to the value of the
+builtin function <TT>caller_perms()</TT>.  Tasks running with wizard
+permissions may also change the value of the special variable
+<TT>player</TT>, in order to simulate a command being sent by another player 
+than the one who actually sent it.  A number of builtin functions are
+restricted to act only on objects, verbs, or properties owned by the
+current permissions, unless the current permissions are those of a
+wizard, such as <TT>chparent()</TT> and <TT>recycle()</TT>; others
+may only be with wizard permissions, such as <TT>dump_database()</TT>
+or <TT>shutdown()</TT>.
+
+<P>
+
+<H2><A NAME="SECTION00023000000000000000">
+ColdC</A>
+</H2>
+
+<P>
+ColdC (originally called C<IMG
+ WIDTH="32" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img1.gif"
+ ALT="$-$">) is a successor to MOO, and so shares
+many of MOO's features, improving on some of them.  The main
+innovation was the removal of all mud-specific features, creating a
+true general-purpose collaborative programming language.  The ColdC
+server (or <I>driver</I>), Genesis (originally called Coldmud), does
+not attempt to parse commands, nor does it maintain location and
+contents; even security features have been almost completely removed.
+The intention is that all of these features can (if desired) be
+implemented on top of the base functionality that the language
+provides.  Terminology is more in line with traditional OO languages:
+users are called users and methods are called methods; fields are
+called <I>object variables</I>.
+
+<P>
+ColdC syntax is more like C++ than MOO is: both object variable and
+method reference is done with dot (<TT>foo.bar</TT> or
+<TT>foo.bar()</TT>), and object variables on the current object may be
+referred to by simply naming them (i.e. no explicit <TT>this</TT>
+needed); local variables must be declared at the top of a method
+(though there is still no static typing); method parameters are named;
+block structure can be provided with curly braces.  Invoking a method
+on the current object can be written as <TT>.foo()</TT>; the dot is
+still necessary to avoid ambiguity with functions (the ColdC term for
+what MOO calls builtin functions).  There are no special variables;
+instead, functions are used: <TT>this()</TT> returns the current receiver
+object, <TT>definer()</TT> returns the object that defines the current method
+(which is always an ancestor of <TT>this()</TT>), <TT>sender()</TT>
+returns the object that invoked the current method, and
+<TT>caller()</TT> returns the object that defines the method that
+invoked the current method (an ancestor of <TT>sender()</TT>).  The
+function <TT>user()</TT> simply returns whatever was passed to the
+last call to <TT>set_user()</TT> on the current object; the intention 
+is similar to the <TT>player</TT> special variable in MOO, i.e.&nbsp;to
+keep track of the originating object for the current task, but the
+driver does not do anything special to set or maintain it.
+
+<P>
+The ColdC object model has multiple inheritance; method inheritance
+uses depth-first search up the parents list, from left to right,
+skipping parents it has already searched due to inheriting
+the same parent via multiple paths.  The <TT>pass()</TT> function
+re-sends to the next method that would be found in the current method
+invocation, i.e.&nbsp;it might not always be an ancestor of
+<TT>definer()</TT>.  Objects have unique numbers, as in MOO, which are 
+referred to with the syntax <TT>#</TT><I>objnum</I>; they also have
+unique alphanumeric names, which are referred to with the syntax
+<TT>$</TT><I>name</I>.  Object names can be changed with the
+<TT>set_objname()</TT> function, but this should be done with care as 
+methods with literal references to the old name will not be
+updated.<A NAME="tex2html1"
+  HREF="footnode.html#foot153"><SUP>1</SUP></A>
+<P>
+Similar to MOO, objects in ColdC are not garbage collected, but there
+is a lightweight object data structure similar to the waifs extension
+to MOO, called a <I>frob</I>.  Unlike waifs, however, frobs are
+immutable, which somewhat limits their utility.
+
+<P>
+ColdC has cooperative multitasking, similar to MOO.  Atomic mode can
+be turned on with the function <TT>atomic()</TT>, which prevents any
+other tasks from running until atomic mode is turned off; a task
+running in atomic mode is also immune to the tick limit.  The creation
+functions do not enforce any sort of quota policy, but one can be
+implemented in ColdC using the <TT>bind_function()</TT> function (see
+the next paragraph below).  Genesis is disk-based, i.e.&nbsp;it keeps all
+objects on disk and only loads them into memory when needed; however,
+tasks are not persistent and must be manually saved in a restartable
+format if they need to stay around after the system is restarted.
+Reflection in ColdC is similar to MOO, but with no intercessory
+capabilities and no <TT>eval()</TT> function.
+
+<P>
+ColdC has no notion of task permissions such as MOO has; however, it
+allows C++/Java style access control for methods, using the keywords
+<TT>public</TT>, <TT>protected</TT>, and <TT>private</TT>, and it is a 
+runtime error to call protected or private methods from outside the
+object.  There are three additional access control keywords:
+<TT>root</TT>, which means a method may only be called by the
+<TT>$root</TT> object; <TT>driver</TT>, which means a method may only
+be called by the driver; and <TT>frob</TT>, which means a method may
+only be called with a frob as the receiver.  All object variables are
+considered to be private, i.e.&nbsp;only the defining object may access its 
+object variables.  Functions (e.g.&nbsp;administrative functions like
+<TT>shutdown()</TT>) can be
+protected by using the <TT>bind_function(</TT><I>fun</I><TT>,
+</TT><I>obj</I><TT>)</TT> function to only allow the <I>fun</I>
+function to be called from methods defined on <I>obj</I> (typically
+<TT>$sys</TT> or <TT>$root</TT>).  This can be used to force access
+to functions to go through methods, which can impose extra security or
+resource control measures.  A method may also be set
+<TT>nooverride</TT>, which means that no descendant object may define a 
+method with the same name; this can prevent spoofing of secured
+methods.
+
+<P>
+
+<H2><A NAME="SECTION00024000000000000000">
+LPC/DGD</A>
+</H2>
+
+<P>
+LPC is the language for LPMUD, a descendant of the original MUD that
+evolved in parallel to MOO without much cross-breeding.  DGD
+(Dworkin's Generic Driver) is the latest LPC driver, which, like
+Genesis/ColdC, is a general-purpose collaborative programming language
+because it doesn't include any mud-specific features.  Its syntax is
+almost identical to C, including statically typed variables but not
+including pointers (but objects, strings, arrays, etc. are passed by
+reference, similar to Java).  The database consists of a Unix-style
+hierarchical file system; each object corresponds to a file whose name
+ends in <TT>.c</TT>, e.g.&nbsp;<TT>/system/driver.c</TT>, which contains
+the source code for the object variables and functions.  A literal
+object reference is simply a string containing the source filename of
+the object (without the <TT>.c</TT>).  Calls to functions in other
+objects are done C++-style, i.e.&nbsp;<TT>obj-&gt;fun()</TT>.  Driver
+functions are called <I>kfuns</I> (kernel functions) and are
+called the same way as functions in ColdC or MOO.  The kfuns
+<TT>this_object()</TT>, <TT>previous_object()</TT>, and
+<TT>previous_program()</TT> play the roles of ColdC's
+<TT>this()</TT>, <TT>sender()</TT>, and <TT>caller()</TT>,
+respectively.  An object can (multiply) inherit from other objects
+using <TT>inherit </TT><I>obj</I><TT>;</TT> declarations.  A
+function can re-send to a function on its parent using
+<TT>::</TT><I>fun</I><TT>()</TT>.  Directed re-send is accomplished
+by providing a tag in the <TT>inherit</TT> declaration and using the
+tag, e.g.&nbsp;the declaration <TT>inherit p2 "/foo/bar";</TT> allows
+re-sends to the object <TT>"/foo/bar"</TT> with the expression
+<TT>p2::</TT><I>fun</I><TT>()</TT>.
+
+<P>
+LPC objects are not garbage collected, but arrays and other data
+structures are.  Something similar to waifs and frobs exists, called
+<I>clones</I>: instead of inheriting an object by making a new
+object file with an <TT>inherit</TT> declaration, you can call the
+kfun <TT>clone_object()</TT>, which makes a new copy of an object.  A
+clone cannot itself be cloned or inherited from, but is otherwise like 
+a regular object.  When an object is modified and reloaded (with the
+kfun <TT>compile_object()</TT>), all of its clones are modified as
+well, keeping the same values for variables whose definition did not
+change.  Clones are assigned names in the file system, based on the
+name of the object it was cloned from and a unique number, e.g.&nbsp;a
+clone of an object named <TT>/foo/bar</TT> will be named something
+like <TT>/foo/bar#1234</TT>.  Since clones are always accessible by
+name with a literal object name expression, they are not garbage
+collected.
+
+<P>
+LPC has cooperative multitasking, similar to MOO and ColdC.  The
+resources (maximum stack depth and number of ticks) available to a
+block of code can be specified with a
+<TT>rlimits(</TT><I>depth</I><TT>, </TT><I>ticks</I><TT>) {</TT>
+...<TT>}</TT> construct.  DGD is disk-based, similar to Genesis.
+Reflection is similar to MOO, although introspection is mainly done at 
+the object level rather than the level of functions and object
+variables.  (The exception is the kfun <TT>function_object()</TT>,
+which determines which inherited object provides a given function.)
+There is no <TT>eval()</TT> function.  Intercession is achieved through 
+a number of hooks that are called on the driver object (similar to the
+system object in MOO or ColdC); of particular note is
+<TT>call_object()</TT>, which is called whenever an object calls a
+function on another object--neither MOO nor ColdC has intercession on 
+method calls.  In addition, kfuns can be shadowed (and new ones added) 
+in the root object, called the <I>auto</I> object, similar to
+<TT>#0:bf_</TT><I>fun</I> wrappers in MOO.
+
+<P>
+LPC's approach to security is similar to ColdC's: access to functions
+and variables is controlled with keywords such as <TT>private</TT> and
+<TT>static</TT> (similar to <TT>protected</TT> in other languages),
+and all other access control must be implemented in the database
+(with the intercessory driver hooks, as opposed to restricting access
+to kfuns as is done in ColdC).  The keyword <TT>nomask</TT> serves the 
+same purpose as ColdC's <TT>nooverride</TT>.
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html37"
+  HREF="node3.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.gif"></A> 
+<A NAME="tex2html35"
+  HREF="proposal.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.gif"></A> 
+<A NAME="tex2html29"
+  HREF="node1.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.gif"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html38"
+  HREF="node3.html">Evaluation</A>
+<B> Up:</B> <A NAME="tex2html36"
+  HREF="proposal.html">Ph.D. Thesis Proposal: A</A>
+<B> Previous:</B> <A NAME="tex2html30"
+  HREF="node1.html">Introduction</A>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Doug Orleans
+2000-08-12
+</ADDRESS>
+</BODY>
+</HTML>

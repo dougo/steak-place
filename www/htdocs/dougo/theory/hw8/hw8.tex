@@ -1,0 +1,210 @@
+\documentclass{article}
+\usepackage{amstex}
+\usepackage{amssymb}
+\usepackage{theorem}
+\usepackage{fancyheadings}
+
+\setlength{\parindent}{0pt}	% Don't indent paragraphs.
+
+% Reduce margins.
+\addtolength{\voffset}{-1in}
+\addtolength{\textheight}{2in}
+\addtolength{\hoffset}{-1.25in}
+\addtolength{\textwidth}{2.5in}
+
+\pagestyle{fancy}
+\setlength{\headrulewidth}{0pt}
+
+\lhead{COM 3350 Assignment 7}
+\rhead{Doug Orleans (\texttt{dougo@@ccs.neu.edu})}
+
+\theorembodyfont{\rmfamily}		% don't use italics
+\theoremstyle{break}			% put a line break after the header
+\newtheorem{exercise}{Exercise}
+\theoremstyle{plain}
+\newtheorem{subexercise}{}[exercise]
+\renewcommand{\thesubexercise}{\alph{subexercise}.}
+\newenvironment{answer}{\begin{quotation}\noindent}{\end{quotation}}
+
+\newcommand{\sipser}{\textit{Sipser}}
+\newcommand{\encoding}[1]{\ensuremath{\langle#1\rangle}}
+\newcommand{\qed}{~\ensuremath{\square}}
+\newcommand{\Th}{\ensuremath{\operatorname{Th}}}
+\newcommand{\Nat}{\ensuremath{\mathcal{N}}}
+\newcommand{\tred}{\ensuremath{\leq_{\text{T}}}}
+\newcommand{\ATM}{\ensuremath{A_{\textsf{TM}}}}
+\newcommand{\defin}[1]{\textbf{\textit{#1}}}
+\newcommand{\sym}[1]{\ensuremath{\mathtt{#1}}}
+\newcommand{\symbf}[1]{\textbf{\sym{#1}}}
+\newcommand{\set}[1]{\ensuremath{\{#1\}}}
+\newcommand{\enumlang}[1]{\set{\sym{#1}}}
+\newcommand{\union}{\cup}
+\newcommand{\setname}[1]{\textit{#1}}
+\renewcommand{\liminf}{\ensuremath{\lim_{n\to\infty}}}
+\newcommand{\TM}{\textsf{TM}}
+\newcommand{\NTM}{\textsf{NTM}}
+\newcommand{\DFA}{\textsf{DFA}}
+\newcommand{\NFA}{\textsf{NFA}}
+\renewcommand{\P}{\textrm{P}}
+\newcommand{\NP}{\textrm{NP}}
+\newcommand{\coNP}{\textrm{coNP}}
+\newcommand{\emptystring}{\ensuremath{\boldsymbol\varepsilon}}
+\newcommand{\ceil}[1]{\ensuremath{\left\lceil#1\right\rceil}}
+
+%\renewcommand{\AND}{\ \keyword{and}\ }
+%\newcommand{\ENDWHILE}{\untab\addtocounter{programline}{-1}}
+%\newcommand{\ENDIF}{\untab\untab\addtocounter{programline}{-1}}
+%\newcommand{\ACCEPT}{\keyword{accept}\ }
+%\newcommand{\REJECT}{\keyword{reject}\ }
+%\renewcommand{\keyword}[1]{\textbf{#1}} 
+%\renewcommand{\prognumstyle}{\textrm} 
+%\NumberProgramstrue 
+%\normalbaroutside 
+
+\begin{document}
+
+\begin{exercise}[\sipser, 9.16]
+Define the function
+$\textit{majority}_n:\enumlang{0,1}^n\to\enumlang{0,1}$ as
+\begin{displaymath}
+\textit{majority}_n(x_1,\ldots,x_n)=\left\{
+\begin{array}{ll}
+\sym 0 & \sum x_i < n/2 \\
+\sym 1 & \sum x_i \geq n/2
+\end{array}
+\right.
+\end{displaymath}
+Thus the \textit{majority}$_n$ function returns the majority vote of
+the inputs.  Show that \textit{majority}$_n$ can be computed with
+\begin{subexercise}
+$O(n^2)$ size circuits.
+\end{subexercise}
+\begin{answer}
+Construct a cascading array of gates clusters:
+\vspace{2in}\\
+This has $n/2$ rows of at most $n$ AND/OR pairs, thus $O(n^2)$
+gates.\qed
+\end{answer}
+
+\begin{subexercise}
+$O(n\log n)$ size circuits.
+\end{subexercise}
+\begin{answer}
+Build a circuit inductively, with $T(n)$ gates.  Base case: with one
+input, no gates are required ($T(1)=0$); the output is the majority
+vote of the input.  Induction step: with $n$ inputs, divide them into
+four sets $A, B, C$, and $D$, with each set containing $\ceil{n/4}$
+inputs (possibly sharing at most one input if $n$ is not a multiple of
+four).  Build six sub-circuits $AB, AC, AD, BC, BD$, and $CD$ that
+compute the majority function for the union of each pair of sets,
+e.g.~$AB$ computes $\textit{majority}(A\cup B)$; by the induction
+hypothesis, each sub-circuit requires $T(\ceil{n/2})$ gates.  The
+majority function is then computed by the circuit $AB*CD+AC*BD+AD*BC$
+(requiring five gates).  The total number of gates is
+$T(n)=6T(\ceil{n/2})+5$, and the solution to this recurrence relation
+is $O(n\lg n)$.\qed
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+\begin{subexercise}[\sipser, 10.4]
+Show that the parity function with $n$ inputs can be computed by a
+branching program that has $O(n)$ nodes.
+\end{subexercise}
+\begin{answer}
+Construct a branching machine with a series of pairs of nodes:
+\vspace{2in}\\
+This has $n$ pairs of nodes, thus $O(n)$ nodes.\qed
+\end{answer}
+
+\begin{subexercise}[\sipser, 10.5]
+Show that the majority function with $n$ inputs can be computed by a
+branching program that has $O(n^2)$ nodes.
+\end{subexercise}
+\begin{answer}
+Construct a branching machine with a cascading array of nodes:
+\vspace{2in}\\
+This has $n/2$ rows of at most $n$ nodes, thus $O(n^2)$ nodes.\qed
+\end{answer}
+\end{exercise}
+
+\begin{exercise}[\sipser, 10.7]
+Show that BPP $\subseteq$ PSPACE.
+\end{exercise}
+\begin{answer}
+A probabilistic Turing machine is just a \NTM\ with specific
+probabilities at each nondeterministic step; any language recognized
+by a probabilistic Turing machine is also recognized by a regular
+\NTM\ with the same states and transitions, as long as the error
+probability $\epsilon$ is strictly less than 1, i.e.~there exists at
+least one accepting branch (the probability of this branch is
+$2^{-k}$, which can never be 0).  BPP is the set of all languages with
+error probability less than $\frac 13$, so BPP $\subseteq$ NP
+$\subseteq$ PSPACE.\qed
+\end{answer}
+
+\begin{exercise}[\sipser, 10.11]
+Let $M$ be a probabilistic polynomial time Turing machine and let $C$
+be a language where, for some fixed $0<\epsilon_1<\epsilon_2<1$,
+\begin{enumerate}
+\renewcommand{\theenumi}{\alph{enumi}}
+\item $w\not\in C$ implies Pr[$M$ accepts $w$] $\leq\epsilon_1$, and
+\item $w\in C$ implies Pr[$M$ accepts $w$] $\geq\epsilon_2$.
+\end{enumerate}
+Show that $C\in$ BPP.
+\end{exercise}
+\begin{answer}
+Let $\epsilon$ be the minimum of $\epsilon_1$ and $1-\epsilon_2$; then
+\begin{enumerate}
+\renewcommand{\theenumi}{\alph{enumi}}
+\item $w\not\in C$ implies Pr[$M$ rejects $w$]
+      $>1-\epsilon_1\geq 1-\epsilon$, and
+\item $w\in C$ implies Pr[$M$ accepts $w$] $\geq\epsilon_2\geq 1-\epsilon$.
+\end{enumerate}
+So $M$ is a probabilistic polynomial time Turing machine that
+recognizes $C$ with error probabilty $\epsilon$.
+Since $\epsilon<\frac 12$, because either $\epsilon_1<\frac 12$ or
+$\epsilon_2>\frac 12$, Lemma~10.5 holds: $M$ has an equivalent
+probabilistic polynomial time Turing machine $M_2$ with an error
+probability of $2^{-\lg 3}=\frac 13$.  Thus $C\in$ BPP.\qed
+\end{answer}
+
+\begin{exercise}[\sipser, 10.12]
+Show that, if P = NP, then P = PH.
+\end{exercise}
+\begin{answer}
+If P = NP, then \setname{SAT} $\in$ P; then a polynomial time oracle
+\TM\ for a language in $\P^{\setname{SAT}}$ could decide
+$\setname{SAT}$ in polynomial time rather than asking its oracle,
+i.e.~$\P^{\setname{SAT}}$ = P = NP.  Then by Problem~9.9, NP = coNP.
+If this is true, then $\Sigma_1$P = $\Pi_1$P = P.  Now, consider an
+alternating machine $M$ for a language $L$ in $\Sigma_i$P for some
+$i>1$; if $\Pi_{i-1}$P = P, then everything after the first run of
+existential steps in $M$ can be replaced by a polynomial set of
+deterministic steps, i.e.~$M$ is equivalent to a polynomial time \NTM\
+and $L\in$ NP = P.  Thus, by induction on $i$, PH $\subseteq$ P; also,
+P = $\Sigma_0$P $\subseteq$ PH, therefore P = PH.\qed
+\end{answer}
+
+\begin{exercise}
+Prove or disprove: The circuit family for \textit{parity}$_n$ requires
+$\Theta(n)$ gates.
+\end{exercise}
+\begin{answer}
+Clearly, there must be at least one wire for each input, and they all
+must eventually lead to the output wire; otherwise, flipping a bit
+that was not connected to the output wouldn't properly flip the
+computed parity.  Assume there is a solution that has $o(n)$ gates.
+By the pigeonhole principle, there must be at least one gate that has
+$n/o(n)=\omega(1)$ wires leading directly from the input to the input
+of the gate, with no intervening gates, and whose output wire
+eventually leads to the circuit's output; we can choose an $n$ big
+enough so that this gate must have at least three inputs.  This gate
+will produce the same output whether the input has exactly one \sym 1
+or exactly two \sym 1s (namely \sym 0 for an AND gate or \sym 1 for an
+OR gate); but these two cases have different parity.  Thus any circuit
+implementing \textit{parity}$_n$ must have $\Omega(n)$ gates; since
+there exists an implementation that uses $O(n)$ gates, the bound can
+be tightened to $\Theta(n)$ gates.\qed
+\end{answer}
+\end{document}

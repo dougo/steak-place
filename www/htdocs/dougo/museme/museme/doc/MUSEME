@@ -1,0 +1,498 @@
+MUSEME User's Manual
+(for Server version 2.1, 21/8/94)
+
+1 Connecting
+
+
+2 Scheme
+
+At the base of MUSEME is a fairly standard R4RS Scheme environment,
+minus call/cc, input, and file output, plus the proposed macro
+facility, call-with-values, and an `error' procedure for signal errors.
+
+It works just like you'd expect.
+
+3 Shared Scheme
+
+The first set of additions is called `Shared Scheme'. It allows you
+to find out what other users are around, and to trade data with them.
+
+3.1 (all-users)
+
+prints a list of the usernames of all of the users who have accounts
+on the server.
+
+3.2 (who)
+
+prints a list of the usernames of everyone who is currently connected
+to the server.
+
+3.3 (send <person> <name> <value>)
+
+allows you to send a value to one other user.  The other user can
+retrieve this value with the (get ...) command.  Note that the other
+user doesn't receive any notification that you have sent him
+something. [The information is added to his `inbox' variable.]
+
+3.4 (share <name> <value>)
+
+shares the value with the given name such that any user can retrieve
+it from you. [The information is added to your `outbox' variable.]
+
+3.5 (get <person> <name>)
+
+retrieves the named value from the given person (if the person hasn't
+sent you a value with that name or shared a value with that name, this
+causes an error) [It first checks your `inbox', then the other user's
+`outbox'.]
+
+3.6 (unshare <name>)
+
+Stop sharing the named value. [removes it from your `outbox']
+
+3.7 (forget <person> <name>)
+
+Stop keeping track of the named value from the named person.
+[removes it from your `inbox']
+
+
+4 MUD internals
+
+4.1 Keys
+
+A key is the embodiment of a privilege. You must present a key to
+create a widget (see 4.2), and to do privileged operations on that
+widget.
+
+You start out with a key named `key' in your environment.
+
+4.1.1 (make-key <name>)
+
+makes a new key with the given name. You can use this to make a key
+to share with another user if you want joint ownership of an object.
+
+4.1.2 (limited <widget> <key>)
+
+given a widget and the widget's key, this returns a new key that can
+only be used on the given widget in a restricted way. See 4.2.7 -
+4.2.9 below.
+
+4.1.3 master-key
+
+In addition to their standard keys, wizards have access to a `master-key'
+that allows them to perform priviliged operations on any widget.
+
+
+4.2 Widgets
+
+A widget is... well, it's like... a widget. It just is.
+Widgets have names, aliases, descriptions, describers, and handlers.
+
+If you pass something other than a widget to a procedure where
+a widget is expected, it will use the current context's resolver to
+try to resolve it into a widget. (see 4.5)
+
+4.2.1 (make-widget <key> <name>)
+
+returns a new widget with the given name and key.
+
+> (define ipu (make-widget key "invisible pink unicorn"))
+#{Widget 17 "invisible pink unicorn"}
+
+4.2.2 (uid <widget>)
+
+gives the Unique ID of the widget.
+
+> (uid ipu)
+17
+
+4.2.3 (name <widget>), (set-name! <widget> <key> <name>)
+
+name returns the name of the widget, and set-name! allows it's owner
+to change the name. (As with all priviliged operations, the <key>
+parameter comes right after the <widget>.)
+
+4.2.4 (aliases <widget>), (set-aliases! <widget> <key> <aliases>)
+
+get or set the aliases of the widget. These are other names that
+the widget may be referred to by.
+
+> (set-aliases! ipu key '("pink unicorn" "unicorn" "ipu"))
+
+4.2.5 (cname <widget>), (aname <widget>), (thename <widget)
+
+Yield the widget's name, capitalized, or preceded by a/an or the.
+
+> (values (cname ipu) (aname ipu) (thename ipu))
+"Invisible pink unicorn"
+"an invisible pink unicorn"
+"the invisible pink unicorn"
+
+These first check for the existence of 'cname, 'aname, or 'thename
+handlers on the widget before doing the default handling. (see 4.2.6)
+
+4.2.6 (description <widget>), (set-description! <widget> <key> <description>),
+      (describer <widget>), (set-describer! <widget> <key> <description>)
+      (describe <widget> <observer>)
+
+Every widget has an associated description, which is a string, and a
+describer, which is a procedure. The description gives a simple description
+of the widget, and the describer allows it to describe itself in more
+detail. The describer takes one parameter: the object that is asking for
+a description. It should return a description of itself, possibly modified
+according to the observer. (For example, when you look at the room you
+are in, it doesn't list you among its contents.) If the widget refers to
+other widgets in its description, it should send a list of these to the
+observer through its 'add-context handler. (see 4.4.2.3)
+
+> (set-description! ipu key "You can't see it. It's invisible.")
+> (set-describer! ipu key (lambda (observer) (description ipu)))
+
+4.2.7 (define-pub-handler <widget> <key> <tag> <handler>),
+      (define-prv-handler <widget> <key> <tag> <handler>)
+
+These define new handlers for the widget. Handlers are used to implement
+special behavior. Public handlers can be invoked by anyone who knows
+the tag name; private handlers can only be invoked if you have the key.
+
+Handlers can be procedures of any number of arguments, or any other
+scheme data type.
+
+> (define-pub-handler ipu key 'cname "Invisible Pink Unicorn")
+> (cname ipu)
+"Invisible Pink Unicorn"       (compare 4.2.5)
+
+> (define-prv-handler ipu key 'add (lambda (x y) (+ x y)))
+
+(define-pub/prv-handler ...) is one of the few operations you can
+perform with a limited key. (qv 4.1.2)
+
+4.2.8 (set-handler! <widget> <key> <tag> <handler>)
+
+Redefine the named handler. You cannot change it from public to private
+or vice versa.
+
+If you define a handler on a widget with a limited key, you can later
+use set-handler! on it with the same key. You may not set other handlers
+with a limited key.
+
+4.2.9 (apply-handler <widget> [<key>] <tag> [<args>])
+
+Apply the named handler. If it is a private handler, you must give
+the key. (Either the real key, or, if it was defined with a limited
+key, that same key.)
+
+> (apply-handler ipu 'cname)
+"Invisible Pink Unicorn"
+> (apply-handler ipu key 'add 3 5)
+8
+
+4.2.10 (is-a <pred> <widget>)
+
+Generic widget tester. Used to define thing?, person?, and room?.
+Tests if the widget has a handler named <pred>, and if so, returns its
+value (presumably #t). Otherwise it returns false.
+
+> (define-handler ipu key 'ipu? #t)
+> (define (ipu? w) (is-a 'ipu? w))
+> (ipu? ipu)
+#t
+> (thing? ipu)
+#f
+
+4.2.11 (with-no-handler <no-handler> <thunk>)
+
+When apply-handler is called on a widget with a handler that the widget
+doesn't handle, it calls the no-handler procedure. This form installs
+a new no-handler for cases when you don't want the standard error
+message as a result.
+
+The <no-handler> should take 3 arguments: the widget, the handler
+name, and the list of arguments. (In practice, all 3 arguments can
+almost always be ignored.)
+
+For example, is-a is defined as:
+
+(define (is-a pred widget)
+  (and (widget? widget)
+       (with-no-handler (lambda foo #f)
+                        (lambda () (apply-handler widget pred)))))
+
+
+4.3 Widget Extensions
+
+By using limited keys, it is possible for mutually suspicious parties
+to cooperate in extending widgets. Suppose that Arthur has a widget
+and Ford has a set of procedures to augment it with some new behavior.
+
+Arthur can give the widget to Ford with a limited key, so that Ford
+can add new handlers and then play with those handlers, but not have
+any other powers over the widget.  So Arthur is safe.
+
+Ford can add new handlers to the widget, and he knows that the widget
+system doesn't provide Arthur with any way to peek into the widget and
+see what he's done. (Since the widgets are a complete black box, there
+is no way Arthur can subvert this.) Furthermore, he can add handlers
+whose names are cons cells instead of symbols. Then Arthur won't even
+be able to try to GUESS what the new handlers are called, because
+he doesn't have access to those unique cons cells. Arthur can only
+play with Ford's code in the ways that Ford wants him to. So Ford is
+safe.
+
+There are two sets of extensions in the default code.
+
+4.3.1 Frobs and Friends: The Move Extensions
+
+4.3.1.1 (make-frob <widget> <key> <initial-location> <mobile?>)
+        (frob? <x>)
+        (location <frob>) => (apply-handler <frob> 'location)
+        (mobile? <frob>) => (apply-handler <frob> 'mobile?)
+
+This turns a widget into a frob. A frob is distinguished by having
+a location: all frobs are always inside some frob-holder (4.3.1.2).
+
+A frob must be given an initial location. make-frob will try to
+install it in that place. If it fails (the place doesn't want to
+accept the frob), the frob will be left in `nowhere'.
+
+If a frob is mobile, it can be moved from its initial location.
+Otherwise it cannot.
+
+4.3.1.2 (make-frob-holder <widget> <key>)
+        (frob-holder? <x>)
+        (contents <frob-holder>) => (apply-handler <frob> 'contents)
+        (transitive-contents <frob-holder>)
+        (inside? <frob> <holder>)
+
+This turns a widget into a frob-holder. Frob-holders hold frobs, and
+therefore have `contents', the list of all of the frobs that list that
+holder as their location. `transitive-contents' yields the contents of
+the holder, and the contents of everything it contains, etc.
+Similarly, inside? tests if a frob is, at some level, inside the
+holder. (ie, if Ford is in the Vogon Ship, carrying his copy of The
+Hitchhiker's Guide to the Galaxy, then (inside? guide vogon-ship) = #t)
+
+A frob-holder may not be holding anything that is holding the
+frob-holder itself. (No loops.) See also 4.3.1.4.
+
+4.3.1.3 (make-frob-mover <widget> <key>)
+
+This turns the widget into a frob mover, by giving it 1, 2, or 3
+private handlers.
+
+If the widget is also a frob, it will get a 'move-self handler, which
+takes a destination (a frob-holder) and tries to move the frob-mover
+to that place.
+
+If the widget is a frob-holder, it will get 'get and 'put handlers.
+'get takes a frob as an argument and tries to move the frob to the
+frob-holder. 'put takes a frob and a destination (a frob-holder) and
+tries to put the frob into that holder.
+
+If the widget is both a frob and a frob-holder, it gets all three new
+handlers.
+
+4.3.1.4 yield? and accept?
+
+A frob-holder may define public 'yield? and 'accept? handlers.
+
+yield? takes a frob and a destination and returns true or false
+depending on whether or not the frob-holder wants to yield the frob to
+the given destination.
+
+accept? takes a frob and a source, and returns true or false depending
+on whether the frob-holder will accept the frob from the given source.
+
+If you return true from yield? or accept?, the frob will definitely
+be moved immediately afterward. If you don't define these handlers
+in your frob-holder, they both default to true.
+
+
+4.3.2 Listeners and Talkers: The Echo Extensions
+
+4.3.2.1 (make-listener <widget> <key> <listen-method>)
+
+turns the widget into a listener. Whenever something is echoed in the
+room (see below), the given listen-method (a procedure) will be called
+with the complete echoes text as its argument. (So if I say "Foo!" in
+a room you are in, your listen-method is called with the string:
+"Dan says, \"Foo!\"".)
+
+4.3.2.2 (make-talker <widget> <key>)
+
+turns the widget into a talker by giving it private 'echo and 'echo-to
+handlers. 'echo takes a string as an argument and echoes "<name>
+<string>" to every listener in the room. (If the optional `quiet?'
+argument is specified as #t, it will not be echoed to the talker
+itself.) 'echo-to takes a listener and a string and echoes "<name>
+<string>" only to the named listener.
+
+4.3.2.3 (audience <place>)
+
+returns a list of all of the listeners in a place.
+
+
+4.4 Default widget classes
+
+4.4.1 Things
+
+4.4.1.1 (make-thing <key> <name> <initial-location> <mobile?>)
+        (thing? <x>) => (is-a 'thing? <x>)
+
+returns a thing. A thing is essentially just a frob with a 'thing?
+handler that returns #t.
+
+4.4.2 Rooms
+
+4.4.2.1 (make-room <key> <name>)
+        (room? <x>) => (is-a 'room? <x>)
+
+returns a room. A room is a frob-holder with exits and some other
+properties. A room's describer gives the description of the room,
+followed by a list of exits, a list of things in it, and a list of
+people in it.
+
+4.4.2.2 (can-go? <room> <direction> <who>)
+
+Determines if `who' can go in `direction' (direction is a symbol). If
+so, it returns the room in that direction. If not, it prints an error
+and returns false.
+
+4.4.2.3 (make-exit <room> <key> <direction> <dest> [<vis?>])
+
+Makes a new exit from the room in the given direction. If the optional
+vis? argument is specified as #f, the exit will not appear in the
+room's description.
+
+The <dest> argument can be one of three things:
+ - a room
+ - a string, which will be given as an error message if a user
+     tries to go that way.
+ - a procedure, which will be called with the person wanting to
+     go through the exit as a parameter. It should return a room
+     or #f.
+
+4.4.2.4 nowhere
+
+The MUD package defines a room called `nowhere' where people go when
+they aren't connected, and frobs go when they can't be installed in
+their initial-locations.
+
+
+4.4.2 People
+
+4.4.2.1 (make-person <key> <name> <gender> <initial-location>)
+        (person? <x>)
+
+returns a person. People are slightly different from things and rooms
+in that the predicate that person? tests is a secret cons cell, not a
+symbol, meaning that users cannot create their own people from
+scratch: you have to use the existing make-person if you want your
+person to interact with the world properly.
+
+No two people can have the same name, although a person and a thing
+could have the same name...
+
+A person is a frob, a frob-holder, and a frob-mover, and has several
+other handlers to customize its behavior and interact with the
+MUD commands.
+
+4.4.2.2 male, female, neuter
+
+These are the three predefined genders. Each is just a vector
+containing first the symbol 'male, 'female, or 'neuter, and then
+having 5 strings for its pronouns: subject, possessive adjective,
+possessive noun, object, and reflexive.
+
+These are not currently used for anything.
+
+4.4.2.3 (context <person> <key>)
+        (add-context <person> <list>)
+        (clear-context <person> <key>)
+
+A person has `context': a list of widgets that the person has noticed
+from looking at other objects. This list is used by the resolver along
+with the person's transitive-contents (4.3.1.2) to determine what widgets
+the person might be referring to.
+
+A person's context is cleared when the person moves from room to room.
+It is added to by widget describers (see 4.2.6).
+
+Context is dealt with strangely in that only you can look at your
+context, but anyone can add things to it.
+
+
+4.5 The Resolver
+
+The resolver is used to resolve strings and numbers into widgets. A
+user could type (look "Invisible Pink Unicorn") or (look "ipu") or
+(look 17), and the user's resolver will turn that reference into
+#{Widget 17 "invisible pink unicorn"}, which the look procedure can
+deal with.
+
+The resolver is called automatically whenever a widget primitive is
+applied to something that is not a widget.
+
+4.5.1 (resolve <ref>)
+
+A user's resolver is a procedure that takes one argument and either
+returns a widget or signals an error. It must be named `resolve'.
+`become' (see ???) sets a user's resolver to use resolve-for-person.
+You should not need to change this.
+
+4.5.2 (resolve-for-person <ref> <person> <key>)
+
+This tries to resolve a reference based on the given person's
+inventory and context. It will also resolve the strings "me" and
+"here".
+
+4.5.3 (resolve-in-room <ref> <room>)
+
+This tries to resolve a reference based on the contents of a room.
+
+
+
+4.6 Utilities
+
+4.6.1 (list-stuff <start> <nameproc> <list> <end> [<nothing>])
+
+This is used by the default describers to print lists of things.
+
+If the list is empty, and the optional <nothing> parameter was given,
+it will print that text and return. If the <nothing> parameter wasn't
+given, it will return without printing anything.
+
+If the list is not empty, it will first print <start>, then a list
+of the result of applying <nameproc> to each element of the list,
+with proper use of commas and `and', then ending with the <end> text.
+
+It will always add a newline to the end of what it prints.
+
+4.6.2 (ensure-is-a <pred> <obj> <type-name> [<arg-name>])
+
+If the given predicate is true of the object, it will return.
+Otherwise, it will signal one of two errors, depending of whether or
+not the <arg-name> parameter was given:
+
+Error: argument must be a <type-name>
+       <obj>
+
+OR
+
+Error: <arg-name> must be a <type-name>
+       <obj>
+
+4.6.3 (muserror message . data)
+
+Signals a MUSEME error. This will stop evaluation and return the user
+to the `>' prompt, but it prints out differently from a Scheme error:
+
+> (error "foo" 'bar)
+
+Error: foo
+       'bar
+
+> (muserror "foo" 'bar)
+foo
+'bar
+

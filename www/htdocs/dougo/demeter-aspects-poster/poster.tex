@@ -1,0 +1,200 @@
+\documentclass{acm_proc_article-sp}
+%\documentclass{sig-alternate}
+%\documentclass[10pt]{article}
+%\documentclass[11pt]{article}
+%\RequirePackage{paper}
+
+\hyphenation{gen-er-ic}
+
+\begin{document}
+
+\title{Demeter Aspects}
+\subtitle{[Extended Abstract]}
+
+\numberofauthors{3}
+
+
+\author{
+\alignauthor Karl Lieberherr\\
+Johan Ovlinger\\
+\alignauthor David Lorenz\\
+Mitchell Wand\\
+   \affaddr{College of Computer Science}\\
+   \affaddr{Northeastern University}\\
+   \affaddr{Boston, MA~~02115}\\
+\alignauthor Doug Orleans\\
+Pengcheng Wu\\
+}
+
+
+\maketitle
+
+\begin{abstract}
+
+The Demeter group summarizes its activities in aspect oriented
+software development (AOSD).  Aspectual collaborations extend adaptive
+plug-and-play components with method replacement to modularize and
+parameterize aspects.  Other activities include extending predicate
+dispatching with aspect oriented features, and developing formal
+semantics for elements of AspectJ.  Our work in adaptive programming
+also progresses.
+
+{\bf Keywords:} Aspect-oriented software development, adaptive
+programming, advanced separation of concerns, predicate dispatching, formal
+semantics.
+\end{abstract}
+
+\section{Motivating Goal}
+
+Programming language design is very goal oriented, and the goal is constant: to 
+deliver high quality applications in a reasonable time frame. 
+Programmers want to write large, complex applications quickly. 
+
+The thesis of the group is that this can be achieved if the
+programming language explicitly supports the following three principles:
+
+\begin{enumerate}
+\item {\bf Separation}  
+Large applications cannot be monolithic. 
+In order to be maintainable by teams of multiple programmers, 
+the program must be separated into smaller 
+pieces which can be owned by separate groups.
+The difficulty comes in choosing the unit of separation. 
+In the OO world, classes are both too small and too large; several teams will want to add behavior to intersecting sets of classes. 
+The concept of concerns has been introduced by the aspect-oriented community to capture a slice of behavior scattered over several methods or classes.
+
+\item {\bf Interaction} 
+Complex interactions between concerns are needed in order to implement even relatively simple behaviors; caching methods' return values would seem to be a classical generic behavior, but the need to invalidate the cache at the right place couples the generic behavior to the underlying application.
+By controlling interaction of concerns in the programming language, it is possible to replace explicit tangling with implicit advice, allowing the caching behavior to be more completely separated from the computation it caches.
+
+\item {\bf Composition} 
+In order to write applications quickly, it is important to be able to reuse code; this applies to concerns as well.
+Specifically, we feel that it is important to be able to construct new concerns by composing existing ones. 
+Flexibility must be balanced against static checking.
+For example, allowing small differences in class graphs would seem to be a requirement to achieve a significant amount of reuse, while it would seem imprudent to allow two concerns that make incompatible assumptions about the structure of the heap to be composed.
+
+\end{enumerate}
+
+\section{Projects}
+
+\begin{enumerate}
+\item
+{\bf Aspectual Collaborations (AC)} capture both structural and behavioral concerns in a single unit.
+AC are modular building blocks that can be composed to construct AC with 
+complex sharing between the constituent collaborations.
+We address the issues discussed in \cite{OssherTarr:2001}.
+
+Aspectual features are provided by allowing advice to be attached to methods.
+The advice can be {\em generic} -- attachable to any signature method -- 
+or {\em precise} -- attachable
+to only precisely matching signatures, 
+but able to access and modify arguments and return values.
+In both cases, if and when the host method is invoked 
+and whether exceptions are handled can be controlled by the aspectual method.
+
+Deferred features allow AC to be declaratively 
+complete, enough to be separately compiled, yet allow generic behaviors 
+to access as-yet unprovided behavior.
+Interaction between concerns can be both 
+explicit (via deferred features) or implicit (via aspectual methods).
+
+Composition is used to attach aspectual methods, 
+provide deferred features, and control the interface of
+the resulting collaboration.
+Collaborations with differing structural assumptions 
+can be composed by reconciling any differences 
+in the composition declaration, greatly increasing 
+the scope for reuse of concerns.
+
+AC have been implemented on top of AspectJ, 
+and a separate bytecode-rewriting implementation is underway.
+We apply AC to both real-time embedded applications with BBN and
+banking applications with UBS.
+
+Aspectual Collaborations \cite{aspectual:LLM} 
+are a generalization of adaptive plug-and-play components
+(AP\&PC~\cite{mezini:oopsla98}) with around methods. 
+Recently, Clarke and Walker proposed a very similar
+construct called Composition Patterns \cite{clarke-walker:cp2001,composition-patterns-impl}. 
+There is also a strong connection to HyperJ \cite{tarr:n-degrees}.
+Further work on AC is \cite{aspectual-collabs}.
+
+
+%say something about sharing, scoping, complete attachments... but I hae to leave.
+
+
+\item 
+{\bf Predicate Dispatch Extension.}
+In order to separate behavioral concerns, programming languages allow
+behavioral units (such as procedures or methods) to be defined such
+that dispatching between units is handled implicitly: the definition
+of the behavioral unit includes a specification of when that behavior
+should be executed, and the language arranges for the right unit to be
+executed when the corresponding condition occurs.  For example, a
+method definition in a typical object-oriented language specifies that
+it should be run whenever a message matching the method name is sent
+to an instance of the class it is attached to.  Predicate
+dispatching~\cite{predicate-dispatch}
+generalizes this notion so that a method can specify that it
+should be executed whenever an arbitrary predicate expression over the
+message arguments is true.  By making the "when to execute" part of a
+behavioral unit definition more flexible, we can better separate
+behavioral concerns that would otherwise need to be tangled together
+in an explicit dispatch expression.
+
+We are developing an extension to predicate dispatching that can lead
+to separation of cross-cutting behavioral concerns, by allowing
+methods to specify that they modify other methods (around methods), as
+well as by allowing their predicates to take into account other parts
+of a message send context such as the control flow history.  These
+extensions build a bridge between method dispatch research and
+aspect-oriented programming research, by unifying the mechanisms
+underlying both.
+
+A common feature of the predicate dispatch work and the aspectual
+collaborations work is that they basically add around methods to
+achieve AOP capability.
+
+
+\item
+{\bf Formal Semantics.}
+In order to better understand and precisely specify the mechanisms for
+modularizing cross-cutting concerns, we are building up a set of
+formal semantics for aspect-oriented programming.  We have started
+with a denotational semantics for the basic building blocks of dynamic
+join points and advice as embodied by AspectJ, using a variant of
+store-passing monads to model computations and modeling
+advice as procedure transformers.  Our goal is to develop a theory of
+AOP that accounts for other models such as Demeter and HyperJ.
+
+\item
+{\bf Adaptive Programming (AP)} is a technology that helps to
+disentangle the structural concern from the behavioral concerns by
+allowing traversals of composite objects to be specified in a
+structure-shy way, as traversal strategies.  We actively use and
+improve this technology in the form of DJ, a pure-Java package for
+constructing traversal strategies
+dynamically~\cite{OrleansLieberherrReflection01}; the AP library, a
+pure-Java package for parsing and expanding traversal strategies; and
+DemeterJ, which generates static traversal code from input in the form
+of Java code extended with traversal strategies.  Recently, we
+developed a simplified, object based semantics for
+AP~\cite{mitch:karl-2000}.
+\end{enumerate}
+
+The home page for our project is at:\\
+\texttt{www.ccs.neu.edu/research/demeter/}
+and further information about this poster is 
+in the subdirectory\\
+\texttt{/papers/2001-poster}.
+
+\section{Acknowledgments}
+This work is supported by DARPA under agreement F33615-00-C-1694
+and SKYVA International, Medford, MA.
+
+\bibliographystyle{plain}
+\bibliography{poster}
+
+
+\end{document}
+

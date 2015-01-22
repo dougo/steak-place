@@ -1,0 +1,86 @@
+\newcommand{\etalchar}[1]{$^{#1}$}
+\begin{thebibliography}{KLM{\etalchar{+}}97}
+
+\bibitem[AT98]{comp-filt}
+Mehmet Aksit and Bedir Tekinerdogan.
+\newblock Solving the modeling problems of object-oriented languages by
+  composing multiple aspects using composition filters.
+\newblock Technical report, TRESE project, University of Twente, Centre for
+  Telematics and Information Technology, P.O. Box 217, 7500 AE, Enschede, The
+  Netherlands, 1998.
+\newblock AOP'98 workshop position paper.
+
+\bibitem[BAP95]{cords}
+Hans-Juergen Boehm, Russ Atkinson, and Michael Plass.
+\newblock Ropes: an alternative to strings.
+\newblock {\em Software Practice \& Experience}, 25(12):1315--1330, December
+  1995.
+
+\bibitem[CC99]{efficient-pd}
+Craig Chambers and Weimin Chen.
+\newblock Efficient multiple and predicate dispatching.
+\newblock In {\em Proceedings of OOPSLA '99}, Denver, CO, November 1999.
+
+\bibitem[CP89]{cook89denotational}
+William Cook and Jens Palsberg.
+\newblock A denotational semantics of inheritance and its correctness.
+\newblock In Norman Meyrowitz, editor, {\em Proceedings of the Conference on
+  Object-Oriented Programming Systems, Languages, and Applications ({OOPSLA})},
+  volume~24, pages 433--444, New York, NY, 1989. ACM Press.
+
+\bibitem[EKC98]{predicate-dispatch}
+Michael~D. Ernst, Craig Kaplan, and Craig Chambers.
+\newblock Predicate dispatching: {A} unified theory of dispatch.
+\newblock In {\em Proceedings of ECOOP '98, the 12th European Conference on
+  Object-Oriented Programming}, pages 186--211, Brussels, Belgium, July 20--24
+  1998.
+
+\bibitem[FF98]{flatt98units}
+Matthew Flatt and Matthias Felleisen.
+\newblock Units: Cool modules for {HOT} languages.
+\newblock In {\em Proceedings of the {ACM} {SIGPLAN}~'98 Conference on
+  Programming Language Design and Implementation}, pages 236--248, 1998.
+
+\bibitem[Fla97]{flatt97plt}
+Matthew Flatt.
+\newblock {PLT} {MzScheme}: Language manual.
+\newblock Technical report, Rice University, 1997.
+
+\bibitem[GHJV94]{gamma94design}
+Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides.
+\newblock {\em Design Patterns: Elements of Reusable Object-Oriented Software}.
+\newblock Addison Wesley, Massachusetts, 1994.
+
+\bibitem[Hua00]{cords-in-AspectJ}
+Jie Huang.
+\newblock Experience using {AspectJ} to implement cord.
+\newblock Position paper, OOPSLA 2000 workshop on Advanced Separation of
+  Concerns, October 2000.
+
+\bibitem[KHH{\etalchar{+}}01]{kiczales01overview}
+Gregor Kiczales, Erik Hilsdale, Jim Hugunin, Mik Kersten, Jeffery Palm, and
+  William~G. Griswold.
+\newblock An overview of {AspectJ}.
+\newblock In {\em Proceedings of the European Conference on Object-Oriented
+  Programming}, 2001.
+
+\bibitem[KLM{\etalchar{+}}97]{kiczales97aspectoriented}
+Gregor Kiczales, John Lamping, Anurag Menhdhekar, Chris Maeda, Cristina Lopes,
+  Jean-Marc Loingtier, and John Irwin.
+\newblock Aspect-oriented programming.
+\newblock In Mehmet Ak\c{s}it and Satoshi Matsuoka, editors, {\em {ECOOP} '97
+  --- Object-Oriented Programming 11th European Conference, Jyv{\"a}skyl{\"a},
+  Finland}, volume 1241, pages 220--242. Springer-Verlag, New York, NY, 1997.
+
+\bibitem[Mez97]{mezini-thesis}
+Mira Mezini.
+\newblock {\em Variation-Oriented Programming Beyond Classes and Inheritance}.
+\newblock PhD thesis, University of Siegen, 1997.
+
+\bibitem[Tea]{AspectJ-prog-guide}
+The~AspectJ Team.
+\newblock The {AspectJ} programming guide.
+\newblock Online manual.
+\newblock \texttt{\\ http://aspectj.org/doc/dist/progguide/}.
+
+\end{thebibliography}

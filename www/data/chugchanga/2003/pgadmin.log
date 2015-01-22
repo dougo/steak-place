@@ -1,0 +1,11 @@
+2004-12-23 16:57:03 ERROR  : ERROR:  multiple primary keys for table "users" are not allowed
+
+2005-01-01 22:26:10 ERROR  : ERROR:  column "preamble" contains null values
+
+2005-01-01 22:28:30 ERROR  : ERROR:  column "preamble" contains null values
+
+2005-01-12 17:16:55 ERROR  : FATAL:  terminating connection due to administrator command
+server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+

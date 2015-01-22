@@ -1,0 +1,251 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 99.2beta8 (1.42)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Semantics</TITLE>
+<META NAME="description" CONTENT="Semantics">
+<META NAME="keywords" CONTENT="proposal">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v99.2beta8">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="proposal.css">
+
+<LINK REL="previous" HREF="node12.html">
+<LINK REL="up" HREF="node10.html">
+<LINK REL="next" HREF="node14.html">
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<A NAME="tex2html150"
+  HREF="node14.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.gif"></A> 
+<A NAME="tex2html148"
+  HREF="node10.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.gif"></A> 
+<A NAME="tex2html144"
+  HREF="node12.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.gif"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html151"
+  HREF="node14.html">About this document ...</A>
+<B> Up:</B> <A NAME="tex2html149"
+  HREF="node10.html">FM: Featherweight MOO</A>
+<B> Previous:</B> <A NAME="tex2html145"
+  HREF="node12.html">Syntax</A>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00063000000000000000">
+Semantics</A>
+</H2>
+
+<P>
+<PRE>
+DB = Objnum -&gt; (Objnum x Verbs)
+Verbs = Str -&gt; P
+Objnum = Nat + { T }
+Nat = set of natural numbers
+Str = set of strings
+</PRE>
+
+<P>
+Objects are numbered with unique natural numbers; T is "top",
+representing the top of the inheritance hierarchy (the parent of the
+root object(s)), which is expressible as "#<IMG
+ WIDTH="18" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img3.gif"
+ ALT="$-$">1" (object
+negative-one).  A database (DB) is a partial function over objnums
+such that DB(o) = &lt;p, v&gt; where p is the parent of o and v is the verb
+map of o.  A verb map is a partial function mapping verb names
+(strings) to programs.
+
+<P>
+<PRE>
+db0 \in DB
+db0(0) = &lt;1, {}&gt;
+db0(1) = &lt;T, {}&gt;
+</PRE>
+
+<P>
+The starting database, db0, contains two objects, #0 and #1, the
+latter being the parent of the former.  Neither object has any verbs.
+Note that we could just as well start with one object (or none if
+general objnums were expressible in the syntax), but this reflects the
+standard initial MOO database where #0 is the system object and #1 is
+the root object.
+
+<P>
+<PRE>
+K -&gt; halt
+K -&gt; &lt;[]; p, K&gt;
+K -&gt; &lt;[]:id(e1...en), K&gt;
+K -&gt; &lt;v:id(v1..vi-1,[],ei+1...en), K&gt;
+K -&gt; &lt;create([]), K&gt;
+K -&gt; &lt;svc([],s,es), K&gt;
+K -&gt; &lt;svc(v,s,[]), K&gt;
+</PRE>
+
+<P>
+K is the set of continuations.  A compound continuation is a
+partly-evaluated expression with a hole in it, plus a next
+continuation; thus, a continuation represents a stack of expressions
+waiting to be completed.
+
+<P>
+<PRE>
+Config = (P + E + Objnum) x K x DB
+</PRE>
+
+<P>
+A configuration is a triple whose first element is either a program or 
+expression to be evaluated, or a value to be passed to the continuation.
+
+<P>
+<PRE>
+eval : Config -&gt; (Objnum x DB)
+</PRE>
+
+<P>
+The evaluation function maps configurations to configurations.  In the 
+set of recursive definitions below, v stand for any element of Objnum,
+db stands for any element of DB, e stands for any element of E, p stands 
+for any element of P, k stands for any element of K, id stands for any 
+element of ID, s stands for any element of STR.
+
+<P>
+Evaluations of programs and expressions:
+
+<P>
+<PRE>
+eval(e; p, k, db) = eval(e, &lt;[]; p, k&gt;, db)
+eval(return e, k, db) = eval(e, k, db)
+eval(\#-1, k, db) = eval(T, k, db)
+eval(\#0, k, db) = eval(0, k, db)
+eval(\#1, k, db) = eval(1, k, db)
+eval(e:id(e1...en), k, db) = eval(e, &lt;[]:id(e1...en), k&gt;, db)
+eval(create(e), k, db) = eval(e, &lt;create([]), k&gt;, db)
+eval(set_verb_code(e,s,es), k, db) = eval(e, &lt;svc([],s,es), k&gt;, db)
+</PRE>
+
+<P>
+Applications of continuations to values:
+
+<P>
+<PRE>
+eval(v, halt, db) = &lt;v, db&gt;
+eval(v, &lt;[]; p, k&gt;, db) = eval(p, k, db)
+eval(v, &lt;[]:id(e1...en), k&gt;, db) = eval(e1, &lt;v:id([],e2...en), k&gt;, db)
+eval(v, &lt;v0:id(v1...vi-1, [], ei+1...en), k&gt;, db)
+    = eval(ei+1, &lt;v0:id(v1...vi-1,v, [], ei+2...en), k&gt;, db)
+eval(v, &lt;v0:id(v1...vn-1, []), k&gt;, db)
+    = eval(p[v0/this,v1/args[1]...vn-1/args[n-1],vn/args[n]], k, db)
+    where lookup(db,v0,id) = p
+    [In English: p is the program code of the verb named id on the v0
+    object (or one of its ancestors); execute it, after replacing all
+    occurences of "this" with v0 and "args[i]" with the corresponding vi.]
+eval(v, &lt;create([]), k&gt;, db) = eval(vnew, k, db + {vnew:&lt;v,{}&gt;})
+    where vnew = max(dom(db))+1
+eval(v, &lt;svc([],s,e), k&gt;, db) = eval(e, &lt;svc(v,s,[]), k&gt;, db)
+eval(v, &lt;svc(v0,s,[]), k&gt;, db) = eval(v0, k, dbnew)
+    where dbnew = svc(db,v0,s,return v;)
+    [This simulates a property with a verb that returns the value.]
+eval(v, &lt;svc([],s1,s2), k&gt;, db) = eval(v, k, dbnew)
+    where dbnew = svc(db,v,s1,parse(s2))
+
+lookup : (DB x Objnum x ID) -&gt; P
+</PRE>
+
+<P>
+The auxiliary function lookup takes an object and verbname and looks
+up the inheritance chain of the object until it finds a verb
+definition, returning the corresponding program.
+
+<P>
+<PRE>
+lookup(db, v, id) = verbs(id) if v \in dom(db) and
+			         db(v) = &lt;vp,verbs&gt; and
+				 id \in dom(verbs)
+lookup(db, v, id) = lookup(db, vp, id) if v \in dom(db) and
+					  db(v) = &lt;vp,verbs&gt; and
+				          id \not\in dom(verbs)
+
+svc : (DB x Objnum x Str x P) -&gt; DB
+</PRE>
+
+<P>
+The auxiliary function svc takes an object, verbname, and program and
+adds the program as the verbname on the object, replacing the current
+program if there is one.  Note that this does not go up the
+inheritance chain; it always modifies the object itself.
+
+<P>
+<PRE>
+svc(db, v, s, p) = db - {v:&lt;vp,verbs&gt;} + {v:&lt;vp,verbsnew&gt;}
+    where verbsnew = verbs - s:pold + s:p
+    if db(v) = &lt;vp,verbs&gt; and (verbs(s) = pold or s \not\in dom(verbs))
+
+parse : Str -&gt; P
+</PRE>
+
+<P>
+The auxiliary function parse converts strings to programs, using the
+syntax grammar given in the previous section.
+
+<P>
+Thus, starting from db0, a stream of input programs can be evaluated
+in sequence, producing a stream of results, modifying the database by
+side-effect as it runs.  Note that "this" and "args[i]" are
+meaningless in top-level input programs; they are evaluated by
+substitution when a verb program is invoked.
+
+<P>
+<PRE>
+eval(P1, halt, db) = &lt;v, dbnew&gt;
+-------------------------------
+run(db,P1,P2...) = v,run(dbnew,P2...)
+</PRE>
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html150"
+  HREF="node14.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.gif"></A> 
+<A NAME="tex2html148"
+  HREF="node10.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.gif"></A> 
+<A NAME="tex2html144"
+  HREF="node12.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.gif"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html151"
+  HREF="node14.html">About this document ...</A>
+<B> Up:</B> <A NAME="tex2html149"
+  HREF="node10.html">FM: Featherweight MOO</A>
+<B> Previous:</B> <A NAME="tex2html145"
+  HREF="node12.html">Syntax</A>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Doug Orleans
+2000-08-12
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,167 @@
+\documentclass{article}
+\usepackage{amstex}
+\usepackage{theorem}
+\usepackage{fancyheadings}
+\usepackage{program}
+
+\setlength{\parindent}{0pt}	% Don't indent paragraphs.
+
+%\addtolength{\voffset}{-0.5in}
+%\addtolength{\textheight}{1in}
+%\addtolength{\hoffset}{-0.5in}	% Reduce left and right margins by 1/2 inch.
+%\addtolength{\textwidth}{1in}
+
+\pagestyle{fancy}
+\setlength{\headrulewidth}{0pt}
+
+\lhead{COM 3350 Assignment 5}
+\rhead{Doug Orleans (\texttt{dougo@@ccs.neu.edu})}
+
+\theorembodyfont{\rmfamily}		% don't use italics
+\theoremstyle{break}			% put a line break after the header
+\newtheorem{exercise}{Exercise}
+\theoremstyle{plain}
+\newtheorem{subexercise}{}[exercise]
+\renewcommand{\thesubexercise}{\alph{subexercise}.}
+\newenvironment{answer}{\begin{quotation}\noindent}{\end{quotation}}
+
+\newcommand{\sipser}{\textit{Sipser}}
+\newcommand{\encoding}[1]{\ensuremath{\langle#1\rangle}}
+\renewcommand{\qed}{~\ensuremath{\square}}
+\newcommand{\Th}{\ensuremath{\operatorname{Th}}}
+\newcommand{\Nat}{\ensuremath{\mathcal{N}}}
+\newcommand{\tred}{\ensuremath{\leq_{\text{T}}}}
+\newcommand{\ATM}{\ensuremath{A_{\textsf{TM}}}}
+\renewcommand{\true}{\textsc{TRUE}}
+\renewcommand{\false}{\textsc{FALSE}}
+\newcommand{\defin}[1]{\textbf{\textit{#1}}}
+\newcommand{\setname}[1]{\textit{#1}}
+\renewcommand{\liminf}{\ensuremath{\lim_{n\to\infty}}}
+\newcommand{\TM}{\textsf{TM}}
+\newcommand{\NTM}{\textsf{NTM}}
+\newcommand{\emptystring}{\ensuremath{\boldsymbol\varepsilon}}
+
+\renewcommand{\AND}{\ \keyword{and}\ }
+\newcommand{\ENDWHILE}{\untab\addtocounter{programline}{-1}}
+\newcommand{\ENDIF}{\untab\untab\addtocounter{programline}{-1}}
+\newcommand{\ACCEPT}{\keyword{accept}\ }
+\newcommand{\REJECT}{\keyword{reject}\ }
+\renewcommand{\keyword}[1]{\textbf{#1}} 
+\renewcommand{\prognumstyle}{\textrm} 
+\NumberProgramstrue 
+\normalbaroutside 
+
+\renewcommand{\a}{\stepcounter{subexercise}\textbf{\thesubexercise}\ }
+
+\begin{document}
+
+\begin{exercise}[\sipser, 8.1]\label{tape}
+Show that for any function $f:\Nat\to\Nat$, where $f(n)\geq n$, the
+space complexity class SPACE($f(n)$) is the same whether you define
+the class by using the single-tape \TM\ model or the two tape read-only
+input \TM\ model.
+\end{exercise}
+\begin{answer}
+In the two tape read-only input \TM\ model, we can simply copy the
+input to the second tape, which uses $O(n)$ space, then use the second
+tape as if it were a single-tape \TM.  If the single-tape algorithm is
+in SPACE($f(n)$), then it uses $O(f(n))$ space and the total space
+used by the two-tape algorithm will be $O(\max(n, f(n)))=O(f(n))$,
+thus it's still in SPACE($f(n)$); similarly if it's not in
+SPACE($f(n)$), then it uses $\omega(f(n))$ space, and the total space
+used by the two-tape algorithm will be
+$\omega(\max(n,f(n)))=\omega(f(n))$, thus it won't be in
+SPACE($f(n)$).\qed
+\end{answer}
+
+\begin{exercise}
+\begin{subexercise}[\sipser, 8.4]
+Show that PSPACE is closed under the operations union,
+complementation, and star.
+\end{subexercise}
+\begin{answer}
+Union:
+\begin{answer}
+Let $L_1$ and $L_2$ be languages in PSPACE, and let $M_1$ and $M_2$ be
+single-tape \TM s that decide them and take no more than polynomial
+space.  We can construct a two tape read-only input tape \TM\ $M$ that
+decides $L_1\union~L_2$.
+
+\begin{answer}
+$M =$ ``On input $w$:
+\begin{enumerate}
+\item Copy $w$ to the second tape.
+\item Run $M_1$ on the second tape.  If it accepts, then accept.
+\item Erase the second tape, and copy $w$ to it again.
+\item Run $M_2$ on the second tape.  If it accepts, then accept,
+otherwise reject.''
+\end{enumerate}
+\end{answer}
+$M$ takes no more space than the maximum of $M_1$ and $M_2$; thus it
+takes polynomial space, and by Exercise~\ref{tape}, its language
+$L_1\union L_2$ is in PSPACE.\qed
+\end{answer}
+
+\noindent Complementation:
+\begin{answer}
+Let $L$ be a language in PSPACE, and let $M$ be a \TM\ that decides $L$
+in polynomial space.  We can construct a new machine $M'$ that decides
+$\overline L$ by simply switching the accept and reject states of $M$;
+$M'$ takes the same amount of space as $M$, thus $\overline L$ is also
+in PSPACE.\qed
+\end{answer}
+
+\pagebreak
+\noindent Star:
+\begin{answer}
+Let $L$ be a language in PSPACE, and let $M$ be a \TM\ that decides $L$
+in polynomial space.  We can construct a two tape \NTM\ $M'$ that
+decides $L^*$.
+
+\begin{answer}
+$M' =$ ``On input $w$:
+\begin{enumerate}
+\item If $w=\emptystring$, accept.
+\item Otherwise, nondeterministically split $w$ into a sequence of substrings
+$w_1,\ldots,w_n$ where $1\leq n \leq |w|$.
+\item For each string $w_i$:
+	\begin{enumerate}
+	\item Erase the second tape, and copy $w_i$ to it.
+	\item Run $M$ on the second tape.
+	\end{enumerate}
+\item If $M$ ever rejects, reject, otherwise accept.
+\end{enumerate}
+\end{answer}
+$M'$ nondeterministically decides $L^*$; step 2 takes $O(|w|)$ space,
+and step 3 takes no more than the space that $M$ takes on $w$, since
+each substring $w_i$ is no larger than $w$.  Thus $L^*\in$ NPSPACE $=$
+PSPACE.\qed
+\end{answer}
+\end{answer}
+
+\begin{subexercise}[\sipser, 8.6]\label{PSPACE-hard}
+Show that any PSPACE-hard language is also NP-hard.
+\end{subexercise}
+\begin{answer}
+Let $L$ be a PSPACE-hard language.  Every language in PSPACE is
+polynomial-time reducible to $L$.  But every language in NP is also in
+PSPACE; therefore, every language in NP is polynomial-time reducible
+to $L$, or in other words, $L$ is NP-hard.\qed
+\end{answer}
+\end{exercise}
+
+\begin{exercise}[\sipser, 8.9]
+Show that, if every NP-hard language is also PSPACE-hard, then PSPACE
+$=$ NP.
+\end{exercise}
+\begin{answer}
+Assume every NP-hard language is also PSPACE-hard, and let $L$ be any
+NP-complete language.  By our assumption, $L$ must be PSPACE-hard;
+thus, every language in PSPACE can be reduced in polynomial time to
+$L$.  This implies that every language in PSPACE is also in NP,
+because we can just construct a \NTM\ that reduces to $L$ in
+polynomial time and then decides $L$ in polynomial time (because
+$L\in$ NP).  Thus PSPACE $\subseteq$ NP; also, we know that NP
+$\subseteq$ PSPACE, so they must be equal.\qed
+\end{answer}
+\end{document}

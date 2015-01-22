@@ -1,0 +1,62 @@
+<HEAD>
+<TITLE>DPVM</TITLE>
+</HEAD>
+<BODY>
+
+<h3>DPVM -- The Dynamic Predicate Virtual Machine</h3>
+
+
+The overall goal is to provide a high-level virtual machine as a
+target for language implementation.  The main pieces of the system
+so far are: 
+
+<ol>
+<li><b>DPVM</b> The dynamic predicate virtual machine.
+<li><b>DPVML</b> A Scheme-like language, with first-class
+types/predicates and set of primitives, that constitutes the "native"
+programming language for the DPVM.
+<li><b>MiniMMOO</b>
+A Miniature Multi-Method Object-Oriented language.  Intended as a
+simple example of using the dpvm as a target platform.
+</ol>
+
+There are two tracks in this project, as currently conceived:
+
+<ol>
+<li> To create a very high level virtual machine as a platform
+on which to implement a range of languages, from Java to CLOS to
+Aspect-Oriented (sub)languages.
+<li>
+Implementation techniques to efficiently execute applications
+written on top of the virtual machine.
+</ol>
+
+DPVML (with a few changes in syntax) could be implemented easily
+within a Scheme implementation as a bunch of functions.  The only
+interesting built-in datatypes and functions in DPVML (so far) that
+are not already in Scheme are predicates, routines to apply predicates
+to values, and routines to decide predicate implication.  This is (or
+at least would have been) the most straightforward way to play around
+with implementing high level languages on the DPVM.
+<p>
+In fact, I reimplemented most of Scheme.  The only benefits from
+implementing Scheme from scratch will come when the second track is
+pursued -- when we want to apply techniques such as partial evaluation
+and optimistic optimization to applications running on the DPVM.
+<p>
+For more information, see 
+<a href="dpvm-notes.pdf">some notes, in PDF</a>.  
+Or get the <a href="dpvm-notes.ps">postscript</a> version.
+Or the <a href="dpvm-notes.dvi">DVI</a> version.
+<p>
+To get the sources, download <a href="dpvm.tar.gz">the gzipped tarfile</a>.
+The scheme dialect I've used is Scheme48, the latest version of which may be found
+under <a href="http://www.neci.nj.nec.com/homepages/kelsey/">
+Richard Kelsey's home page</a>.
+
+<hr>
+<address>
+<a href="http://www.ai.mit.edu/~gregs/">Greg Sullivan</a>
+<a href="mailto:gregs@ai.mit.edu"><i>gregs@ai.mit.edu</i></a>
+</address>
+</BODY>

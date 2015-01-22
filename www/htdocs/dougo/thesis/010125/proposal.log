@@ -1,0 +1,77 @@
+This is TeX, Version 3.14159 (C version 6.1) (format=latex 96.10.15)  25 JAN 2001 20:37
+**proposal
+(proposal.tex
+LaTeX2e <1996/06/01>
+Hyphenation patterns for english, german, loaded.
+(/share/unix/packages/TeX/texmf/tex/latex/base/article.cls
+Document Class: article 1996/05/26 v1.3r Standard LaTeX document class
+(/share/unix/packages/TeX/texmf/tex/latex/base/size12.clo
+File: size12.clo 1996/05/26 v1.3r Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(/share/unix/packages/TeX/lib/inputs/html.sty) (defs.tex) (proposal.aux)
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <14.4> on input line 24.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 24.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <12> on input line 34.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 34.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 34.
+
+[1
+
+] [2] [3]
+Overfull \hbox (0.85524pt too wide) in paragraph at lines 209--209
+[][]\OT1/cmtt/m/n/12 % ajc Trace.java TraceMyClasses.java Foo.java Bar.java Baz
+.java Garply.java[] 
+ []
+
+[4] [5] [6] [7]
+Overfull \hbox (8.6431pt too wide) in paragraph at lines 474--484
+[]\OT1/cmr/m/n/12 Another fea-ture that would be in-ter-est-ing to con-sider is
+ \OT1/cmr/bx/n/12 pred-i-cate dis-patch-ing \OT1/cmr/m/n/12 [[]].
+ []
+
+[8] [9] (proposal.bbl [10]
+Underfull \hbox (badness 6032) in paragraph at lines 120--127
+[][]\OT1/cmr/m/n/12 Gregor Kicza-les, John Lamp-ing, Anurag Mend-hekar, Chris M
+aeda,
+ []
+
+[11]) [12] (proposal.aux) ) 
+Here is how much of TeX's memory you used:
+ 324 strings out of 10910
+ 3205 string characters out of 72011
+ 48538 words of memory out of 262141
+ 3250 multiletter control sequences out of 9500
+ 9017 words of font info for 32 fonts, out of 150000 for 255
+ 14 hyphenation exceptions out of 607
+ 24i,6n,24p,127b,251s stack positions out of 300i,40n,60p,3000b,4000s
+
+Output written on proposal.dvi (12 pages, 42968 bytes).

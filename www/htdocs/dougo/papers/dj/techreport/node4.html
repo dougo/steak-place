@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 99.2beta8 (1.42)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Generic Programming</TITLE>
+<META NAME="description" CONTENT="Generic Programming">
+<META NAME="keywords" CONTENT="dj">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v99.2beta8">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="dj.css">
+
+<LINK REL="next" HREF="node5.html">
+<LINK REL="previous" HREF="node3.html">
+<LINK REL="up" HREF="dj.html">
+<LINK REL="next" HREF="node5.html">
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<A NAME="tex2html56"
+  HREF="node5.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.gif"></A> 
+<A NAME="tex2html54"
+  HREF="dj.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.gif"></A> 
+<A NAME="tex2html48"
+  HREF="node3.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.gif"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html57"
+  HREF="node5.html">Implementation Highlights</A>
+<B> Up:</B> <A NAME="tex2html55"
+  HREF="dj.html">DJ: Dynamic Adaptive Programming</A>
+<B> Previous:</B> <A NAME="tex2html49"
+  HREF="node3.html">DJ</A>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00040000000000000000">
+Generic Programming</A>
+</H1>
+
+<P>
+DJ also provides support for generic programming
+[<A
+ HREF="node9.html#musser-stepanov:GL">17</A>]: the
+<TT>asList</TT> method on <TT>ClassGraph</TT> adapts an object structure
+and a traversal strategy into a <TT>List</TT>, part of Java's
+Collections framework&nbsp;[<A
+ HREF="node9.html#Collections">8</A>].  The object structure is
+viewed as a collection of objects whose type is the target of the
+traversal strategy; the collection's iterator performs the traversal
+incrementally with each call to <TT>next</TT>.  Figure&nbsp;<A HREF="node4.html#fig:asList">4</A>
+shows how to rewrite the previous example using <TT>asList</TT>.
+
+<P>
+
+<P></P>
+<DIV ALIGN="CENTER"><A NAME="fig:asList"></A><A NAME="217"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figure 4:</STRONG>
+Using the collection adaptor <TT>asList</TT>.</CAPTION>
+<TR><TD><TABLE  WIDTH="100%">
+<TR><TD>
+<PRE>
+import java.util.*;
+import edu.neu.ccs.demeter.dj.*;
+
+class Schema {
+  Attribute attrs[];
+  SchemaItem items[];
+  static final ClassGraph cg = new ClassGraph();
+  public Set getDefinedTypeNames() {
+    final Set def = new HashSet();
+    List typeDefAttributes =
+      cg.asList(this, "from Schema via -&gt;TypeDef,attrs,* to Attribute");
+    Iterator it = typeDefAttributes.iterator();
+    while (it.hasNext()) {
+      Attribute attr = (Attribute) it.next();
+      if (attr.name.equals("name"))
+        def.add(attr.value);
+    }
+    return def;
+  }
+  public Set getUndefinedTypeNames() {
+    final Set def = getDefinedTypeNames();
+    final Set undef = new HashSet();
+    List declAttributes = 
+      cg.asList(this, "from Schema via -&gt;Decl,attrs,* to Attribute");
+    Iterator it = declAttributes.iterator();
+    while (it.hasNext()) {
+      Attribute attr = (Attribute) it.next();
+      if (attr.name.equals("type")
+          &amp;&amp; !def.contains(attr.value))
+        undef.add(attr.value);
+    }
+    return undef;
+  }
+}
+</PRE></TD></TR>
+</TABLE></TD></TR>
+</TABLE>
+</DIV><P></P>
+
+<P>
+<BR><HR>
+<ADDRESS>
+Doug Orleans
+2001-03-12
+</ADDRESS>
+</BODY>
+</HTML>

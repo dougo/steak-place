@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 99.2beta8 (1.42)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Introduction</TITLE>
+<META NAME="description" CONTENT="Introduction">
+<META NAME="keywords" CONTENT="dj">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v99.2beta8">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="dj.css">
+
+<LINK REL="next" HREF="node2.html">
+<LINK REL="previous" HREF="dj.html">
+<LINK REL="up" HREF="dj.html">
+<LINK REL="next" HREF="node2.html">
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<A NAME="tex2html26"
+  HREF="node2.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.gif"></A> 
+<A NAME="tex2html24"
+  HREF="dj.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.gif"></A> 
+<A NAME="tex2html18"
+  HREF="dj.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.gif"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html27"
+  HREF="node2.html">Example</A>
+<B> Up:</B> <A NAME="tex2html25"
+  HREF="dj.html">DJ: Dynamic Adaptive Programming</A>
+<B> Previous:</B> <A NAME="tex2html19"
+  HREF="dj.html">DJ: Dynamic Adaptive Programming</A>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00010000000000000000">
+Introduction</A>
+</H1>
+
+<P>
+The Law of Demeter&nbsp;[<A
+ HREF="node9.html#karl-ian:soft1">13</A>] is a style rule for OOP whose
+goal is to reduce the behavioral dependencies between classes.  Its
+primary form says that a method <IMG
+ WIDTH="21" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img1.gif"
+ ALT="$M$"> should only call methods (and
+access fields) on objects which are <B>preferred suppliers</B>:
+immediate parts on <TT>this</TT>, objects passed as arguments to <IMG
+ WIDTH="21" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img1.gif"
+ ALT="$M$">,
+objects which are created directly in <IMG
+ WIDTH="21" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img1.gif"
+ ALT="$M$">, and objects in global
+variables (in Java, <TT>public static</TT> fields).  Limiting which
+methods can call which other methods keeps programmers from encoding
+too much information about the object model into a method, thus
+separating the structure concern from the behavior concern.
+
+<P>
+The drawback of following the Law of Demeter is that it can result in
+a large number of small methods scattered throughout the program,
+which can make it hard to understand the high-level picture of what a
+program does.  The DemeterJ&nbsp;[<A
+ HREF="node9.html#cse:preventive">14</A>]&nbsp;[<A
+ HREF="node9.html#DemeterJ:00">18</A>]
+software allows the programmer to succinctly specify a <B>traversal
+strategy</B> in place of the many methods that would be needed to
+traverse a complex object structure.  These traversal methods are
+automatically generated at compile-time by a preprocessor.  A
+traversal strategy describes a traversal at a high level, only
+referring to the minimal number of classes in the program's object
+model: the root of the traversal, the target classes, and waypoints
+and constraints in between to restrict the traversal to follow only
+the desired set of paths.  If the object model changes, often the
+traversal strategy doesn't need to be changed; the traversal methods
+can simply be re-generated in accordance with the new model, and the
+behavior adapts to the new structure.  Programming with traversal
+strategies is thus known as <B>adaptive programming</B>
+[<A
+ HREF="node9.html#karl:demeter">12</A>].
+
+<P>
+With the addition of reflection to Java&nbsp;[<A
+ HREF="node9.html#java-reflection">7</A>], it
+became possible to interpret a traversal strategy at runtime.  DJ
+[<A
+ HREF="node9.html#DJ:99">16</A>] is a pure-Java package that provides this capability.
+This makes it easier to add traversal strategies to a Java program,
+because there is no need to modify the compilation process to run the
+preprocessor or to convert the source code to the Demeter input
+language syntax.  Instead traversal strategies can simply be expressed
+as Java strings in ordinary Java code, or even constructed dynamically
+from an external source not known at compile time.
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html26"
+  HREF="node2.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.gif"></A> 
+<A NAME="tex2html24"
+  HREF="dj.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.gif"></A> 
+<A NAME="tex2html18"
+  HREF="dj.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.gif"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html27"
+  HREF="node2.html">Example</A>
+<B> Up:</B> <A NAME="tex2html25"
+  HREF="dj.html">DJ: Dynamic Adaptive Programming</A>
+<B> Previous:</B> <A NAME="tex2html19"
+  HREF="dj.html">DJ: Dynamic Adaptive Programming</A>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Doug Orleans
+2001-03-12
+</ADDRESS>
+</BODY>
+</HTML>

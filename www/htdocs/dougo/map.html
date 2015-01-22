@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>A map to my house</title>
+<link rev="made" href="mailto:dougorleans@gmail.com" />
+<script src="http://web.archive.org/web/20070719090508js_/http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAUcRVVLTkM2u0XBkpvGqdlBQqU69kEmqqNCDPwehTnOpX9BqPLxR_plURBEF14nHs8JtzAvD2DCY6PA" type="text/javascript"></script>
+<script type="text/javascript">
+  //<![CDATA[
+
+  function load() {
+    if (GBrowserIsCompatible()) {
+      var map = new GMap2(document.getElementById("map"));
+      map.addControl(new GLargeMapControl());
+      var homePoint = new GLatLng(42.537533,-71.262333);
+      map.setCenter(homePoint, 13);
+      var homeMarker = new GMarker(homePoint);
+      map.addOverlay(homeMarker);
+      var blowup = function() {
+        homeMarker.showMapBlowup({zoomLevel: 17, mapType: G_HYBRID_MAP}) }
+      blowup();
+      GEvent.addListener(homeMarker, "click", blowup);
+    }
+  }
+  //]]>
+</script>
+</head>
+
+<body onload="load()" onunload="GUnload()">
+<h1><hr />A map to my house</h1>
+
+<p>I live at <b>4 Crest Rd</b>, Billerica, MA 01821-4307 USA.
+It's a block from the eastern shore of Nutting Lake, about five miles
+north of the Burlington Mall.
+</p>
+
+<p><a href="http://maps.google.com/maps?q=4+crest+rd,+billerica_ma&hl=en">Google Maps</a>
+gives some weird routes, so here's my driving advice: From I-95, take
+route 3 north to route 62 east, then make a left onto the Middlesex
+Turnpike.  Turn right on Lexington Rd (at the 99 Restaurant), then
+left on Austin Rd (just past Schoolhouse Rd on the right).  When
+Austin Rd ends, turn right onto Crest, and I'm the third house on the
+right.  Park in front of my garage or in the lot to the right.
+</p>
+
+<p>Public transportation: your best bet is to take the
+<a href="http://www.mbta.com/schedules_and_maps/bus/routes/?route=350&direction=O&timing=S&RedisplayTime=Redisplay+Time">350 bus</a>
+from Alewife to the Burlington Mall.  Alternatively, you can take the
+commuter rail
+(<a href="http://www.mbta.com/schedules_and_maps/rail/lines/?route=LOWELL&direction=O&timing=S&RedisplayTime=Redisplay+Time">Lowell Line</a>)
+from North Station to North Billerica.  Either way, call me to pick
+you up (or call me ahead of time so I can meet you there).  In theory,
+you could also take an <a href="http://lrta.com/lrtadirectory.htm">LRTA</a>
+bus (14 from the Burlington Mall, 13 from the North Billerica
+station), but those run hourly at best, and really it would be quicker
+for me to pick you up.
+</p>
+
+<p>Feel free to <a href="mailto:dougorleans@gmail.com">email me</a> or
+call me at (978) 362-3145 if you need any more information.</p>
+
+<p>
+<div id="map" style="width: 100%; height: 700px">
+<noscript>(If JavaScript were enabled, you'd see a Google Map here!)
+<br />
+<a href="http://maps.google.com/maps?q=4+crest+rd,+billerica_ma&hl=en"><img alt="4 Crest Rd" src="map.jpg"></a>
+</noscript>
+</div>
+
+</p>
+
+<hr />
+<address><a href="http://steak.place.org/dougo/">Doug Orleans</a>
+<a href="mailto:dougorleans@gmail.com">&lt;dougorleans@gmail.com&gt;</a>
+</address>
+<!-- hhmts start -->
+Last modified: Sat Jun 16 01:53:35 EDT 2007
+<!-- hhmts end -->
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 99.2beta8 (1.42)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Implementation Highlights</TITLE>
+<META NAME="description" CONTENT="Implementation Highlights">
+<META NAME="keywords" CONTENT="dj">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v99.2beta8">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="dj.css">
+
+<LINK REL="next" HREF="node6.html">
+<LINK REL="previous" HREF="node4.html">
+<LINK REL="up" HREF="dj.html">
+<LINK REL="next" HREF="node6.html">
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<A NAME="tex2html66"
+  HREF="node6.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.gif"></A> 
+<A NAME="tex2html64"
+  HREF="dj.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.gif"></A> 
+<A NAME="tex2html58"
+  HREF="node4.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.gif"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html67"
+  HREF="node6.html">Related Work</A>
+<B> Up:</B> <A NAME="tex2html65"
+  HREF="dj.html">DJ: Dynamic Adaptive Programming</A>
+<B> Previous:</B> <A NAME="tex2html59"
+  HREF="node4.html">Generic Programming</A>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00050000000000000000">
+Implementation Highlights</A>
+</H1>
+
+<P>
+In this section we present some highlights of the implementation of DJ
+and some examples of interesting uses.
+
+<P>
+When the <TT>ClassGraph</TT> constructor is called, it creates a graph
+object containing reflective information about all the classes in a
+package.  In Java, however, there is no way to get a list of all
+classes in a package; packages are just namespaces, not containers.
+Moreover, the JVM only knows about classes that have already been
+loaded, and it only loads classes when they are referenced.  Since a
+class graph might be constructed before many of the classes in
+the package have been referenced, the constructor has to discover
+classes some other way: it searches the class path (provided by the
+JVM as <TT>System.getProperty("java.class.path")</TT>) for all
+<TT>.class</TT> files in subdirectories corresponding to the package
+name.  For each class file that is found, it calls
+<TT>Class.forName()</TT> with the class name, which causes the JVM to
+load the class if it hasn't already been loaded.  If there are
+classes that need to be added to a class graph that do not exist
+as <TT>.class</TT> files in the class path, for example if they are
+loaded from the network or constructed dynamically, they will need to
+be added explicitly by calling <TT>addClass()</TT>.
+
+<P>
+A class graph may also be created from another class graph <IMG
+ WIDTH="17" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img4.gif"
+ ALT="$G$"> and a
+traversal strategy <IMG
+ WIDTH="15" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img5.gif"
+ ALT="$S$">, forming the subgraph of classes and edges in
+<IMG
+ WIDTH="17" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img4.gif"
+ ALT="$G$"> that would be traversed according to <IMG
+ WIDTH="15" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img5.gif"
+ ALT="$S$">.  This can be used to
+remove unwanted paths from a class graph, such as backlinks, rather
+than having to add <TT>bypassing</TT> constraints to every traversal
+strategy.
+
+<P>
+Performing traversals is done as described in
+[<A
+ HREF="node9.html#strategies-tr:LP97">15</A>], in a two-stage process: first, a
+<B>traversal graph</B> is computed from the class graph and the
+traversal strategy (which itself is converted into a <B>strategy
+graph</B>, whose nodes are the classes mentioned in the traversal
+strategy and whose edges each have constraints attached to that leg of
+the traversal); then, the object structure is traversed, using
+information from the traversal graph to decide where to go next at
+each step, and visitor methods are invoked as needed.  The traversal
+graph computation takes time proportional to the product of the number
+of edges in the class graph and the number of edges in the strategy
+graph; since the same traversal strategy is often reused multiple
+times with the same class graph, the traversal graph can be saved and
+reused without needing to be recomputed every time.  The class
+<TT>TraversalGraph</TT> has a constructor that takes a traversal
+strategy and a <TT>ClassGraph</TT> object, as well as methods
+<TT>traverse</TT> and <TT>asList</TT>.  The traversal computation
+algorithm is also available as a separate package, the AP Library
+[<A
+ HREF="node9.html#AP-Lib:99">19</A>].
+
+<P>
+At each step in a traversal, the fields and methods of the current
+object, as well as methods on the visitor object, are inspected and
+invoked by reflection.  Some of this reflective overhead could be
+avoided by generating a new class (at run-time) that invokes the
+appropriate fields and methods directly; this is planned for a future
+addition to DJ.  Other applications of partial evaluation to speed up
+the traversal may be possible as well.
+
+<P>
+[traversals through Object; use typed arrays instead of untyped vectors]
+
+<P>
+The implementation of <TT>asList</TT> is somewhat trickier than regular
+traversal: the list iterator must return in the middle of the
+traversal whenever a target object is reached, and then resume where
+it left off when <TT>next</TT> is called again.  An earlier version
+created an ad-hoc continuation-like object that was saved and restored
+at each iteration, but this was error-prone and not very efficient;
+the current version uses a separate Java thread as a coroutine,
+suspending and resuming at each iteration.  An additional provided method
+<TT>gather</TT> can be used to copy all the target objects into an
+<TT>ArrayList</TT>, which is faster still, but the list returned by
+<TT>asList</TT> has the advantage that calls to <TT>set</TT> on the
+iterator can replace target objects in the original object structure.
+
+<P>
+Java's reflection system, unlike other meta-object protocols
+[<A
+ HREF="node9.html#AMOP">9</A>], has no mechanism for <B>intercession</B>: there is no way
+to make a new subclass of <TT>Class</TT> that behaves differently for
+certain meta-operations such as method invocation.  However, DJ's
+<TT>Visitor</TT> class does allow a limited form of intercession.  It
+has the method <TT>before(Object&nbsp;obj,&nbsp;Class&nbsp;cl)</TT> (and corresponding
+<TT>after</TT>), which is invoked by the <TT>ClassGraph.traverse</TT>
+method at each traversal step; it looks for a method named
+<TT>before</TT> with a single parameter whose type is the class
+represented by <TT>cl</TT>, and invokes it with <TT>obj</TT> as argument.
+This method can be overridden by a subclass to perform more dynamic
+behavior based on the reified class object of the object being
+traversed.  Figure&nbsp;<A HREF="node5.html#fig:intercession">5</A> shows a simple
+pretty-printing visitor that uses this technique, along with a method
+on class <TT>Schema</TT> that uses it.
+
+<P>
+
+<P></P>
+<DIV ALIGN="CENTER"><A NAME="fig:intercession"></A><A NAME="181"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figure 5:</STRONG>
+Using visitor method intercession.</CAPTION>
+<TR><TD><TABLE  WIDTH="100%">
+<TR><TD>
+<PRE>
+class XMLPrinter extends Visitor {
+  public XMLPrinter(Map map) { this.map = map; }
+  Map map;
+  String indent = "";
+  public void before(Object obj, Class cl) {
+    String elementName = (String) map.get(cl);
+    if (elementName != null) {
+      System.out.println(indent + "&lt;" + elementName + "&gt;");
+      indent += "  ";
+    }
+  }
+  public void after(Object obj, Class cl) {
+    String elementName = (String) map.get(cl);
+    if (elementName != null) {
+      indent = indent.substring(2);
+      System.out.println(indent + "&lt;/" + elementName + "&gt;");
+    }
+  }
+}
+
+class Schema {
+  ...
+  void print() {
+    Map map = new HashMap();
+    map.put(Schema.class, "schema");
+    map.put(SimpleType.class, "simpleType");
+    map.put(ComplexType.class, "complexType");
+    map.put(ComplexTypeContent.class, "complexContent");
+    map.put(SequenceGroup.class, "sequence");
+    map.put(ElementDecl.class, "element");
+    map.put(AttributeDecl.class, "attribute");
+    Visitor v = new XMLPrinter(map);
+    XSD.cg.traverse(this, "from Schema to *", v);
+  }
+}
+</PRE></TD></TR>
+</TABLE></TD></TR>
+</TABLE>
+</DIV><P></P>
+
+<P>
+Note that the <TT>XMLPrinter</TT> visitor class is generic, in that it
+makes no mention of any of the XML Schema classes but is parameterized
+by a mapping of classes to element names.  
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html66"
+  HREF="node6.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.gif"></A> 
+<A NAME="tex2html64"
+  HREF="dj.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.gif"></A> 
+<A NAME="tex2html58"
+  HREF="node4.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.gif"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html67"
+  HREF="node6.html">Related Work</A>
+<B> Up:</B> <A NAME="tex2html65"
+  HREF="dj.html">DJ: Dynamic Adaptive Programming</A>
+<B> Previous:</B> <A NAME="tex2html59"
+  HREF="node4.html">Generic Programming</A>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Doug Orleans
+2001-03-12
+</ADDRESS>
+</BODY>
+</HTML>

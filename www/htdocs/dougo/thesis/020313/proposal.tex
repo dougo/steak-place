@@ -1,0 +1,316 @@
+\documentclass{article}
+%\usepackage{tex2page}
+\usepackage{amsmath}
+\usepackage{theorem}
+
+\newcommand{\defn}[1]{\textbf{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\parm}[1]{\textit{#1}}
+\newcommand{\Lplain}{\ensuremath{\mathcal{L}}}
+\newcommand{\Lprime}{\ensuremath{\Lplain'}}
+\newcommand{\Lzero}{\ensuremath{\Lplain_0}}
+\newcommand{\Lone}{\ensuremath{\Lplain_1}}
+\newcommand{\fac}{\ensuremath{F}}
+\newcommand{\facs}{\ensuremath{\fac_1, \ldots, \fac_n, \ldots}}
+\newcommand{\facset}{\ensuremath{\{\facs\}}}
+\newcommand{\eval}[1]{\ensuremath{eval_#1}}
+\theorembodyfont{\rmfamily}
+\newtheorem{definition}{Definition}[section]
+
+\title{Ph.D. Thesis Proposal: \\
+A More General Programming Language \\
+Supporting Separation Of Concerns}
+\author{Doug Orleans}
+
+\begin{document}
+
+%\begin{htmlonly}
+%This document is also available in
+%\htmladdnormallink{postscript}{../proposal.ps} form.
+%\end{htmlonly}
+
+\maketitle
+
+%\setlength{\parindent}{0in}
+%\setlength{\parskip}{0.1in}
+
+%\tableofchildlinks
+
+\begin{abstract}
+\noindent Separation of concerns is a problem solving technique that
+should be well supported by programming languages.  Aspect-oriented
+programming languages purport to allow the modular expression of
+concerns that can not be separated in other currently popular
+programming langugaes.  In particular, AspectJ supports the
+modularization of concerns that would otherwise cut across the
+modularization supported by Java.  I conjecture that it can be
+formally shown that AspectJ and other AOP languages that extend Java
+are more expressive than Java (given some calculi that approximate the
+languages).  I further conjecture that AspectJ is more general than
+Java---that is, some constructs in Java can be expressed as syntactic
+sugar in AspectJ---and I propose a new language called Fred that is
+more general than AspectJ, therefore providing better support for
+separation of concerns.
+\end{abstract}
+
+\section{Introduction}
+
+In 1976, Edsger W.~Dijkstra described a technique for problem
+solving~\cite[page 211]{dijkstra-SOC}: ``study in depth an aspect of
+one's subject matter in isolation, for the sake of its own
+consistency, all the time knowing that one is occupying oneself with
+only one of the aspects''; he dubbed this technique \defn{separation
+of concerns}.  It is not easy to decide how a problem should be
+decomposed into separate concerns, but realizing that a decomposition
+is needed is an important first step in solving the problem.
+
+Ideally, the decomposition of a problem into separate concerns should
+lead directly to the modularization of a program that solves the
+problem---that is to say, each program module should embody one (and
+only one) concern of the problem.  The more this is true, the easier
+the program is to be understood, modified, or reused; the less this is 
+true, the more the program tends to be tangled, brittle, and
+overspecialized.
+
+In practice, this correspondence is limited by the constructs
+available in the programming language.  In recent years, it has become
+clear that many concerns that one would wish to separate out from a
+problem cannot be properly modularized using the constructs of any
+currently popular programming language, because the concerns cut
+across the modularization that is supported by the existing
+constructs.  This realization has led to the design of
+\defn{aspect-oriented programming (AOP)}~\cite{AOP} languages that
+support the modularization of crosscutting concerns.
+
+AOP language design is an active area of research; some of the more
+prominent languages under development are AspectJ~\cite{AspectJ},
+HyperJ~\cite{HyperJ}, ComposeJ~\cite{ComposeJ},
+DemeterJ~\cite{DemeterJ}, and the language of aspectual
+components~\cite{ACs}.  They all purport to address the problem of
+crosscutting concerns, by extending Java~\cite{JLS} with new
+constructs for expressing concerns that could not be expressed
+modularly in plain Java.
+
+The claim that these languages are more expressive than Java is an
+informal one, usually based on a set of illustrating examples.  It
+would be valuable to prove this claim formally, based on the syntax
+and semantics of the languages.  Even more valuable would be to prove
+expressiveness relations between different AOP languages.  This could
+lead towards the definition of new languages which are even more
+expressive, which would allow a better correspondence between program
+modules and problem concerns.
+
+While the expressive power of programming languages is usually thought
+of only in terms of computability---a language can either be universal
+(Turing-complete) or not---Felleisen~\cite{expressive-power}
+developed a formal notion of comparative expressiveness that can
+distinguish the expressive power of two universal languages.  His
+system is based on the intuition that a language \Lplain\ that contains
+a superset of the constructs of another language \Lprime\ is more
+expressive than \Lprime\ if a behavior-preserving translation from
+\Lplain\ to \Lprime\ requires a global reorganization of the entire
+program.
+
+AOP languages that extend another language are often thought of in
+terms of ``weaving'' pieces of code together into the base language,
+which matches this notion of global reorganization.  I conjecture,
+then, that AspectJ and the other AOP languages listed above are all
+more expressive than Java, according to Felleisen's definition of
+expressiveness.  In order to show this formally, I intend to start
+with minimal core calculi representing the basic features of Java,
+AspectJ, etc., in the manner of Featherweight Java (FJ)~\cite{FJ}, and
+continue with successively larger approximations of the full
+languages.  Section~\ref{expressiveness} outlines this approach in
+further detail.
+
+An interesting feature of AspectJ is that not only does it add a new
+construct for defining crosscutting behavior, namely \defn{advice},
+but this construct can also be used to express ordinary Java methods.
+The effect is that AspectJ is no more expressive than the subset of
+AspectJ that does not include methods.  While programmers will
+probably not want to program without methods, the fact that methods
+are inessential to AspectJ makes it easier to model the language: one
+fewer construct is needed in its formal definition, because methods
+can be replaced with syntactic sugar on top of advice.
+Section~\ref{generality} formalizes this concept into a notion of
+relative generality of languages, and outlines an approach for showing
+that AspectJ is more general than Java.
+
+A natural next question to ask is whether there are languages that
+support separation of concerns that are even more general than
+AspectJ.  I have developed a small language called Fred~\cite{Fred},
+based on predicate dispatching~\cite{predicate-dispatch}, that can
+express many of the constructs in AspectJ as macros.  Since predicate
+dispatching is a generalization of multiple dispatch, which itself is
+a generalization of the single dispatch object-oriented model of
+AspectJ and Java, it stands to reason that Fred is more general than
+AspectJ.  Section~\ref{Fred} describes Fred and outlines an approach
+for showing that it is more general than AspectJ.
+
+In summary, my proposed thesis is that aspect-oriented programming
+languages, while more general than typical object-oriented programming
+languages, can be made even more general, providing better support for
+separation of concerns.  Section~\ref{research} outlines the research
+required to complete the dissertation.
+
+\section{Relative Expressiveness of Languages}
+\label{expressiveness}
+
+Felleisen provides the following definitions~\cite{expressive-power}:
+
+\begin{definition}
+A \defn{programming language} \Lplain\ consists of
+\begin{itemize}
+\item a set of \Lplain-phrases, which is a set of freely generated
+      abstract syntax trees (or \defn{terms}), based on a possibly
+      infinite number of function symbols $\fac, \fac_1,
+      \ldots$ with arities $a, a_1, \ldots$;
+\item a set of \Lplain-programs, which is a non-empty, recursive
+      subset of the set of phrases; and
+\item a semantics, \eval{\Lplain}, which is a recursively enumerable
+      predicate on the set of \Lplain-programs.  If $eval_\Lplain$
+      holds for a program $P$, the program \defn{terminates}.
+\end{itemize}
+The function symbols are referred to as \defn{programming constructs}
+or \defn{programming facilities}.
+\end{definition}
+
+\begin{definition}
+A programming language \Lplain\ is a \defn{conservative extension}
+of a language \Lprime\ if
+\begin{itemize}
+\item the constructors of \Lprime\ are a subset of the constructors of 
+      \Lplain\ with the difference being \facset, which are not
+      constructors of \Lprime;
+\item the set of \Lprime-phrases is the full subset of \Lplain-phrases 
+      that do not contain any constructs in \facset;
+\item the set of \Lprime-programs is the full subset of
+      \Lplain-programs that do not contain any constructs in \facset;
+      and
+\item the semantics of \Lprime, \eval{\Lprime}, is a restriction of
+      \Lplain's semantics, i.e., for all \Lprime-programs $P$,
+      \eval{\Lprime}$(P)$ holds if and only if \eval{\Lplain}$(P)$
+      holds.
+\end{itemize}
+Conservatively, \Lprime is a \defn{conservative restriction} of
+\Lplain.  To emphasize the constructors on which the restriction and
+extension differ, we write $\Lprime = \Lplain \backslash \facset$ and
+$\Lplain = \Lprime + \facset$.
+\end{definition}
+
+\begin{definition}
+Let \Lplain\ be a programming language and let \facset be a subset of
+its constructors such that $\Lprime = \Lplain \backslash \facset$ is a 
+conservative restriction.  The programming facilities \facs\ are
+\defn{eliminable} if there is a recursive mapping $\varphi$ from
+\Lplain-phrases to \Lprime-phrases that satisfies the following
+conditions:
+\begin{description}
+\item[E1] $\varphi(e)$ is an \Lprime-program for all \Lplain-programs
+	  $e$;
+\item[E2] $\varphi(\fac(e_1, \ldots, e_a)) = \fac(\varphi(e_1),
+	  \ldots, \varphi(e_a))$ for all facilities \fac\ of \Lprime,
+	  i.e., $\varphi$ is homomorphic in all constructs of \Lprime;
+	  and
+\item[E3] $\eval{\Lplain}(e)$ holds if and only if
+	  $\eval{\Lprime}(\varphi(e))$ holds for all \Lplain-programs
+	  $e$.
+\end{description}
+We also say that \Lprime\ \defn{can express the facilities} \facs\ 
+\defn{with respect to} \Lplain.
+\end{definition}
+
+It is clear that AspectJ is a conservative extension of Java.  The
+goal, then, is to show that there are facilities in AspectJ that Java
+cannot express.  One way to do this would be to find an AspectJ
+program that terminates and show that no structure-preserving
+translations to Java programs would terminate.  Here is such a program
+(assuming it is invoked from the command line as \code{java Main}):
+
+\begin{verbatim}
+class Main {
+  public static void main(String args[]) { while (true); }
+}
+aspect Terminate {
+  void around(): call(* main(*)) { }
+}
+\end{verbatim}
+
+While I will not formally prove that this program meets our criteria,
+here is an informal argument: since any translation must preserve the
+structure of all constructs in Java, the class definition \code{Main}
+must be preserved verbatim.  Since there is no way in Java to avoid
+invoking the \code{main} method of the class specified on the command
+line, the translated program must execute the \code{while} loop and
+never terminate.
+
+\section{Relative Generality of Languages}
+\label{generality}
+
+\begin{definition}
+A language \Lplain\ is \defn{more general} than a conservative
+restriction \Lprime\ if \Lprime\ cannot express some facilities in
+\Lplain\ and one or more non-eliminable facilities in \Lprime\ are
+eliminable from \Lplain.
+\end{definition}
+
+The goal here is to show that there are facilities in Java that are
+not eliminable but are eliminable from AspectJ.  In particular,
+concrete method definitions are not eliminable from Java, but can be
+translated in AspectJ to abstract methods and advice:
+
+\begin{verbatim}
+class Main {
+  void foo() { ... }
+}
+\end{verbatim}
+
+can be translated to
+
+\begin{verbatim}
+class Main {
+  abstract void foo();
+  aspect fooBody {
+    void around(): target(Main) && call(void foo()) { ... }
+  }
+}
+\end{verbatim}
+
+\section{Fred: A More General AOP Language}
+\label{Fred}
+
+\begin{itemize}
+\item behavioral model of Fred (branches, predicates, decision points).
+\item syntactic sugar for OO-style methods, AspectJ-style pointcuts and around advice.
+\item prototype implementation in MzScheme~\cite{MzScheme}.
+\end{itemize}
+
+\section{Research Plan}
+\label{research}
+
+To be added to Fred:
+
+\begin{itemize}
+\item structural model: separately-specified fields and inheritance
+      (like AspectJ static crosscutting, e.g. introductions and
+      ``declare parents'').
+\item variable binding in predicates (like AspectJ context exposure)
+\item parameterized encapsulation: lexical scoping, plus bundles (like
+      units).  Better than using classes for parameterized
+      encapsulation (like AspectJ abstract pointcuts).
+\item syntax for classes, aspects, hyperslices, composition filters,
+      traversals \& visitors, aspectual collaborations.  Comparative
+      examples.
+\item customizable branch precedence
+\item more efficient implementation-- static analysis
+\item formal semantics of core language
+\item development environment: browser that can show which branches
+      may be applicable for a message send, and their precedence.
+\end{itemize}
+
+\newcommand{\htmladdnormallink}[2]{#1}
+
+\bibliography{proposal}
+\bibliographystyle{abbrv}
+
+\end{document}

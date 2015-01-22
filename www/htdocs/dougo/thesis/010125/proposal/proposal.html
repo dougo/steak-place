@@ -1,0 +1,925 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 99.2beta8 (1.42)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Ph.D. Thesis Proposal: The Design and Implementation of Aspect-Oriented Languages</TITLE>
+<META NAME="description" CONTENT="Ph.D. Thesis Proposal: The Design and Implementation of Aspect-Oriented Languages">
+<META NAME="keywords" CONTENT="proposal">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v99.2beta8">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="proposal.css">
+
+</HEAD>
+
+<BODY >
+
+<P>
+This document is also available in
+<A NAME="tex2html1"
+  HREF="../proposal.ps">postscript</A>
+form.
+<H1 ALIGN="CENTER">Ph.D. Thesis Proposal: 
+<BR>The Design and Implementation of Aspect-Oriented Languages</H1>
+<P ALIGN="CENTER"><STRONG>Doug Orleans</STRONG></P>
+
+<P>
+<DIV ALIGN="CENTER">
+DRAFT -- DO NOT DISTRIBUTE
+
+</DIV>
+
+<P>
+
+<H1><A NAME="SECTION00010000000000000000">
+1 Introduction</A>
+</H1>
+
+<P>
+<B>Aspect-oriented programming</B> (AOP) [<A
+ HREF="proposal.html#AOP">KLM$^+$97</A>] is a programming
+methodology gaining much attention in the software engineering field.
+It has the potential to increase code reuse, improve software
+maintainability, and shorten development time, by enabling the
+separation of concerns that are not easily separated using traditional
+methodologies such as object-oriented programming.  AOP is not tied to
+any particular programming language, but most current work is focused
+on the development of AspectJ [<A
+ HREF="proposal.html#AspectJ">K$^+$</A>], a general-purpose
+aspect-oriented extension of Java [<A
+ HREF="proposal.html#JLS">GJS96</A>].  Java is a wise choice for a
+language to extend; its popularity will make it easier to spread the
+idea of AOP, and it's a simple enough language to facilitate such
+extension.  However, there are two main reasons to consider
+aspect-oriented extensions of other languages: to bring the benefits
+of AOP to users of other languages, and to make sure that the
+development of the AOP methodology isn't being shaped too much by the
+properties of Java.  By thinking about AOP in the context of other
+languages, we might come up with fresh insights into the general
+nature of AOP, which might even pave the way for a formal semantics of
+AOP.  Also, designing and implementing aspect-oriented extensions to
+other languages could lead to new design and implementation techniques
+that could apply to AspectJ or alternate aspect-oriented extensions to
+Java.
+
+<P>
+What languages should be considered for extension?  There are lots to
+choose from.  Rather than using specific languages, however, I plan to
+examine particular language <I>features</I>, separately and in
+combination.  Considering a language feature individually will limit
+the variables involved, and will lead to a clearer understanding of
+the impact of that feature on an aspect-oriented language.  Then when two
+features whose impact has been quantified are combined, the impact of
+the combination itself can be clearly analyzed as well.  A number of
+aspect-oriented languages can then be constructed on demand from this
+building-block set of language features.
+
+<P>
+What language features, then, should be considered?  My strategy is to
+concentrate on features which are generalizations of features in Java.
+In particular, the features I plan to study are multiple dispatch,
+intercessory reflection, and object-basedness.  (These terms are
+defined and explained in later sections.)  The main advantage of
+choosing generalizations of features of Java is that then any program
+written in AspectJ can be reimplemented in the more general
+aspect-oriented languages that will result.
+
+<P>
+My implementation strategy is to develop prototype languages by
+embedding them in Scheme [<A
+ HREF="proposal.html#R5RS">KCR98</A>].  Scheme is well-suited for
+language development due to its syntax extension mechanisms.  For
+example, a simple CLOS-like language with a meta-object protocol
+[<A
+ HREF="proposal.html#AMOP">KdRB91</A>] called Tiny CLOS [<A
+ HREF="proposal.html#tiny-clos">Kic92</A>] has been embedded in
+Scheme.  In some cases it might be worthwhile to modify the AspectJ
+compiler <TT>ajc</TT> directly to handle a new language feature, but
+most of the time it will probably be better to have all the
+experiments working in the same environment, that of Scheme; in
+particular, that will make it easier to combine language features.
+
+<P>
+
+<H1><A NAME="SECTION00020000000000000000">
+2 Aspect-Oriented Programming</A>
+</H1>
+
+<P>
+Aspect-oriented programming is a way to achieve the benefits of
+separation of concerns when a concern is not easily separated using
+procedural or object-oriented decomposition.  For example, suppose you
+want to add tracing statements to your program, for debugging: every
+method execution should print a message before it starts and after it
+finishes.  The functionality of printing out messages, deciding what
+level of detail should be printed, keeping track of indentation, etc.,
+can be encapsulated into a tracing module.  But you would still have
+to add a call to the beginning and end of the body of every method in
+your system, in order to invoke the tracing module.  These calls are
+scattered throughout the code, rather than being organized in one
+place; moreover, the body of every method is now tangled with these
+extra calls, which can distract from the purpose of that particular
+method.  With AOP, instead of placing these calls in the body of every
+method, you would instead define an <B>aspect</B> which contained
+instructions for placing the calls, and combine the aspect with your
+program using an <B>aspect weaver</B>.  The aspect could be written in
+a special-purpose tracing aspect language, or in a general-purpose
+aspect language (such as AspectJ).  The former is easier for the
+aspect writer, since a program in a domain-specific language is
+usually more concise than in a general-purpose language, but more work
+for the aspect language implementor, especially if the aspect writer
+needs to do something that isn't possible in the aspect language and
+the language needs to be redesigned.
+
+<P>
+The benefits of this kind of separation of concerns (known in the AOP
+literature as <B>cross-cutting</B> concerns [<A
+ HREF="proposal.html#AOP">KLM$^+$97</A>]) are the same
+as any separation of concerns: it makes software easier to understand, 
+easier to change, and easier to reuse and adapt [<A
+ HREF="proposal.html#MDSOC">OT00</A>].  It does 
+these by reducing scattering and tangling, by localizing all code
+relevant to one concern into one program structure.
+
+<P>
+How does AOP differ from other kinds of separation of concerns?  One
+good litmus test for whether a language is aspect-oriented or not is
+whether the language has <B>quantification</B> and <B>obliviousness</B>
+[<A
+ HREF="proposal.html#ob-quant">FF00</A>].  Quantification is the ability to quantify a piece of 
+code over other program elements (either static or dynamic); in other
+words, you can say ``whenever condition C arises, perform action A.''
+What can be specified in condition C depends on the degree of
+quantification in the AO language; it is generally on the order of
+``whenever method M is executed'', but it could be as fine grained as
+``whenever variable v is accessed'' [<A
+ HREF="proposal.html#SOP">MHO96</A>] or ``whenever line L is
+executed'' [<A
+ HREF="proposal.html#come-from">Cla73</A>].  Obliviousness is the ability to quantify 
+code over programs that have been written oblivious to this code.  In
+other words, a program does not have to explicitly cooperate with an
+aspect that refers to the program; in the example above, the code
+that's being traced does not need to be modified or otherwise written
+in any particular way in order to enable the tracing aspect to be
+implemented.  A certain degree of obliviousness is essential for any
+code to be reusable, but ideally AOP can be used with code that was
+not intended to be reused at all.
+
+<P>
+
+<H1><A NAME="SECTION00030000000000000000">
+3 AspectJ</A>
+</H1>
+
+<P>
+AspectJ [<A
+ HREF="proposal.html#AspectJ">K$^+$</A>] is a general-purpose aspect language that is an
+extension of Java [<A
+ HREF="proposal.html#JLS">GJS96</A>].  An aspect definition is like a class
+definition with some extra parts: <B>pointcuts</B>, <B>advice</B>, and 
+<B>introductions</B>.  A pointcut defines where to weave, and advice 
+and introductions define what to weave.
+
+<P>
+A pointcut specifies a set of <B>join points</B>, which are points in
+the dynamic execution of a Java program.  For example,
+<TT>executions(void f())</TT> is a pointcut containing all executions
+of methods named <TT>f</TT> with no arguments returning void.
+<TT>instanceof(C)</TT> is a pointcut containing all join points that
+occur when the currently-executing object (i.e. the value of
+<TT>this</TT>) is an instance of class <TT>C</TT>.  Pointcut
+designators can be compounded with boolean operators; thus
+<TT>instanceof(C) &amp;&amp; executions(void f())</TT> is the intersection of
+the previous two pointcuts.  Wildcards can be used in pointcut
+specifiers as well: <TT>executions(* f(..))</TT> contains all
+executions of methods named <TT>f</TT>, regardless of argument types
+or return types.
+
+<P>
+A piece of advice consists of a pointcut, a block of code, and an
+instruction for when to execute the code relative to the join points
+in the pointcut: <TT>before</TT> them, <TT>after</TT> them, or instead
+of them (<TT>around</TT>).  In the case of a piece of <TT>around</TT>
+advice, the block of code can call the special function
+<TT>proceed()</TT> to execute the join point.  The special variable
+<TT>thisJoinPoint</TT> is also available; it contains an object
+describing the current join point and can be queried with methods such 
+as <TT>getExecutingObject()</TT> and <TT>getSignature()</TT>.
+
+<P>
+An introduction lexically inserts fields and methods into the text of
+a particular class.  It can also add an interface to a class's
+<TT>implements</TT> list.
+
+<P>
+Here is a simple example of aspect definition, for our tracing example 
+described above (a simplified version of the Trace example from the
+AspectJ primer [<A
+ HREF="proposal.html#AspectJ">K$^+$</A>]):
+<PRE>
+aspect Trace {
+  void traceEntry(Signature s) { System.out.println("Entering " + s); }
+  void traceExit(Signature s)  { System.out.println("Exiting " + s); }
+  abstract pointcut classes();
+  pointcut methods(): classes() &amp;&amp; executions(* *(..));
+  pointcut constructors(): classes() &amp;&amp; executions(new(..));
+  before(): methods() || constructors() {
+    if (trace) traceEntry(thisJoinPoint.getSignature());
+  }
+  after(): methods() || constructors() {
+    if (trace) traceExit(thisJoinPoint.getSignature());
+  }
+  introduction * { boolean trace; }
+}
+aspect TraceMyClasses extends Trace {
+  pointcut classes(): instanceof(Foo || Bar || Baz || Garply);
+}
+</PRE>
+Here, tracing can be turned on per-object by setting the <TT>trace</TT>
+field of that object to <TT>true</TT>.  This aspect would be woven into
+the rest of the code by invoking the AspectJ compiler:
+<PRE>
+% ajc Trace.java TraceMyClasses.java Foo.java Bar.java Baz.java Garply.java
+</PRE>
+which produces <TT>.class</TT> files for the five classes.  (<TT>ajc</TT>
+can also be run with the <TT>-preprocess</TT> option, generating new
+<TT>.java</TT> files into a separate directory.)  Note also that the
+Trace aspect can be reused with a different set of classes by defining 
+a new sub-aspect that defines the <TT>classes()</TT> pointcut differently.
+
+<P>
+
+<H1><A NAME="SECTION00040000000000000000">
+4 Multiple Dispatch</A>
+</H1>
+
+<P>
+A typical object-oriented language involves message sends and method
+invocations.  A message is sent to an object, and a method is chosen
+to be invoked based on the dynamic (run-time) type of the object the
+message was sent to (the receiver).  In Java, the static
+(compile-time) types of the argument expressions also plays a part in
+the method selection, but not the dynamic types.  For example, suppose
+these classes are defined:
+<PRE>
+class P {
+  void f(P p) { System.out.println("PP"); }
+  void f(C c) { System.out.println("PC"); }
+}
+class C extends P {
+  void f(P p) { System.out.println("CP"); }
+  void f(C c) { System.out.println("CC"); }
+}
+</PRE>
+and suppose we have the following variables declarations:
+<PRE>
+P p = new P(); C c = new C(); P c2 = new C();
+</PRE>
+Then the expressions <TT>p.f(p)</TT>, <TT>p.f(c)</TT>, <TT>c.f(p)</TT>,
+and <TT>c.f(c)</TT> would all print the expected things, namely
+<TT>PP</TT>, <TT>PC</TT>, <TT>CP</TT>, and <TT>CC</TT>, respectively.
+However, while <TT>c2.f(p)</TT> would print <TT>CP</TT>, because the
+receiver <TT>c2</TT> is an object of class <TT>C</TT>, <TT>p.f(c2)</TT>
+would print <TT>PP</TT>, because the static type of the <TT>c2</TT>
+variable is class <TT>P</TT>.
+
+<P>
+This behavior can surprise even the experienced Java programmer
+sometimes.  A more symmetric solution is to use
+<B>multiple dispatch</B>, where the dynamic types of all the arguments 
+play an equal part in method selection, instead of Java's
+single-dispatch mechanism.  In essence, a message is sent to a
+sequence of objects, rather than a message with a sequence of
+arguments being sent to a single object.  CLOS [<A
+ HREF="proposal.html#CLtL">Ste90</A>] and Cecil
+[<A
+ HREF="proposal.html#Cecil">Cha93</A>] are two languages that have multiple dispatch; MultiJava
+[<A
+ HREF="proposal.html#MultiJava">CLCM00</A>] extends Java with multiple dispatch.  MultiJava
+allows methods to dynamically dispatch on other arguments in addition
+to the receiver; an argument can have both a static type and a dynamic
+type (called its <B>specializer</B>).  In MultiJava, we could rewrite
+the above example thusly:
+<PRE>
+class P {
+  void f(P p) { System.out.println("PP"); }
+  void f(P@C c) { System.out.println("PC"); }
+}
+class C extends P {
+  void f(P p) { System.out.println("CP"); }
+  void f(P@C c) { System.out.println("CC"); }
+}
+</PRE>
+Then both <TT>p.f(c)</TT> and <TT>p.f(c2)</TT> would print <TT>PC</TT>, and
+both <TT>c.f(c)</TT> and <TT>c.f(c2)</TT> would print <TT>CC</TT>.
+
+<P>
+The main thing that multiple dispatch adds that is important for an
+AOP language is more kinds of method signatures that can be mentioned in
+pointcut designators.  In the above example, <TT>executions(f(P))</TT>
+would include all four methods, but there should be a way to include
+just the methods that specialize on <TT>C</TT>, such as
+<TT>executions(f(@C))</TT>.  An alternate approach would be to
+generalize <TT>instanceof(C)</TT> to mean any join point where the
+receiver or any of the arguments are of class <TT>C</TT>; this extends
+the notion of ``currently-executing object'' to the set of objects that
+the message is sent to.  Perhaps a better solution would be to add a
+new pointcut specifier <TT>specializers(C)</TT>, which included
+join-points where any of the arguments were of (dynamic) type
+<TT>C</TT>, or <TT>specializers(C1,...,Cn)</TT> where the sequence
+of argument types matches <TT>C1,...,Cn</TT>.
+
+<P>
+
+<H1><A NAME="SECTION00050000000000000000">
+5 Intercessory Reflection</A>
+</H1>
+
+<P>
+A language with <B>reflection</B> allows programmatic manipulation of
+program elements as data.  In an object-oriented language, if
+the reflective data is also object-oriented, it's known as a
+<B>meta-object protocol (MOP)</B>.  For example, in Java, classes,
+methods, and fields are objects, of type <TT>Class</TT>, <TT>Method</TT>,
+and <TT>Field</TT>, respectively; <TT>o.getClass()</TT> returns object
+<TT>o</TT>'s class, and <TT>c.getMethods()</TT> and <TT>c.getFields()</TT>
+return arrays of class <TT>c</TT>'s methods and fields, respectively.
+Also, <TT>m.invoke()</TT> invokes method object <TT>m</TT>, and
+<TT>f.get()</TT> returns the value stored in field object <TT>f</TT>.
+This is known as <B>introspective</B> reflection.
+Java also allows new classes to be created at run-time, with
+<TT>ClassLoader.defineClass()</TT>, but classes can't be redefined, and 
+methods and fields can't be added or changed.  Moreover, the Java
+programmer cannot create a new <I>kind</I> of class, a subclass of the
+<TT>Class</TT> class, in order to override methods of the default class
+behavior.  This ability is known as <B>intercessory</B> reflection.
+Smalltalk [<A
+ HREF="proposal.html#Smalltalk">GR89</A>] and CLOS [<A
+ HREF="proposal.html#AMOP">KdRB91</A>] have intercessory
+MOPs, and OpenJava [<A
+ HREF="proposal.html#OpenJava">TCKI00</A>] extends Java with an intercessory
+MOP, although OpenJava's MOP is only compile-time, making it more like
+a macro-expander than full-fledged reflection.
+
+<P>
+The main impact of an intercessory MOP on an aspect language is the
+ability to modify classes at run-time.  If a new method is added to a
+class that matches a pointcut defined in an aspect that's ``in play'', 
+should the advice be hooked into that new method?  Or is aspect
+attachment a one-time transformation?  AspectJ already has to answer
+a related question: since it only generates code at compile-time, it
+can't anticipate new classes being defined at run-time.  B&#246;llert
+[<A
+ HREF="proposal.html#AOP-ST">B&#246;l98</A>] designed an aspect weaver for Smalltalk that 
+replaces woven classes with generated subclasses, but doesn't detect
+modifications to already-woven classes.  While it's possible to do
+this sort of on-demand weaving with a generative approach, an
+alternate way of implementing AOP in a language with an intercessory
+MOP is to make new kinds of classes and methods that call the
+appropriate advice at each join point.  I've developed some
+meta-objects in Tiny CLOS [<A
+ HREF="proposal.html#tiny-clos">Kic92</A>] to do this.
+
+<P>
+Tiny CLOS has multiple dispatch in the form of <B>generic
+functions</B>.  Methods are attached to generic functions, rather than
+being attached to classes.  For example, the methods named <TT>f</TT> in 
+the previous section would all be methods attached to the generic
+function <TT>f</TT> and take two arguments rather than one:
+<PRE>
+(define-generic f)
+(define-method (f (this &lt;p&gt;) (p &lt;p&gt;)) (display "PP"))
+(define-method (f (this &lt;p&gt;) (c &lt;c&gt;)) (display "PC"))
+(define-method (f (this &lt;c&gt;) (p &lt;p&gt;)) (display "CP"))
+(define-method (f (this &lt;c&gt;) (c &lt;c&gt;)) (display "CC"))
+</PRE>
+I define a subclass of the class <TT>&lt;generic&gt;</TT> called
+<TT>&lt;aspectizable-generic&gt;</TT>; when an instance of it is applied to a
+list of arguments, all advice that is applicable is run before, after,
+or (in the case of <TT>around</TT> advice) instead of the corresponding
+points in the method selection and execution algorithm (with the
+continuation being passed to <TT>around</TT> advice).
+
+<P>
+In order to determine which advice is applicable, each piece of
+advice's pointcut needs to be compared to the current join point.
+Rather than try to duplicate AspectJ's pattern-matching style of
+pointcut specifiers, however, I decided to generalize pointcuts into
+arbitary boolean functions.  To wit, a pointcut is a generic function
+that takes an aspect instance and a join point object (a descendant of
+the <TT>&lt;join-point&gt;</TT> class, such as <TT>&lt;execution-join-point&gt;</TT>) and
+returns true or false saying whether or not the pointcut contains the
+join point.  (The reason it takes an aspect instance is so that
+pointcuts can be overridden by aspect subclasses; this has the side
+effect that the data stored as part of an aspect can play a part in
+the pointcut determination.  I haven't yet come up with an example where
+a pointcut was relative to an aspect instance, but it seems
+potentially useful.)  For example, the <TT>classes()</TT> and
+<TT>methods()</TT> pointcuts from the Trace example given earlier could
+be written like so:
+<PRE>
+(define-generic classes 'generic-class &lt;pointcut&gt;)
+(define-generic methods 'generic-class &lt;pointcut&gt;)
+(define-method (methods (trace &lt;trace&gt;) (jp &lt;join-point&gt;)) #f)
+(define-method (methods (trace &lt;trace&gt;) (jp &lt;execution-join-point&gt;))
+  (classes trace jp))
+(define-method (classes (trace &lt;trace-my-classes&gt;) (jp &lt;join-point&gt;))
+  (memq (class-name (car (method-specializers (slot-ref jp 'method))))
+        '(&lt;foo&gt; &lt;bar&gt; &lt;baz&gt; &lt;garply&gt;)))
+</PRE>
+In other words, <TT>(methods trace jp)</TT> returns true if and only if
+<TT>trace</TT> is an instance of the <TT>&lt;trace-my-classes&gt;</TT> aspect,
+<TT>jp</TT> is an execution join point, and the name of the leftmost
+specializer of the method being executed is one of the classes being
+traced.  This simulates the <TT>instanceof</TT> pointcut designator in
+AspectJ, by matching the ``receiver'' of the method; rather than
+checking for class equality, however, only the names are compared,
+which has the advantage of allowing this aspect to be defined
+<I>before</I> the classes to be traced are defined.  Also, the wildcard
+matching of AspectJ could be achieved by comparing the name of the
+class (or the generic function) to a regular expression.
+
+<P>
+Once it is determined that a piece of advice is applicable to a join
+point, the advice is invoked.  A piece of advice is, like a pointcut,
+a generic function; it takes an aspect instance and a join point (and
+a continuation, in the case of <TT>around</TT> advice) and executes the
+code in the advice.  For example, the <TT>before</TT> advice from the
+tracing example could be written as:
+<PRE>
+(define-generic before-methods 'generic-class &lt;before-advice&gt;)
+(define-method (before-methods (trace &lt;trace&gt;) (jp &lt;join-point&gt;))
+  (if (slot-ref trace 'trace?)
+      (trace-entry trace (get-signature jp))))
+(slot-set! before-methods 'pointcut methods)
+</PRE>
+Since a piece of advice is a generic function, it could be overridden
+by sub-aspects, which isn't possible in AspectJ.
+
+<P>
+
+<H1><A NAME="SECTION00060000000000000000">
+6 Object-basedness</A>
+</H1>
+
+<P>
+Languages such as Self [<A
+ HREF="proposal.html#Self">UCCH91</A>], Cecil [<A
+ HREF="proposal.html#Cecil">Cha93</A>], and Obliq
+[<A
+ HREF="proposal.html#Obliq">Car94</A>] are object-oriented, but do not have classes; they are
+known as <B>object-based</B> languages, or sometimes
+<B>prototype-based</B>, although that refers to a particular
+programming idiom that is not inherent in the language itself.
+Objects inherit directly from other objects, and in Self and Obliq,
+methods and fields are defined directly on objects themselves (in
+Cecil, methods and fields are defined on generic functions).  When a
+message is sent to an object, if there is not a matching method
+defined on that object, the message is passed on to its parent
+object.  Methods can be shared by multiple objects, by having the 
+objects inherit from a parent object that holds the common methods.
+The <I>parent-of</I> relation thus serves the purpose of both
+the <I>class-of</I> and <I>superclass-of</I> relations in class-based
+languages.
+
+<P>
+Unifying these relations makes for a simpler language, without losing
+expressiveness: classes can easily be simulated in an object-based
+language.  (Note that the reverse is less easy: to simulate an
+object-based language in a class-based language, every class would
+essentially need to be a singleton class, and object creation would
+involve class creation, which is typically expensive in a class-based
+language--if it can even be done at run-time at all.)  An
+object-based aspect-oriented language would similarly be simpler but
+just as expressive.  For example, there would be no distinction
+between aspect instances and sub-aspects.  Also, pointcuts and advice
+would not need to be marked as static or non-static; static advice
+just doesn't rely on fields defined on an aspect having different
+values in the aspect's children objects.  The <TT>instanceof(C)</TT>
+pointcut would just mean all join points where the receiver object has
+<TT>C</TT> as an ancestor.
+
+<P>
+
+<H1><A NAME="SECTION00070000000000000000"></A><A NAME="other-features"></A><BR>
+7 Other language features
+</H1>
+
+<P>
+The three language features I have described above are the first three
+that I have considered, but there are others worth investigating as
+well.  Two features that are already inherent in my Tiny CLOS
+implementation are <B>first-class functions</B> (i.e., functions may
+be assigned to variables, passed as arguments to other functions, and
+returned from functions) and <B>dynamic typing</B> (i.e., functions
+and variables are not annotated with their type).  It remains to be
+determined exactly what impact these features has on an
+aspect-oriented language.  One side effect of first-class functions is
+that functions (and classes) do not have an inherent name; they may be
+bound to different names in different environments.  This might make
+join point specification harder, because it would have to be relative
+to a particular environment.  Dynamic typing also makes join point
+specification harder, because there is less information about a
+function that can be used to differentiate it from others.
+
+<P>
+Another feature that would be interesting to consider is
+<B>predicate dispatching</B> [<A
+ HREF="proposal.html#predicate-dispatch">EKC98</A>].  It
+generalizes multiple dispatch even further; rather than deciding what
+method to invoke based on the dynamic types of the arguments, a
+generic function can use any arbitrary predicate on the arguments to
+choose.  For example, a generic function <TT>pop</TT> that takes a stack
+argument could choose to run different methods depending on whether
+the stack is empty or not.  This fits in well with the notion that
+pointcuts are predicates; advice could just be methods on a generic
+function whose predicates are the pointcuts.
+
+<P>
+Other features worth looking at are <B>parametric polymorphism</B>,
+<B>multiple inheritance</B>, and <B>modules</B>.
+
+<P>
+
+<H1><A NAME="SECTION00080000000000000000">
+8 Related work</A>
+</H1>
+
+<P>
+B&#246;llert [<A
+ HREF="proposal.html#AOP-ST">B&#246;l98</A>] designed a general-purpose aspect
+weaver for Smalltalk.  It can incrementally weave aspects into
+classes, and remove them, at run-time.  In order not to interfere with
+Smalltalk's development tools, which allow reflective access to the
+source code at run-time, source-to-source weaving is avoided; instead
+it uses Smalltalk's intercessory reflection to replace each woven
+class with a new class and to replace a woven class's metaclass with a
+new metaclass (to make sure that new instances are instances of the
+new class).  It would be interesting to reproduce this approach in
+Tiny CLOS or OpenJava, and to compare with my even-less-invasive
+approach which does not involve replacing classes, but only adds a
+small (fixed) number of new metaclasses.
+
+<P>
+Several areas of research have similar aims to aspect-oriented
+programming, namely separation of concerns that are not easily
+separated using procedural or object-oriented decomposition.  Some of
+them, in particular <B>subject-oriented programming (SOP)</B> [<A
+ HREF="proposal.html#SOP">MHO96</A>] and
+<B>composition filters</B> [<A
+ HREF="proposal.html#comp-filt">AT98</A>], have implementations in
+Smalltalk as well as Java and C++.  SOP allows multiple class
+definitions with the same name to be automatically merged into one
+class; a <B>subject</B> is a collection of partial class definitions
+implementing a common concern, similar to an aspect.  SOP has mostly
+been superceded by <B>hyperspaces</B> [<A
+ HREF="proposal.html#MDSOC">OT00</A>], which is a more
+general formulation of SOP allowing remodularization in multiple
+concern dimensions simultaneously.  Currently the only hyperspaces
+implementation is HyperJ, which is a set of tools for Java.
+Composition filters allow message sends to be wrapped with multiple
+layers of filters, which are similar to aspects.  Sina/st [<A
+ HREF="proposal.html#Sina">Koo95</A>] is
+a language embedded in Smalltalk that implements composition filters
+using reification of messages.
+
+<P>
+
+<H1><A NAME="SECTION00090000000000000000">
+9 Contributions</A>
+</H1>
+
+<P>
+The main contributions of my thesis research will be in an improved
+understanding of aspect-oriented programming untethered to any
+particular language.  So far, specific contributions I have already
+tentatively identified include the idea of pointcuts being predicate
+functions; the ability to use aspect instance data in pointcuts; and
+the ability to override or extend advice in sub-aspects.  These
+enhancements could all theoretically be applied back to AspectJ, but
+they arose by looking at AOP in the context of languages other than
+Java.
+
+<P>
+Specific implementation techniques are likely to be contributions of
+the research as well.  In particular, the use of intercessory
+reflection to implement aspect attachment is a flexible but clean
+solution; the source-to-source translation approach used by AspectJ
+can be seen as an optimization of intercession, but studying a more
+dynamic form of intercession may lead to other ideas for optimizing
+while still keeping the flexibility (allowing for things like
+attaching and detaching aspects at run-time).
+
+<P>
+
+<H1><A NAME="SECTION000100000000000000000">
+10 Research Plan</A>
+</H1>
+
+<P>
+My research plan is to consider at least the three features detailed
+above, plus probably three or four features from
+section&nbsp;<A HREF="proposal.html#other-features">7</A>.  Each feature should be considered in
+isolation or as close to it as possible, by considering a language
+only differing from the Java model with respect to that one feature.
+I've already gotten somewhat ahead of my plan by developing AOP for
+Tiny CLOS, which combines several features (namely multiple dispatch, 
+intercession, dynamic typing, and higher-order functions).  So the
+first step would be to develop an object model in Scheme that is
+similar to Java, and then sart modifying that in different directions, 
+one feature at a time, considering AOP for each.
+
+<P>
+Where feasible, I would also like to migrate some of my AOP
+implementation ideas back to Java, or to extensions of Java such as
+MultiJava [<A
+ HREF="proposal.html#MultiJava">CLCM00</A>], OpenJava [<A
+ HREF="proposal.html#OpenJava">TCKI00</A>], GJ (Generic
+Java--Java with parametric polymorphism) [<A
+ HREF="proposal.html#GJ">BOSW98</A>], etc., by
+modifying the AspectJ implementation (which is open-source).
+
+<P>
+In order to demonstrate the benefit of using AOP with each of these
+language features, I need to provide some compelling examples of
+programs that become easier to express using AOP.  To begin with, I
+plan to use some of the examples from the AspectJ primer; I have
+already started with the Trace example, and the Telecom simulation
+seems like another good example.  However, I would also like to devise 
+my own examples; one in particular that I've thought about is that of
+multi-user resource control, where each user's resource allocation (such
+as amount of memory, number of threads, or computation time) is
+limited by one or more resource policies, encoded as an aspect.  My
+working model for this example is the JRes toolkit [<A
+ HREF="proposal.html#JRes">CvE98</A>], which
+uses a specialized Java class loader to rewrite bytecode class
+definitions in order to insert appropriate checks, in a somewhat
+aspect-oriented manner.  I think this provides a good opportunity to
+show the benefits of AOP by using an aspect weaver rather than a class 
+loader.
+
+<P>
+
+<H2><A NAME="SECTION000110000000000000000">
+Bibliography</A>
+</H2><DL COMPACT><DD><P></P><DT><A NAME="comp-filt">AT98</A>
+<DD>
+Mehmet Aksit and Bedir Tekinerdogan.
+<BR><A NAME="tex2html6"
+  HREF="http://trese.cs.utwente.nl/composition_filters/filter_aspects.htm">Solving the modeling problems of object-oriented
+  languages by composing multiple aspects using composition
+  filters</A>.
+<BR>Technical report, TRESE project, University of Twente, Centre for
+
+Telematics and Information Technology, P.O. Box 217, 7500 AE, Enschede, The
+  Netherlands, 1998.
+<BR>AOP'98 workshop position paper.
+
+<P></P><DT><A NAME="AOP-ST">B&#246;l98</A>
+<DD>
+Kai B&#246;llert.
+<BR><A NAME="tex2html7"
+  HREF="http://www.theoinf.tu-ilmenau.de/~kaib/aop/">Aspect-Oriented Programming, Case Study: System
+  Management Application</A>.
+<BR>Graduation thesis, Fachhochschule Flensburg, 1998.
+
+<P></P><DT><A NAME="GJ">BOSW98</A>
+<DD>
+Gilad Bracha, Martin Odersky, David Stoutamire, and Philip Wadler.
+<BR><A NAME="tex2html8"
+  HREF="http://www.cs.bell-labs.com/who/wadler/pizza/gj/Documents/">Making the future safe for the past: Adding
+  Genericity to the Java Programming
+  Language</A>.
+<BR>In <EM>Proceedings of 1998 ACM OOPSLA Conference</EM>, Vancouver,
+
+October 1998.
+
+<P></P><DT><A NAME="Obliq">Car94</A>
+<DD>
+L.&nbsp;Cardelli.
+<BR><A NAME="tex2html9"
+  HREF="http://research.compaq.com/SRC/personal/luca/Obliq/Obliq.html">Obliq: A language with distributed
+  scope</A>.
+<BR>Technical Report 122, Digital Equipment Corporation Systems Research
+
+Center, Palo Alto, CA, June 1994.
+
+<P></P><DT><A NAME="Cecil">Cha93</A>
+<DD>
+Craig Chambers.
+<BR><A NAME="tex2html10"
+  HREF="http://www.cs.washington.edu/research/projects/cecil/www/Papers/cecil-spec.html">The Cecil Language: Specification and
+  Rationale</A>.
+<BR>Technical Report TR-93-03-05, University of Washington, Department of
+
+Computer Science and Engineering, March 1993.
+
+<P></P><DT><A NAME="come-from">Cla73</A>
+<DD>
+R.&nbsp;Lawrence Clark.
+<BR><A NAME="tex2html11"
+  HREF="http://www.fortran.com/fortran/come_from.html">A Linguistic Contribution to GOTO-less
+  programming</A>.
+<BR><EM>DATAMATION</EM>, December 1973.
+
+<P></P><DT><A NAME="MultiJava">CLCM00</A>
+<DD>
+Curtis Clifton, Gary&nbsp;T. Leavens, Craig Chambers, and Todd Millstein.
+<BR><A NAME="tex2html12"
+  HREF="http://www.cs.washington.edu/research/projects/cecil/www/Papers/oopsla00.html">MultiJava: Modular Open Classes and Symmetric
+  Multiple Dispatch for
+  Java</A>.
+<BR>In <EM>Proceedings of the ACM Conference on Object-Oriented
+
+Programming Systems, Languages, and Applications (OOPSLA)</EM>, 2000.
+
+<P></P><DT><A NAME="JRes">CvE98</A>
+<DD>
+Grzegorz Czajkowski and Thorsten von Eicken.
+<BR><A NAME="tex2html13"
+  HREF="http://www.cs.cornell.edu/slk/papers.html">JRes: A Resource Accounting Interface for
+  Java</A>.
+<BR>In <EM>Proceedings of the 1998 ACM OOPSLA Conference</EM>, Vancouver,
+
+BC, October 1998.
+
+<P></P><DT><A NAME="predicate-dispatch">EKC98</A>
+<DD>
+Michael&nbsp;D. Ernst, Crag Kaplan, and Craig Chambers.
+<BR><A NAME="tex2html14"
+  HREF="http://www.cs.washington.edu/research/projects/cecil/www/Papers/gud.html">Predicate Dispatching: A Unified Theory of
+  Dispatch</A>.
+<BR>In <EM>Proceedings of ECOOP '98, the 12th European Conference on
+
+Object-Oriented Programming</EM>, pages 186-211, Brussels, Belgium, July 20-24
+  1998.
+
+<P></P><DT><A NAME="ob-quant">FF00</A>
+<DD>
+Robert&nbsp;E. Filman and Daniel&nbsp;P. Friedman.
+<BR><A NAME="tex2html15"
+  HREF="http://ic.arc.nasa.gov/ic/darwin/oif/leo/filman/filman.html">Aspect-Oriented Programming is Quantification and
+  Obliviousness</A>.
+<BR>In <EM>Proceedings of the Workshop on Advanced Separation of
+
+Concerns, OOPSLA 2000</EM>, Minneapolis, October 2000.
+
+<P></P><DT><A NAME="JLS">GJS96</A>
+<DD>
+James Gosling, Bill Joy, and Guy Steele.
+<BR><EM><A NAME="tex2html2"
+  HREF="http://java.sun.com/docs/books/jls/">The Java Language
+  Specification</A></EM>.
+<BR>Addison Wesley, 1996.
+
+<P></P><DT><A NAME="Smalltalk">GR89</A>
+<DD>
+Adele Goldberg and David Robson.
+<BR><EM><A NAME="tex2html3"
+  HREF="http://users.ipa.net/~dwighth/smalltalk/bluebook/bluebook_imp_toc.html">Smalltalk 80 The
+  Language</A></EM>.
+<BR>Addison-Wesley, 1989.
+
+<P></P><DT><A NAME="AspectJ">K$^+$</A>
+<DD>
+Gregor Kiczales et&nbsp;al.
+<BR><A NAME="tex2html16"
+  HREF="http://aspectj.org">AspectJ</A>.
+<BR>Project web page.
+<BR><TT>
+<BR>http://aspectj.org</TT>.
+
+<P></P><DT><A NAME="R5RS">KCR98</A>
+<DD>
+Richard Kelsey, William Clinger, and Jonathan Rees.
+<BR><A NAME="tex2html17"
+  HREF="http://www-swiss.ai.mit.edu/~jaffer/r5rs_toc.html">Revised<IMG
+ WIDTH="12" HEIGHT="20" ALIGN="BOTTOM" BORDER="0"
+ SRC="img1.gif"
+ ALT="$^5$"> Report on the Algorithmic Language
+  Scheme</A>, February 1998.
+
+<P></P><DT><A NAME="AMOP">KdRB91</A>
+<DD>
+Gregor Kiczales, Jim des Rivi&#232;res, and Daniel&nbsp;G. Bobrow.
+<BR><EM><A NAME="tex2html4"
+  HREF="http://www.parc.xerox.com/csl/groups/sda/publications/papers/Kiczales-AMOP/">The Art of the Metaobject
+  Protocol</A></EM>.
+<BR>The MIT Press, 1991.
+
+<P></P><DT><A NAME="tiny-clos">Kic92</A>
+<DD>
+Gregor Kiczales.
+<BR><A NAME="tex2html18"
+  HREF="http://www.parc.xerox.com/spl/projects/oi/software.html">Tiny CLOS source
+  code</A>.
+<BR>OI software archives web page, December 1992.
+<BR><TT>
+<BR>http://www.parc.xerox.com/spl/projects/oi/software.html</TT>.
+
+<P></P><DT><A NAME="AOP">KLM$^+$97</A>
+<DD>
+Gregor Kiczales, John Lamping, Anurag Mendhekar, Chris Maeda, Cristina&nbsp;Videira
+  Lopes, Jean-Marc Loingtier, and John Irwin.
+<BR><A NAME="tex2html19"
+  HREF="http://www.parc.xerox.com/csl/groups/sda/publications/papers/Kiczales-ECOOP97/">Aspect-Oriented
+  Programming</A>.
+<BR>In <EM>Proceedings of the European Conference on Object-Oriented
+
+Programming (ECOOP)</EM>. Springer-Verlag, June 1997.
+
+<P></P><DT><A NAME="Sina">Koo95</A>
+<DD>
+P.&nbsp;Koopmans.
+<BR><A NAME="tex2html20"
+  HREF="http://trese.cs.utwente.nl/publications/paperinfo/koopmans.thesis.pi.ref.htm">On the design and realization of the Sina
+  compiler</A>.
+<BR>MSc. thesis, Dept. of Computer Science, University of Twente,
+
+August 1995.
+
+<P></P><DT><A NAME="SOP">MHO96</A>
+<DD>
+Hafedh Mili, William Harrison, and Harold Ossher.
+<BR><A NAME="tex2html21"
+  HREF="http://www.research.ibm.com/sop/abstracts/smalltalk.htm">Supporting Subject-Oriented Programming in
+  Smalltalk</A>, August
+
+1996.
+<BR>Presented at TOOLS USA 96.
+
+<P></P><DT><A NAME="MDSOC">OT00</A>
+<DD>
+Harold Ossher and Peri Tarr.
+<BR><A NAME="tex2html22"
+  HREF="http://www.research.ibm.com/hyperspace/MDSOC.htm">Multi-Dimensional Separation of Concerns and The
+  Hyperspace Approach</A>.
+<BR>In <EM>Proceedings of the Symposium on Software Architectures and
+
+Component Technology: The State of the Art in Software Development</EM>. Kluwer,
+  2000.
+
+<P></P><DT><A NAME="CLtL">Ste90</A>
+<DD>
+Guy&nbsp;L. Steele.
+<BR><EM><A NAME="tex2html5"
+  HREF="http://www.cs.cmu.edu/Groups/AI/html/cltl/cltl2.html">Common Lisp the
+  Language</A></EM>.
+<BR>Digital Press, 2nd edition, 1990.
+
+<P></P><DT><A NAME="OpenJava">TCKI00</A>
+<DD>
+Michiaki Tatsubori, Shigeru Chiba, Marc-Olivier Killijian, and Kozo Itano.
+<BR><A NAME="tex2html23"
+  HREF="http://www.hlla.is.tsukuba.ac.jp/~mich/openjava/">OpenJava: A Class-Based Macro System for
+  Java</A>.
+<BR>In Francesco Tisato&nbsp;(Eds.) Walter&nbsp;Cazzola, Robert J.&nbsp;Stroud, editor,
+
+<EM>Lecture Notes in Computer Science 1826, Reflection and Software
+  Engineering</EM>, pages 117-133. Springer-Verlag, 2000.
+
+<P></P><DT><A NAME="Self">UCCH91</A>
+<DD>
+David Ungar, Craig Chambers, Bay-Wei Chang, and Urs H&#246;lzle.
+<BR><A NAME="tex2html24"
+  HREF="http://www.sun.com/research/self/papers/organizing-programs.html">Organizing Programs Without
+  Classes</A>.
+<BR><EM>Lisp and Symbolic Computation</EM>, 4(3):223-242, July 1991.
+</DL>
+
+<P>
+
+<H1><A NAME="SECTION000120000000000000000">
+About this document ...</A>
+</H1>
+ <STRONG>Ph.D. Thesis Proposal: 
+<BR>The Design and Implementation of Aspect-Oriented Languages</STRONG><P>
+This document was generated using the
+<A HREF="http://www-dsed.llnl.gov/files/programs/unix/latex2html/manual/"><STRONG>LaTeX</STRONG>2<tt>HTML</tt></A> translator Version 99.2beta8 (1.42)
+<P>
+Copyright &#169; 1993, 1994, 1995, 1996,
+<A HREF="http://cbl.leeds.ac.uk/nikos/personal.html">Nikos Drakos</A>, 
+Computer Based Learning Unit, University of Leeds.
+<BR>Copyright &#169; 1997, 1998, 1999,
+<A HREF="http://www.maths.mq.edu.au/~ross/">Ross Moore</A>, 
+Mathematics Department, Macquarie University, Sydney.
+<P>
+The command line arguments were: <BR>
+ <STRONG>latex2html</STRONG> <TT>-split 0 -no_navigation -show_section_numbers proposal</TT>
+<P>
+The translation was initiated by Doug Orleans on 2001-01-25<BR><HR>
+<ADDRESS>
+Doug Orleans
+2001-01-25
+</ADDRESS>
+</BODY>
+</HTML>

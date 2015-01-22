@@ -1,0 +1,64 @@
+This is BibTeX, Version 0.99c (Web2C 7.3.1)
+The top-level auxiliary file: proposal.aux
+The style file: alpha.bst
+Database file #1: proposal.bib
+I was expecting a `,' or a `)'---line 37 of file proposal.bib
+ :   title =        {BeCecil, a Core Object-Oriented Language with Block Structure and Multimethods: Semantics and Typing}
+ :                                                                                                                        {}},
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 59 of file proposal.bib
+ : 
+ : @Misc{AspectJ,
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+Warning--I didn't find a database entry for "mezini-thesis"
+Warning--I didn't find a database entry for "design-patterns"
+Warning--I didn't find a database entry for "MzScheme"
+Warning--I didn't find a database entry for "cords"
+Warning--I didn't find a database entry for "cords-in-AspectJ"
+Warning--I didn't find a database entry for "units"
+Warning--I didn't find a database entry for "Rondo"
+Warning--I didn't find a database entry for "APPC"
+Warning--I didn't find a database entry for "composition-filters"
+You've used 3 entries,
+            2543 wiz_defined-function locations,
+            590 strings with 5156 characters,
+and the built_in function-call counts, 1462 in all, are:
+= -- 142
+> -- 89
+< -- 1
++ -- 32
+- -- 32
+* -- 103
+:= -- 246
+add.period$ -- 11
+call.type$ -- 3
+change.case$ -- 23
+chr.to.int$ -- 3
+cite$ -- 3
+duplicate$ -- 53
+empty$ -- 99
+format.name$ -- 33
+if$ -- 303
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 2
+newline$ -- 20
+num.names$ -- 9
+pop$ -- 34
+preamble$ -- 1
+purify$ -- 26
+quote$ -- 0
+skip$ -- 43
+stack$ -- 0
+substring$ -- 53
+swap$ -- 13
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 24
+warning$ -- 0
+while$ -- 12
+width$ -- 4
+write$ -- 43
+(There were 2 error messages)

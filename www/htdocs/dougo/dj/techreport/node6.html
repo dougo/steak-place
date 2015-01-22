@@ -1,0 +1,160 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 99.2beta8 (1.42)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Related Work</TITLE>
+<META NAME="description" CONTENT="Related Work">
+<META NAME="keywords" CONTENT="dj">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v99.2beta8">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="dj.css">
+
+<LINK REL="next" HREF="node7.html">
+<LINK REL="previous" HREF="node5.html">
+<LINK REL="up" HREF="dj.html">
+<LINK REL="next" HREF="node7.html">
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<A NAME="tex2html76"
+  HREF="node7.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.gif"></A> 
+<A NAME="tex2html74"
+  HREF="dj.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.gif"></A> 
+<A NAME="tex2html68"
+  HREF="node5.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.gif"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html77"
+  HREF="node7.html">Summary and Future Work</A>
+<B> Up:</B> <A NAME="tex2html75"
+  HREF="dj.html">DJ: Dynamic Adaptive Programming</A>
+<B> Previous:</B> <A NAME="tex2html69"
+  HREF="node5.html">Implementation Highlights</A>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00060000000000000000">
+Related Work</A>
+</H1>
+
+<P>
+DJ is closely related to DemeterJ&nbsp;[<A
+ HREF="node9.html#DemeterJ:00">18</A>], a preprocessing
+tool that takes a <B>class dictionary file</B> (containing a textual
+representation of a UML class diagram, with syntax directives for
+parsing and printing object structures) and some <B>behavior files</B>
+(containing regular Java methods to be attached to the classes in the
+class dictionary, plus traversal method specifications, visitor
+methods, and <B>adaptive methods</B> that connect a traversal with a
+visitor class) and generates plain Java code for those classes with
+traversal methods attached (similar to the code in
+Figure&nbsp;<A HREF="node2.html#fig:LoD">1</A>) along with a parser and some custom visitors
+such as for printing, copying, or comparing object structures.  DJ
+shares the same traversal strategy language and traversal graph
+algorithms as DemeterJ, but does no code generation and is a pure-Java
+library.
+
+<P>
+Besides being easier to use with existing Java code, DJ has a few
+other advantages compared to DemeterJ.  One is the ability to traverse
+classes for which the programmer does not have source code, or is not
+able or willing to modify the source code; for example, one might
+traverse parts of Java's Swing library of GUI widgets.  DJ can
+traverse public accessor methods, or may even use private methods and
+fields if the JVM's security manager allows reflective access to
+private parts (which is often the case outside of applets).  Another
+feature of DJ which does not exist in DemeterJ is the ability to work
+with subgraphs of a class graph; in DemeterJ, all traversals are
+computed in the context of the whole class graph defined in the class
+dictionary, but in DJ you can create new class graphs by selecting a
+subgraph with a traversal strategy.  In addition, DJ allows components
+to be more generic, by taking class graphs, traversal strategies, or
+classes to be visited as run-time parameters.  These latter two
+advantages are due to the reification of concepts which only exist at
+compile-time in DemeterJ as first class objects in DJ.
+
+<P>
+[Adaptive Object Models]
+
+<P>
+DJ's reflective Visitor class is similar to that described in
+[<A
+ HREF="node9.html#java-tip:reflective-visitor">1</A>].  [more]
+
+<P>
+[Palsberg paper about visitors]
+
+<P>
+Java OQL, is the binding of OQL (Object Query Language) from ODMG 2.0
+[<A
+ HREF="node9.html#cattell:odmg2.0">3</A>] to Java, treats query specifications much like
+DJ treats traversal strategy specifications.  An <TT>OQLQuery</TT>
+object can be constructed from a string describing a query; the query
+can then be executed by calling the <TT>execute()</TT> method on the
+<TT>OQLQuery</TT> object.  Queries are either compiled dynamically at
+run-time or interpreted.  An example of a query is:
+<PRE>
+OQLQuery query = new OQLQuery("select p.getSpouse from p in persons");
+Set spouses = (Set) query.execute();
+</PRE>
+For an adaptive version of OQL, see&nbsp;[<A
+ HREF="node9.html#harrison:aql-94">6</A>].
+
+<P>
+DJ has some connections with aspect-oriented programming (AOP)
+[<A
+ HREF="node9.html#aop:ecoop97">10</A>].  An adaptive visitor is a specialized aspect: it
+says what behavior should happen at certain principled points in the
+execution of a traversal.  A traversal strategy can also be considered
+an aspect: it adds crosscutting behavior whose implementation would
+ordinarily require scattering methods across the class structure.
+More details about the aspectual nature of DJ are in
+[<A
+ HREF="node9.html#aspectual-methods">11</A>].
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html76"
+  HREF="node7.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.gif"></A> 
+<A NAME="tex2html74"
+  HREF="dj.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.gif"></A> 
+<A NAME="tex2html68"
+  HREF="node5.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.gif"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html77"
+  HREF="node7.html">Summary and Future Work</A>
+<B> Up:</B> <A NAME="tex2html75"
+  HREF="dj.html">DJ: Dynamic Adaptive Programming</A>
+<B> Previous:</B> <A NAME="tex2html69"
+  HREF="node5.html">Implementation Highlights</A>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Doug Orleans
+2001-03-12
+</ADDRESS>
+</BODY>
+</HTML>

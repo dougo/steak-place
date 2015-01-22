@@ -1,0 +1,24 @@
+// $ANTLR : Structure.g -> StructureParserTokenTypes.txt$
+StructureParser    // output token vocab name
+LITERAL_a="a"=4
+LITERAL_b="b"=5
+LITERAL_d="d"=6
+LITERAL_e="e"=7
+LITERAL_true="true"=8
+LITERAL_false="false"=9
+CHAR_LITERAL=10
+NUM_INT=11
+NUM_LONG=12
+NUM_FLOAT=13
+NUM_DOUBLE=14
+STRING_LITERAL=15
+IDENT=16
+DOT=17
+WS=18
+SL_COMMENT=19
+ML_COMMENT=20
+ESC=21
+HEX_DIGIT=22
+VOCAB=23
+EXPONENT=24
+FLOAT_SUFFIX=25

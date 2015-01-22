@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>Cameron Fox - Last Day of Summer — 12 of 18</title>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="author" content="Cameron Fox" />
+  <meta name="description" content="A page for the game Last Day of Summer by Cameron Fox." />
+  <link rel="stylesheet" href="style.css" type="text/css" media="all" />
+</head>
+
+<body>
+
+<div class = "container">
+
+<div class ="sourcecoverimage">
+	<span><a href="Cover.jpg"><img src="Small Cover.jpg" border="1" /></a></span>
+</div>
+
+<div class ="sourceintroduction">
+	<h1>
+		<span>Last Day of Summer</span> <span class="pagination">— 12 of 18</span>
+	</h1>
+	<h2>
+		<span>Cameron Fox</span>
+	</h2>
+	<div class ="sourcebibliography">
+		<span>Release 3</span>
+	</div>
+</div>
+
+<div class = "links">
+<ul>
+<li><a href="index.html">Home page</a></li><li><a href="source.html">Beginning</a></li><li><a href="source_9.html">Previous</a></li><li><a href="source_11.html">Next</a></li>
+</ul>
+</div>
+
+<div class = "source">
+<p class="indent0"><span class="heading">Chapter - The Chapel</span></p><p class="indent0"></p><p class="indent0">The front door is a scenery open door.  It is east of the building site.  &quot;<span class="quote">[</span><span class="substitution">The front door</span><span class="quote">].</span>&quot;</p><p class="indent0">To say the front door:</p><p class="indent1">if the front door is open:</p><p class="indent2">say &quot;<span class="quote">Through the open front door you can see </span>&quot;;</p><p class="indent2">if the player is in the building site:</p><p class="indent3">say &quot;<span class="quote">the greengrocer sitting on a pew near the altar</span>&quot;;</p><p class="indent2">otherwise:</p><p class="indent3">say &quot;<span class="quote">the building site</span>&quot;;</p><p class="indent1">otherwise:</p><p class="indent2">say &quot;<span class="quote">The front door is closed</span>&quot;.</p><p class="indent0">Instead of searching the front door, try examining the front door.</p><p class="indent0">The Chapel is east of the front door.  &quot;<span class="quote">The inside of the chapel is no less ramshackle than the outside.  It's quiet, though.  [</span><span class="substitution">if the back door is open</span><span class="quote">]A slight breeze blows in through a door to the north, bringing the scent of a garden.[</span><span class="substitution">otherwise</span><span class="quote">]In the north wall is the back door.[</span><span class="substitution">end if</span><span class="quote">]  The front door leads back out to the west.</span>&quot;</p><p class="indent0">It is in the town area.</p><p class="indent0"></p><p class="indent0">Instead of going outside in the chapel, try going west.</p><p class="indent0">Instead of exiting in the chapel when the player is not on the pew, try going west.</p><p class="indent0">Instead of examining west in the chapel, try examining the front door.</p><p class="indent0">Instead of examining outside in the chapel, try examining the front door.</p><p class="indent0"></p><p class="indent0">The greengrocer is a man in the chapel.  &quot;<span class="quote">The greengrocer is here, sitting on a pew near the altar.</span>&quot;</p><p class="indent0">The description is &quot;<span class="quote">The greengrocer is dressed up like he's going to church, but it's not Sunday.</span>&quot;</p><p class="indent0"></p><p class="indent0">Understand &quot;<span class="quote">grocer/man</span>&quot; as the greengrocer.</p><p class="indent0"></p><p class="indent0">The pew is an enterable scenery supporter in the chapel.  &quot;<span class="quote">Rows of wooden pews fill the chapel.</span>&quot;</p><p class="indent0">Understand &quot;<span class="quote">pews</span>&quot; as the pew.</p><p class="indent0">The altar is a scenery supporter in the chapel.  &quot;<span class="quote">The altar stands empty along the eastern wall of the chapel.</span>&quot;</p><p class="indent0"></p><p class="indent0">The greengrocer is either lost in thought, stirring, waiting for you to sit, or done talking.</p><p class="indent0">Yourself can be recognized.</p><p class="indent0"></p><p class="indent0">Every turn when the greengrocer is lost in thought and the player is in the chapel:</p><p class="indent1">now the greengrocer is stirring;</p><p class="indent1">say &quot;<span class="quote">The greengrocer doesn't seem to notice you arrive, but sits lost in his thoughts.</span>&quot;;</p><p class="indent1">the greengrocer notices you in two turns from now.</p><p class="indent1"></p><p class="indent0">At the time when the greengrocer notices you:</p><p class="indent1">if the player is enclosed by the chapel:</p><p class="indent2">say &quot;<span class="quote">The greengrocer stirs from his reverie </span>&quot;;</p><p class="indent2">if the player is not recognized:</p><p class="indent3">say &quot;<span class="quote">and sees you for the first time.  'I know you, you're the Cubbins boy.  Tolmy, right?'[</span><span class="substitution">no line  break</span><span class="quote">]</span>&quot;;</p><p class="indent2">otherwise:</p><p class="indent3">say &quot;<span class="quote">again.[</span><span class="substitution">no line break</span><span class="quote">]</span>&quot;;</p><p class="indent2">if the player is not on the pew:</p><p class="indent3">say &quot;<span class="quote">  He [</span><span class="substitution">if the player is recognized</span><span class="quote">]notices you standing there, and [</span><span class="substitution">end if</span><span class="quote">]pats the pew.  'Come and sit beside me, son.'</span>&quot;;</p><p class="indent3">now the greengrocer is waiting for you to sit;</p><p class="indent2">otherwise:</p><p class="indent3">say &quot;<span class="quote">  [</span><span class="substitution">if the player is not recognized</span><span class="quote">]You nod, and he[</span><span class="substitution">else</span><span class="quote">]He notices you sitting beside him, then nods and[</span><span class="substitution">end if</span><span class="quote">] goes back to gazing blankly at the altar.[</span><span class="substitution">paragraph break</span><span class="quote">]</span>&quot;;</p><p class="indent3">relate the legend;</p><p class="indent2">now the player is recognized;</p><p class="indent1">otherwise:</p><p class="indent2">now the greengrocer is lost in thought.</p><p class="indent0"></p><p class="indent0">After going from the chapel when the greengrocer is waiting for you to sit:</p><p class="indent1">now the greengrocer is lost in thought;</p><p class="indent1">continue the action.</p><p class="indent0"></p><p class="indent0"><span class="comment">[Guess the pew when the player just types &quot;sit&quot;:]</span></p><p class="indent0">Understand &quot;<span class="quote">sit on [</span><span class="substitution">the pew</span><span class="quote">]</span>&quot; as entering.</p><p class="indent0"></p><p class="indent0">Sitting with is an action applying to one visible thing.</p><p class="indent0">Understand &quot;<span class="quote">sit with/beside [</span><span class="substitution">the greengrocer</span><span class="quote">]</span>&quot; and &quot;<span class="quote">sit next to [</span><span class="substitution">the greengrocer</span><span class="quote">]</span>&quot; as sitting with.</p><p class="indent0">Instead of sitting with the greengrocer, try entering the pew.</p><p class="indent0"></p><p class="indent0">After entering the pew:</p><p class="indent1">say &quot;<span class="quote">You sit on the pew next to the greengrocer.[</span><span class="substitution">run paragraph on</span><span class="quote">]</span>&quot;; </p><p class="indent1">if the greengrocer is waiting for you to sit:</p><p class="indent2">say &quot;<span class="quote">[</span><span class="substitution">paragraph break</span><span class="quote">]The greengrocer nods, and goes back to gazing blankly at the altar.[</span><span class="substitution">paragraph break</span><span class="quote">]</span>&quot;;</p><p class="indent2">relate the legend;</p><p class="indent1">otherwise:</p><p class="indent2">say &quot;<span class="quote">[</span><span class="substitution">paragraph break</span><span class="quote">]</span>&quot;.</p><p class="indent0"></p><p class="indent0">To relate the legend:</p><p class="indent1">say &quot;<span class="quote">After a while, he speaks again.  'That altar reminds me of a legend Preacher once told me.  He was always bringing me tidbits of history and legend with his herbs and vegetables.</span></p><p class="indent1"><span class="quote"></span></p><p class="indent1"><span class="quote">'This one was about a man who stole the treasure of time.  Even worse, as the legend goes, he then lost it, and it was split into two pieces.  He is cursed to wander until he finds the pieces again, reunites them, and replaces it on the altar he stole it from.'  The greengrocer chuckles, then goes quiet again.</span></p><p class="indent1"><span class="quote"></span></p><p class="indent1"><span class="quote">After another few moments, the greengrocer looks down at the floor, saying in a quavering voice, 'But I guess I won't be hearing any more of Preacher's legends now.'</span>&quot;;</p><p class="indent1">now the greengrocer is done talking.</p><p class="indent0"></p>
+</div>
+
+<div class ="notes">
+
+</div>
+
+</div>
+
+</body>
+
+</html>

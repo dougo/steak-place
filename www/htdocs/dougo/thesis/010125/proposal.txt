@@ -1,0 +1,26 @@
+Aspect-Oriented Programming for Dynamic Languages
+
+(paragraph about AOP)
+
+The benefits of AOP should apply to all programming languages, but so
+far most of the AOP research has been in the context of Java, with
+the design and implementation of AspectJ.  There are two reasons to
+explore AOP issues in other languages: to bring the benefits of AOP to 
+programmers who prefer to use other languages, and to make sure that
+the AOP concepts aren't being shaped too much by the properties of
+Java.  In particular, I wish to explore the design of AOP extensions
+to dynamic languages.  By dynamic languages, I mean those in which
+actions that usually occur at compile-time can occur at
+run-time\footnote{Thanks to Greg Sullivan for this definition.}, such
+as definition of new functions or classes, or redefinition of existing 
+functions or classes.  Smalltalk and Common Lisp are perhaps the two
+most well-known dynamic languages.  [Does dynamic imply reflection?
+Does it imply non-static types?]
+
+Two features that some dynamic languages have are multiple dispatch
+(also known as multimethods, or generic functions) and classlessness
+(also known as object-based, or prototype-based).  Both of these can
+be considered generalizations of more common language features:
+multiple dispatch is a generalization of the single dispatch model
+found in Java and Smalltalk, and classes can be simulated in a
+classless language.

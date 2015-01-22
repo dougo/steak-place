@@ -1,0 +1,60 @@
+This is TeX, Version 3.14159 (C version 6.1) (format=latex 96.10.15)  16 OCT 1998 23:28
+**plan
+(plan.tex
+LaTeX2e <1996/06/01>
+Hyphenation patterns for english, german, loaded.
+(/share/unix/packages/TeX/texmf/tex/latex/base/article.cls
+Document Class: article 1996/05/26 v1.3r Standard LaTeX document class
+(/share/unix/packages/TeX/texmf/tex/latex/base/size10.clo
+File: size10.clo 1996/05/26 v1.3r Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(/share/unix/packages/TeX/lib/inputs/html.sty) (plan.aux)
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <12> on input line 25.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 25.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 25.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 56.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 56.
+ [1
+
+] [2] [3] (plan.bbl
+Missing character: There is no ^^e9 in font cmr10!
+[4]) [5] (plan.aux) ) 
+Here is how much of TeX's memory you used:
+ 311 strings out of 10910
+ 3081 string characters out of 72011
+ 47499 words of memory out of 262141
+ 3239 multiletter control sequences out of 9500
+ 7963 words of font info for 29 fonts, out of 150000 for 255
+ 14 hyphenation exceptions out of 607
+ 24i,6n,24p,158b,262s stack positions out of 300i,40n,60p,3000b,4000s
+
+Output written on plan.dvi (5 pages, 17040 bytes).

@@ -1,0 +1,182 @@
+\documentclass{article}
+\usepackage{html}
+\newcommand{\email}[1]{\htmladdnormallink{\texttt{#1}}{mailto:#1}}
+\newcommand{\url}[1]{\htmladdnormallink{\texttt{#1}}{#1}}
+
+\title{Plan of Study: \\ Exploratory Programming with Collaborative
+	Programming Languages}
+\author{Doug Orleans \\ 131 2nd St. \\ Cambridge, MA 02141 \\
+	\email{dougo@ccs.neu.edu} \\
+	\\ Advisor: Prof. Karl Lieberherr \\ \email{lieber@ccs.neu.edu}} 
+
+% Reduce top & bottom margins by 1/4 inch.
+\addtolength{\voffset}{-0.25in}
+\addtolength{\textheight}{0.5in}
+%\addtolength{\hoffset}{-0.25in}
+%\addtolength{\textwidth}{0.5in}
+
+\begin{document}
+
+\begin{htmlonly}
+This document is also available in
+\htmladdnormallink{postscript}{../plan.ps} form.
+\end{htmlonly}
+
+\maketitle
+
+\section{Introduction}
+
+Exploratory programming is an important part of the software
+engineering cycle: when a domain is not very well understood or
+open-ended, or it's not clear what algorithms and data structures
+might be needed for an implementation, it's useful to be able to
+interactively develop and debug a program without having to go through
+the usual constraints of the edit-compile-run-debug cycle.  Many
+languages provide support for exploratory programming via
+interactivity, dynamicity, and extensibility, such as Lisp, Smalltalk,
+Self, Obliq, Cecil, Dylan, and Python.  However, most exploratory
+programming languages (and language environments) only allow a single
+programmer to interact with the code and data being developed; if a
+team of programmers wishes to collaborate, they must use project
+management and revision control tools which greatly discourage or
+hinder an exploratory style.  What I plan to study is how
+language-level support for multiple programmers can enable exploratory
+collaboration.
+
+\section{History}
+
+My interest in collaborative languages stems from my extensive
+experience with muds.  What started as a multi-user text adventure
+game in 1979 has evolved into several varieties of multi-user
+programmable virtual worlds.  The most popular (at least for non-game
+uses) is MOO; it has been used for such widely varied purposes as
+system administration\cite{remy}, software process
+modeling\cite{ACM-MOO}, collaborative OO design\cite{CRC-MOO},
+collaborative astrophysics research \cite{AstroVR}, telepresence
+microscopy\cite{LabSpace}, and distance
+learning\cite{distance-learning}.  In fact MOO can be used to
+implement almost any multi-user application, from web servers to
+conferencing systems, and while the virtual world aspect of MOO is
+useful for a number of these applications, I believe that the reason
+for its success is its programming language, which enables and
+encourages an exploratory method of collaborative programming.
+
+\section{Open Problems}
+
+From a programming language perspective, however, the MOO language has
+some serious deficiencies.  While the system is technically
+object-oriented, having objects that inherit fields and methods from
+other objects, the high overhead of object creation and the lack of
+automatic object garbage collection means that in practice most MOO
+programs are not truly object-oriented; most data structures are
+implemented using the built-in list type, while objects are used
+solely for virtual-world entities (or prototypical parent objects of
+these entities).  The lack of first-class functions further limits the
+expressiveness of the language.  From my experience with mud
+development, I believe that multiple inheritance and predicate
+dispatch (a generalization of multiple
+dispatch)\cite{predicate-dispatch} would greatly enhance the ability
+for incremental development and code re-use in a collaborative
+language as well.  MOO has fairly comprehensive facilities for the
+introspection and invocation aspects of a meta-object
+protocol\cite{MOP-tutorial}, but very little support for intercession,
+i.e.\ allowing certain objects to override default behavior of the
+object system, such as method dispatch or field update; I believe this
+is another feature that is very important for exploratory programming.
+Of course, the Demeter group here at Northeastern has studied a number
+of approaches to encouraging evolution and re-use at the level of
+collections of cooperating objects (e.g.\ adaptive plug-and-play
+components\cite{APPC}), and it would be fruitful to investigate these
+ideas in the context of a collaborative language.
+
+From a multi-user system perspective, MOO has some limitations as
+well.  Chief among these is the fact that it only supports cooperative
+multitasking; if a task uses more than a certain amount of time, or
+performs more than a certain number of operations, without yielding,
+then it is terminated with no recourse for cleanup.  True preemptive
+multitasking would be much more powerful.  Another problem with MOO as
+a multi-user system is the Unix-style security system; each field and
+method has an owner and a set of flags for read and write permission.
+A capability-based security system such as that discussed
+in\cite{security-kernel} would be much more flexible and clean.  Other
+areas of investigation include distribution and a more robust approach
+to persistence--- MOO runs as a monolithic process which periodically
+pauses to fork and dump a snapshot of its heap.
+
+\section{Related Work}
+
+There have been a number of attempts to develop a collaborative
+programming language, both within and without the context of a virtual
+world system, with varying degrees of success.  ColdC\cite{Cold} adds
+multiple inheritance, stronger encapsulation, lightweight objects, and
+a simple module system, as well as a more database-oriented persistent
+storage system.  SchMUSE\cite{SchMUSE} was a class-based distributed
+delegation object system built on top of MIT Scheme.  Repo, used in
+the \mbox{COTERIE} toolkit\cite{COTERIE} adds replicated objects to
+Obliq to support distributed interactive environments.
+CL-HTTP\cite{CL-HTTP} is a hypermedia server allowing users to write
+CGI scripts in Common Lisp.  Matrix\cite{Matrix} and POO\cite{POO} are
+projects attempting to add multi-user capabilities to Java and Python,
+respectively.  Neverworld\cite{Neverworld} is a multi-user VRML world
+built on top of (and allowing users programmatic access to) Scheme48.
+Other collaborative language systems include MUQ, \mbox{MudOS},
+\mbox{COOLmud}, FMPL, and Mu; these and other links (including all the 
+references in this paper) can be found on my resources web page,
+\url{http://www.ccs.neu.edu/home/dougo/mud/}.
+
+\section{Study Plan}
+
+For my Ph.D. thesis research I plan to investigate these systems in
+greater detail, with a focus on studying how language-level issues
+support collaborative exploratory programming.  This may lead to the
+design and development of a new language, perhaps extending an
+existing collaborative language or else adding multi-user support to
+an existing exploratory language.  I then intend to perform some
+experiments with users (perhaps based on the experiments in
+\cite{SPARCL}) to determine just how well this type of system enables
+exploratory collaborative programming, and how it compares both to
+single-user exploratory programming and collaboration with traditional
+tools.  I also plan to investigate some of the theoretical issues of
+how best to formally model a collaborative language.
+
+\section{Fulfilling the course requirements}
+
+I have taken 6 classes since completing the Masters degree
+requirements:
+\begin{itemize}
+    \item COM 3205: Fundamentals of Software Engineering
+    \item COM 3230: Object Oriented Design
+    \item COM 3411: Knowledge-Based Systems
+    \item COM 3440: Natural Language Processing
+    \item COM 3480: Machine Learning and Neural Networks
+    \item COM 3830: Independent Project in Computer Science
+\end{itemize}
+For the project course (with Prof.~Clinger), I implemented the basics
+of the BeCecil object system\cite{BeCecil} in Scheme.  I received an
+incomplete grade in the Machine Learning class, which I intend to
+clear this quarter by finishing my project on explanation-based
+learning.  In the fall~'98 quarter, I am taking two readings courses
+(COM 3800); one is a survey and feature comparison of collaborative
+language systems, with Prof.~Lieberherr, and the other is a study of
+the formal semantics of MOO, with Prof.~Wand.
+
+\section{Background}
+
+My minor area of study is artificial intelligence, having taken three
+AI classes at NU\@.  Of particular note is a paper I wrote for the
+Spring '98 quarter COM3411 class\cite{NL-VR}; this was an attempt to
+develop a natural language system for muds that did both parsing and
+generation using a unification grammar.  Much of the work I did on
+JHCore (an object library for MOO) was related to natural language
+generation from template messages set by the user.
+
+For the past two years I have been working as a part of the Demeter
+team on the implementation of the Demeter/Java
+system\cite{UserManual}.  Prof.~Lieberherr and I published a short
+description paper in the proceedings of ICSE
+1997\cite{preventive-maintenance}.
+
+\bibliography{plan}
+\bibliographystyle{alpha}
+
+\end{document}

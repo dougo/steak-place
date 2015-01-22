@@ -1,0 +1,285 @@
+\relax 
+\citation{aop:ecoop2001}
+\citation{karl:comp-enh}
+\citation{lieber-palsberg-xiao94}
+\citation{karl:comp-enh}
+\citation{lieber-palsberg-xiao94}
+\citation{karl:demeter}
+\citation{karl:demeter}
+\citation{rational:UML-LUG}
+\citation{URL:XMLschema}
+\citation{OrleansLieberherrReflection01}
+\citation{adaptive-methods-cacm-2001}
+\citation{URL:demeter}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}}
+\newlabel{sec-intro}{{1}{1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}The Idea of Adaptive Traversals}{1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Example}{1}}
+\citation{karl:demeter}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces \em  Bus simulation class graph. Squares and hexagons denote classes (concrete and abstract, respectively), regular arrows denote field reference and are labeled by the field name, and heavy arrows (labeled with $\diamond $) denote the subclass relation (for the shading, see text).}}{2}}
+\newlabel{fig-bus1}{{1}{2}}
+\citation{gang-of-4}
+\citation{adaptive-methods-cacm-2001}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces \em  Evolved bus simulation class graph.}}{3}}
+\newlabel{fig-bus2}{{2}{3}}
+\citation{URL:demeter}
+\citation{polya:solve-it}
+\citation{karl:demeter}
+\citation{mitch:karl-2000}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3}New Contributions}{5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.4}Algorithm Overview}{5}}
+\newlabel{alg-overview}{{1.4}{5}}
+\citation{gener-comp-j:jens-boaz-karl}
+\citation{Smaragdakis}
+\citation{dragon-nfa-sim}
+\citation{gener-comp-j:jens-boaz-karl}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.5}Paper Organization}{6}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Preliminaries}{7}}
+\newlabel{sec-prel}{{2}{7}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Graphs and paths}{7}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Class graphs and object graphs}{7}}
+\citation{gang-of-4}
+\citation{spl:context-conf}
+\citation{seiter:ieee-se-98}
+\citation{gener-comp-j:jens-boaz-karl}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Non-standard notions}{9}}
+\newlabel{ssec-assumptions}{{2.3}{9}}
+\newlabel{def-simple}{{2.1}{9}}
+\newlabel{prop-simple}{{2.1}{9}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Definition of traversals}{9}}
+\newlabel{sec-traversals}{{3}{9}}
+\citation{gener-comp-j:jens-boaz-karl}
+\newlabel{def-traversal}{{3.1}{10}}
+\newlabel{eq-traversal-empty}{{1}{10}}
+\newlabel{eq-traversal-recursive}{{2}{10}}
+\@writefile{toc}{\contentsline {paragraph}{Remarks.}{10}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Strategies: Specification of traversals}{11}}
+\newlabel{sec-strategy}{{4}{11}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Strategies}{11}}
+\newlabel{ssec-simple-strategy}{{4.1}{11}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Using a constraint map}{12}}
+\newlabel{ssec-full-strategy}{{4.2}{12}}
+\newlabel{def-sat}{{4.6}{12}}
+\newlabel{cond-st}{{1}{12}}
+\newlabel{cond-sat}{{2}{12}}
+\newlabel{def-strategy-paths}{{4.7}{13}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Remarks}{13}}
+\newlabel{ssec-strategies-ext}{{4.3}{13}}
+\@writefile{toc}{\contentsline {paragraph}{Encapsulated strategies.}{13}}
+\@writefile{toc}{\contentsline {paragraph}{Wildcard notation in predicate specification.}{14}}
+\@writefile{toc}{\contentsline {paragraph}{Cyclic graphs.}{14}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Compilation algorithm}{14}}
+\newlabel{sec-alg}{{5}{14}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}The traversal graph}{15}}
+\newlabel{ssec-TG}{{5.1}{15}}
+\newlabel{step-replicate}{{1}{15}}
+\newlabel{step-predicate}{{2}{15}}
+\newlabel{step-divert}{{3}{15}}
+\newlabel{sstep-inter}{{3a}{15}}
+\newlabel{sstep-target}{{3b}{15}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces \em  An example of traversal graph computation. {\sf  1}: the input class graph. Edge labels are omitted from subsequent graphs. {\sf  2}: The input strategy (the name map is indicated). In this example, the constraint map is as follows: ${\cal  B}(e_1)(B\mathrel {\mathop {\rightarrow }\limits ^{z}}Z)={\sc  false}$ and ${\cal  B}(e_1)(x)={\sc  true}$ for all $x\not =B\mathrel {\mathop {\rightarrow }\limits ^{z}}Z$; ${\cal  B}(e_2)(x)={\sc  true}$ for all $x$; ${\cal  B}(e_3)(A\mathrel {\mathop {\rightarrow }\limits ^{d}}D)={\sc  false}$ and ${\cal  B}(e_3)(x)={\sc  true}$ for all $x\not =A\mathrel {\mathop {\rightarrow }\limits ^{d}}D$; and ${\cal  B}(e_4)(x)={\sc  false}$ if $x=A$ or if $x$ is an edge incident to $A$, and ${\cal  B}(e_4)(x)={\sc  true}$ otherwise. {\sf  3}: $G'$ after Steps\nobreakspace  {}\ref {step-replicate} and \ref {step-predicate}. {\sf  4}: $G'$ after Steps\nobreakspace  {}\ref {sstep-inter} and\nobreakspace  {}\ref {sstep-target}. Intercopy edges are dashed. {\sf  5}: $G'$ after Steps\nobreakspace  {}3c\hbox {},\nobreakspace  {}3d\hbox {}, and\nobreakspace  {}\ref {step-source}. {\sf  6}: The final traversal graph, as returned in Step\nobreakspace  {}\ref {step-return}. The shaded $A$ nodes are the start set $T_s$, and the shaded node $E^*$ is the finish set $T_f$.}}{16}}
+\newlabel{fig-comp}{{3}{16}}
+\newlabel{sstep-add}{{3c}{17}}
+\newlabel{sstep-remove}{{3d}{17}}
+\newlabel{step-source}{{4}{17}}
+\newlabel{step-cleanup}{{5}{17}}
+\newlabel{step-return}{{6}{17}}
+\newlabel{lem-TG-paths}{{5.1}{17}}
+\newlabel{lem-TG}{{5.2}{17}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Traversal methods algorithm}{18}}
+\newlabel{ssec-TM}{{5.2}{18}}
+\newlabel{step-abs}{{1}{19}}
+\newlabel{step-empty}{{2}{19}}
+\newlabel{step-visit}{{3}{19}}
+\newlabel{step-labels}{{4}{19}}
+\newlabel{step-recurse}{{5}{19}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces \em  An example of an execution of traversal using the traversal of Figure\nobreakspace  {}\ref {fig-comp}. At each step, the left-hand side shows the object tree with the currently active object shaded, and the right-hand side shows the traversal graph with the token set shaded.}}{20}}
+\newlabel{fig-run}{{4}{20}}
+\newlabel{lem-main}{{5.3}{21}}
+\@writefile{toc}{\contentsline {paragraph}{Closed-world assumption.}{21}}
+\@writefile{toc}{\contentsline {paragraph}{Non-simple class graphs.}{21}}
+\citation{null-object}
+\@writefile{toc}{\contentsline {paragraph}{Null references.}{22}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Computational complexity of the algorithm}{22}}
+\newlabel{ssec-analysis}{{5.3}{22}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Extensions}{22}}
+\newlabel{ssec-rem}{{5.4}{22}}
+\newlabel{sec-ext}{{5.4}{22}}
+\@writefile{toc}{\contentsline {paragraph}{Multiple sources and targets.}{22}}
+\@writefile{toc}{\contentsline {paragraph}{``Before,'' ``after'' and ``around'' methods.}{23}}
+\@writefile{toc}{\contentsline {paragraph}{Cyclic object graphs.}{23}}
+\citation{lieber-palsberg-xiao94}
+\citation{gener-comp-j:jens-boaz-karl}
+\citation{gener-comp-j:jens-boaz-karl}
+\citation{dragon-nfa-sim}
+\citation{lieber-palsberg-xiao94}
+\citation{gener-comp-j:jens-boaz-karl}
+\@writefile{toc}{\contentsline {section}{\numberline {6}The limits of static traversal code}{24}}
+\newlabel{sec-lb}{{6}{24}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}The target language}{24}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}The lower bound}{24}}
+\citation{gener-comp-j:jens-boaz-karl}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces \em  Example considered in lower-bound proof. Left: the strategy graph. The source of the strategy is the node labeled {\sf  A} and the target is the node labeled {\sf  D}. Middle: the class graph. The name map is indicated by the node labels on the strategy graph. Right: a typical object tree. The shaded regions represent a recursive occurrence of the tree. }}{25}}
+\newlabel{fig-lb}{{5}{25}}
+\newlabel{thm-lb}{{6.1}{25}}
+\citation{URL:demeter}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Implementation notes}{26}}
+\newlabel{sec-notes}{{7}{26}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}User-level representation}{26}}
+\newlabel{ssec-syntax}{{7.1}{26}}
+\citation{URL:demeter}
+\citation{OrleansLieberherrReflection01}
+\citation{adaptive-methods-cacm-2001}
+\citation{cse:preventive}
+\citation{karl:demeter}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Tool responsibilities}{27}}
+\newlabel{ssec-tools}{{7.2}{27}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.2.1}AP Library}{27}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.2.2}DJ}{27}}
+\newlabel{ssec-DJ}{{7.2.2}{27}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.2.3}DemeterJ}{27}}
+\citation{URL:DAJ}
+\citation{sung:DAJ-02}
+\citation{aop:ecoop2001}
+\citation{cacm-2001}
+\citation{lieber-nacho-cun:pp-cacm}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.2.4}DAJ}{28}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Related work}{28}}
+\newlabel{sec-related}{{8}{28}}
+\citation{XML}
+\citation{XPath}
+\citation{XPath-traversals}
+\citation{ns:vldb88}
+\citation{bv:navigation}
+\citation{MarSho:abbrev-query-int93}
+\citation{querying-oodb:kim92}
+\citation{ioannidis:path-expr}
+\citation{WaiteGoos84}
+\citation{kastens:waite}
+\citation{ELI}
+\citation{composable-attribute-gr:popl92}
+\citation{cameron-ito:gramps}
+\citation{LVV:strategic-programming}
+\citation{gang-of-4}
+\citation{cacm-2001}
+\citation{palsberg:jay}
+\citation{stirewalt01generation}
+\citation{bravenboer01guiding}
+\citation{aop:ecoop2001}
+\citation{galperin:wigderson}
+\citation{galperin:wigderson}
+\citation{karl:comp-enh}
+\citation{lieber-palsberg-xiao94}
+\citation{eppstein92parallel}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces \em  A series-parallel traversal strategy.}}{31}}
+\newlabel{fig-company-strat1}{{6}{31}}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Comparison to traversal specifications}{31}}
+\newlabel{sec-comparison}{{9}{31}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces \em  A non-series-parallel traversal strategy.}}{32}}
+\newlabel{fig-company-strat2}{{7}{32}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces \em  A non-series-parallel strategy with $n$ nodes and $O(2^n)$ paths ($n=7$ here).}}{32}}
+\newlabel{fig-expstrat}{{8}{32}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces \em  Class graph for a transportation network.}}{32}}
+\newlabel{fig-citycd}{{9}{32}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces \em  A cyclic strategy.}}{33}}
+\newlabel{fig-cyclic-strategy}{{10}{33}}
+\@writefile{toc}{\contentsline {section}{\numberline {10}Applications of traversal strategies}{33}}
+\newlabel{sec-appls-trav-strats}{{10}{33}}
+\citation{bart:thesis02}
+\citation{bart-wim:strategies-ref}
+\citation{vanderperren:composition-adapters}
+\citation{Lopes96a}
+\citation{phillipsen:CPE}
+\citation{bartoli:SPE}
+\citation{hoschka:marshalling}
+\citation{lieber-palsberg-xiao94}
+\citation{DemeterJstats}
+\citation{mitch:karl-2000}
+\citation{PengchengStats}
+\citation{aosd-2002-blando}
+\citation{blando:97-02}
+\@writefile{toc}{\contentsline {section}{\numberline {11}Experience and empirical evidence}{36}}
+\newlabel{sec-experience}{{11}{36}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces \em  Distribution of the ratio of the length of call path vs. the length of strategy.}}{36}}
+\newlabel{table:ratio}{{1}{36}}
+\citation{karl:demeter}
+\citation{URL:demeter}
+\citation{URL:hp-praise}
+\citation{karl-ian:soft1}
+\citation{hunt-thomas:TPP}
+\citation{gang-of-4}
+\citation{Vlissides:visitor}
+\citation{Vlissides:observer}
+\citation{palsberg:jay}
+\citation{dragon-nfa-sim}
+\@writefile{toc}{\contentsline {section}{\numberline {12}Conclusion}{37}}
+\newlabel{sec-conc}{{12}{37}}
+\bibstyle{plain}
+\bibdata{strategies}
+\bibcite{dragon-nfa-sim}{1}
+\bibcite{bartoli:SPE}{2}
+\bibcite{blando:97-02}{3}
+\bibcite{aosd-2002-blando}{4}
+\bibcite{rational:UML-LUG}{5}
+\bibcite{bravenboer01guiding}{6}
+\bibcite{XML}{7}
+\bibcite{cameron-ito:gramps}{8}
+\bibcite{XPath}{9}
+\bibcite{URL:XMLschema}{10}
+\bibcite{cacm-2001}{11}
+\bibcite{eppstein92parallel}{12}
+\bibcite{composable-attribute-gr:popl92}{13}
+\bibcite{galperin:wigderson}{14}
+\bibcite{gang-of-4}{15}
+\bibcite{ELI}{16}
+\bibcite{hoschka:marshalling}{17}
+\bibcite{hunt-thomas:TPP}{18}
+\bibcite{ioannidis:path-expr}{19}
+\bibcite{palsberg:jay}{20}
+\bibcite{kastens:waite}{21}
+\bibcite{aop:ecoop2001}{22}
+\bibcite{querying-oodb:kim92}{23}
+\bibcite{LVV:strategic-programming}{24}
+\bibcite{URL:hp-praise}{25}
+\bibcite{URL:demeter}{26}
+\bibcite{adaptive-methods-cacm-2001}{27}
+\bibcite{mitch:karl-2000}{28}
+\bibcite{karl:comp-enh}{29}
+\bibcite{karl:demeter}{30}
+\bibcite{karl-ian:soft1}{31}
+\bibcite{cse:preventive}{32}
+\bibcite{lieber-nacho-cun:pp-cacm}{33}
+\bibcite{Lopes96a}{34}
+\bibcite{MarSho:abbrev-query-int93}{35}
+\bibcite{XPath-traversals}{36}
+\bibcite{ns:vldb88}{37}
+\bibcite{URL:DAJ}{38}
+\bibcite{DemeterJstats}{39}
+\bibcite{OrleansLieberherrReflection01}{40}
+\bibcite{gener-comp-j:jens-boaz-karl}{41}
+\bibcite{lieber-palsberg-xiao94}{42}
+\bibcite{phillipsen:CPE}{43}
+\bibcite{polya:solve-it}{44}
+\bibcite{spl:context-conf}{45}
+\bibcite{seiter:ieee-se-98}{46}
+\bibcite{Smaragdakis}{47}
+\bibcite{stirewalt01generation}{48}
+\bibcite{sung:DAJ-02}{49}
+\bibcite{bv:navigation}{50}
+\bibcite{vanderperren:composition-adapters}{51}
+\bibcite{Vlissides:visitor}{52}
+\bibcite{Vlissides:observer}{53}
+\bibcite{WaiteGoos84}{54}
+\bibcite{PengchengStats}{55}
+\bibcite{null-object}{56}
+\bibcite{bart:thesis02}{57}
+\bibcite{bart-wim:strategies-ref}{58}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces \em  An example of class graph simplification. {\sf  A}: the original class graph. Concrete classes are depicted as squares, and abstract classes are hexagons. Reference edges are regular, and subclass edges are heavy. {\sf  B}: after step \ref {step-introduce}. {\sf  C}: after step \ref {step-simpleten}. {\sf  D}: after step \ref {step-contract}. }}{42}}
+\newlabel{fig-simplify}{{11}{42}}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Class graph Simplification}{42}}
+\newlabel{sec-simpleten}{{A}{42}}
+\newlabel{step-introduce}{{1}{42}}
+\newlabel{step-simpleten}{{2}{42}}
+\newlabel{step-contract}{{3}{42}}
+\@writefile{toc}{\contentsline {section}{\numberline {B}Target language for static compilation}{43}}
+\newlabel{sec-target}{{B}{43}}

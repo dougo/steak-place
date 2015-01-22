@@ -1,0 +1,346 @@
+Introduction
+============
+
+Computer programming is seldom a solitary effort-- many projects are
+just too big for one person to implement, and even smaller projects
+can often be done faster with multiple developers.  The usual approach
+to multi-developer programming is to use collaborative tools such as a
+version control system to facilitate the exchange of source code.  An
+alternate approach, however, is to use a programming language that
+itself supports the concept of multiple programmers collaborating on a
+project.  Several such languages exist, such as MOO[??], Coldmud[??],
+and LPC[??]; however, since they were written as descendants of
+MUD[??], a multi-user game, they were designed by hobbyists who had
+little background in programming language design or theory, and thus
+are somewhat clumsy and ill-suited for applications outside the domain
+of muds (and in some ways are even inadequate for the mud domain
+itself).  Many ambitious projects have been successfully implemented
+using them, however, particularly MOO, demonstrating that the idea of
+collaborative programming languages is a useful one.  Little
+substantial progress has been made in this area over the last seven
+years; this indicates that some plateau had been reached, where the
+languages had matured to an expressiveness that was suitable enough
+for widespread use.  I believe, however, that there are still
+significant improvements to be made in the design of collaborative
+programming languages.  For my dissertation I intend to explore some
+of these possibilities, designing and implementing a prototype
+language that is suitable for fleshing out into a next-generation
+collaborative programming language.  Along the way I will attempt to
+bring some academic rigor to the area, surveying and comparing
+existing languages and developing semantics for ``featherweight''
+subsets of them (in the manner of FJ[??]) as a basis for further
+study.  The rest of this paper presents a feature overview of the most
+prominent collaborative programming languages, some discussion about
+their advantages and shortcomings, a presentation of the semantics for
+FM (Featherweight MOO), and finally the status of my current design
+for BOB, an object-based extension to Larceny[??] (a Scheme
+implementation) that supports collaborative programming.
+
+Feature overview
+================
+
+Common features
+---------------
+
+Before getting into the details of a particular collaborative
+programming language, I will start with an overview of what the
+languages I am studying have in common.  First of all, by definition,
+they allow multiple programmers to collaborate.  In practice, this
+means that they act as servers, accepting input from multiple network
+sockets asynchronously, and allow code to be added or modified
+dynamically based on this input.  (A digression: the features I
+discuss may appear to be features of a programming language
+*environment*, rather than of a programming language; however, the
+line between the two is often blurred, even in more mainstream
+languages-- the interactive environment is fairly integral to
+Smalltalk and Self, Scheme has the ``load'' procedure, and the Java
+language specification covers the class loading process in detail.
+More importantly, however, a collaborative programming language
+typically *reifies* the concept of the programmer into a structure
+that is part of the semantics of the language, so features that
+usually are part of the environment really are part of the language.)
+This feature, asynchronous dynamic modification, requires a number of
+other features: type safety and garbage collection, so that a wild
+pointer or memory leak caused by one programmer can't cause the whole
+server to crash; multitasking and resource control, so that one
+programmer's code can't monopolize the server by, for instance,
+running a tight infinite loop; persistence, so that the programmers
+don't have to re-upload all their code when the server is shutdown and
+restarted; and reflection, so that programmers can examine the code
+that's already on the server (their own or others').
+
+Another feature that collaborative programming languages usually have
+is security: a programmer owns code and data that he creates, and can
+control access to it; however, while this can be useful for enforcing
+abstraction barriers (much like access control in other languages,
+e.g. the ``private'', ``protected'', and ``public'' keywords in C++
+and Java), it is not strictly necessary for collaboration, and is
+often not used at all.  Collaborative programming languages are often
+(perhaps predominantly) used in another setting than collaboration,
+though, which I will call community programming: programmers share
+code and data dynamically, yet they may not always be collaborating in
+the sense of working towards a common goal, and in fact may not trust
+each other at all; in this situation, access control mechanisms are
+essential.
+
+The collaborative programming languages I am studying share another
+feature that is not essential to collaboration: they are all
+single-dispatch classless object-oriented languages.  That is, they
+have objects, which have fields and methods, and which may inherit
+fields and methods from other objects.  These languages are probably
+object-oriented because they were designed for the multi-user
+simulation environment domain, and OO languages are well suited for
+simulations; the fact that they are all also classless may be
+coincidence, but it may also be due to the dynamicity properties of
+the language: it's easier to modify a field or method on an object,
+which is dynamically inherited by the object's descendant objects,
+than it is to modify a field or method on a class and update all the
+instances of the class.  Interestingly, recent versions of several of
+these languages have added mechanisms that can simulate the
+class-instance relation.
+
+MOO
+---
+
+Coldmud
+-------
+
+LPC/DGD
+-------
+
+Others
+------
+
+FM: Featherweight MOO
+=====================
+
+Purpose
+-------
+
+Syntax
+------
+
+P -> "return" E ";"
+P -> E ";" P
+
+E -> "#-1" | "#0" | "#1"			// constants
+E -> "this" | "args" "[" INT "]"		// variables
+E -> E ":" ID "(" [ EL ] ")"			// verb invocation
+E -> "create" "(" E ")"				// object creation
+E -> "set_verb_code" "(" E "," STR "," ESTR ")"	// verb update
+
+[Note: set_verb_code has different syntax and semantics in full MOO,
+but a MOO database can be made to accept this syntax and act as
+defined below with the help of a #0:bf_set_verb_code wrapper.]
+
+EL -> E | E "," EL
+ESTR -> E | STR
+
+INT -> DIGIT+
+STR -> "\"" CHAR* "\""
+ID -> LETTER (LETTER|DIGIT)*
+
+Semantics
+---------
+
+DB = Objnum -> (Objnum x Verbs)
+Verbs = Str -> P
+Objnum = Nat + { T }
+Nat = set of natural numbers
+Str = set of strings
+
+Objects are numbered with unique natural numbers; T is "top",
+representing the top of the inheritance hierarchy (the parent of the
+root object(s)), which is expressible as "#-1" (object negative-1).  A
+database (DB) is a partial function over objnums such that
+DB(o) = <p, v> where p is the parent of o and v is the verb map of o.
+A verb map is a partial function mapping verb names (strings) to
+programs.
+
+db0 \in DB
+db0(0) = <1, {}>
+db0(1) = <T, {}>
+
+The starting database, db0, contains two objects, #0 and #1, the
+latter being the parent of the former.  Neither object has any verbs.
+Note that we could just as well start with one object (or none if
+general objnums were expressible in the syntax), but this reflects the
+standard initial MOO database where #0 is the system object and #1 is
+the root object.
+
+K -> halt
+K -> <[]; p, K>
+K -> <[]:id(e1...en), K>
+K -> <v:id(v1..vi-1,[],ei+1...en), K>
+K -> <create([]), K>
+K -> <svc([],s,es), K>
+K -> <svc(v,s,[]), K>
+
+K is the set of continuations.  A compound continuation is a
+partly-evaluated expression with a hole in it, plus a next
+continuation; thus, a continuation represents a stack of expressions
+waiting to be completed.
+
+Config = (P + E + Objnum) x K x DB
+
+A configuration is a triple whose first element is either a program or 
+expression to be evaluated, or a value to be passed to the continuation.
+
+eval : Config -> (Objnum x DB)
+
+The evaluation function maps configurations to configurations.  In the 
+set of recursive definitions below, v stand for any element of Objnum,
+db stands for any element of DB, e stands for any element of E, p stands 
+for any element of P, k stands for any element of K, id stands for any 
+element of ID, s stands for any element of STR.
+
+Evaluations of programs and expressions:
+
+eval(e; p, k, db) = eval(e, <[]; p, k>, db)
+eval(return e, k, db) = eval(e, k, db)
+eval(#-1, k, db) = eval(T, k, db)
+eval(#0, k, db) = eval(0, k, db)
+eval(#1, k, db) = eval(1, k, db)
+eval(e:id(e1...en), k, db) = eval(e, <[]:id(e1...en), k>, db)
+eval(create(e), k, db) = eval(e, <create([]), k>, db)
+eval(set_verb_code(e,s,es), k, db) = eval(e, <svc([],s,es), k>, db)
+
+Applications of continuations to values:
+
+eval(v, halt, db) = <v, db>
+eval(v, <[]; p, k>, db) = eval(p, k, db)
+eval(v, <[]:id(e1...en), k>, db) = eval(e1, <v:id([],e2...en), k>, db)
+eval(v, <v0:id(v1...vi-1, [], ei+1...en), k>, db)
+    = eval(ei+1, <v0:id(v1...vi-1,v, [], ei+2...en), k>, db)
+eval(v, <v0:id(v1...vn-1, []), k>, db)
+    = eval(p[v0/this,v1/args[1]...vn-1/args[n-1],vn/args[n]], k, db)
+    where lookup(db,v0,id) = p
+    [In English: p is the program code of the verb named id on the v0
+    object (or one of its ancestors); execute it, after replacing all
+    occurences of "this" with v0 and "args[i]" with the corresponding vi.]
+eval(v, <create([]), k>, db) = eval(vnew, k, db + {vnew:<v,{}>})
+    where vnew = max(dom(db))+1
+eval(v, <svc([],s,e), k>, db) = eval(e, <svc(v,s,[]), k>, db)
+eval(v, <svc(v0,s,[]), k>, db) = eval(v0, k, dbnew)
+    where dbnew = svc(db,v0,s,return v;)
+    [This simulates a property with a verb that returns the value.]
+eval(v, <svc([],s1,s2), k>, db) = eval(v, k, dbnew)
+    where dbnew = svc(db,v,s1,parse(s2))
+
+lookup : (DB x Objnum x ID) -> P
+
+The auxiliary function lookup takes an object and verbname and looks
+up the inheritance chain of the object until it finds a verb
+definition, returning the corresponding program.
+
+lookup(db, v, id) = verbs(id) if v \in dom(db) and
+			         db(v) = <vp,verbs> and
+				 id \in dom(verbs)
+lookup(db, v, id) = lookup(db, vp, id) if v \in dom(db) and
+					  db(v) = <vp,verbs> and
+				          id \not\in dom(verbs)
+
+svc : (DB x Objnum x Str x P) -> DB
+
+The auxiliary function svc takes an object, verbname, and program and
+adds the program as the verbname on the object, replacing the current
+program if there is one.  Note that this does not go up the
+inheritance chain; it always modifies the object itself.
+
+svc(db, v, s, p) = db - {v:<vp,verbs>} + {v:<vp,verbsnew>}
+    where verbsnew = verbs - s:pold + s:p
+    if db(v) = <vp,verbs> and (verbs(s) = pold or s \not\in dom(verbs))
+
+parse : Str -> P
+
+The auxiliary function parse converts strings to programs, using the
+syntax grammar given in the previous section.
+
+
+Thus, starting from db0, a stream of input programs can be evaluated
+in sequence, producing a stream of results, modifying the database by
+side-effect as it runs.  Note that "this" and "args[i]" are
+meaningless in top-level input programs; they are evaluated by
+substitution when a verb program is invoked.
+
+eval(P1, halt, db) = <v, dbnew>
+-------------------------------
+run(db,P1,P2...) = v,run(dbnew,P2...)
+
+
+BOB: A prototype collaborative language
+=======================================
+
+Conclusions
+===========
+
+
+
+
+
+Applications of a language supporting dynamic collaborations:
+  - persistent compute server that allows uploads of new code
+  - rapid prototyping for teams of programmers
+  - "live" plugins-- self-updating application (see marimba.com's
+    Castanet)
+  - agent-based computing
+  - ubiquitous computing
+  - [think of more]
+
+
+Candidate languages:
+  - mud languages
+    - MOO
+    - coldmud
+    - LPC/DGD
+    - Mux
+    - POO (Python)
+    - OpenCommunity Java API
+  - CLOS
+    - change-class and reinitialize-instance
+    - extensible via MOP
+    - weak name hiding
+  - scheme
+    - strong name hiding
+    - missing most of the above features, but they exist many
+      implementations (e.g. Larceny)
+  - Squeak (SmallTalk)
+  - Self
+  - Dylan
+  - Java
+    - can load new classes, but can't change existing classes
+    - might be able to do something with special class loaders?
+
+A new language
+  - can be very simple, with only the necessary features
+  - can provide semantics
+  - prototype by embedding in or extending an existing language
+
+Plan
+  - prototype BOB
+    - a dynamic object system embedded in Larceny
+    - Based On BeCecil, an abstract version of Cecil
+      - multimethods, generalized fields, object-based, block-structured
+    - more dynamic than BeCecil (e.g. mutation instead of declaration)
+    - add a MOP
+    - proof-of-concept some features from the list above
+      - security: name-hiding, publish/subscribe, seals/capabilities
+	 (see "security for lambda calculus" paper, Rees 96)
+      - persistence, network access, multitasking
+	 (these come largely for free, with Larceny)
+      - resource control: [look at JRes project, others]
+      - version control: simple extension to publish/subscribe
+      - namespace control: modules a la Scheme48
+    - demonstrate some applications that would be much more difficult
+      with only static collaborations
+      - extensible web server?  (like CL-HTTP)
+      - extensible simulation environment (i.e. a mud)
+      - agent interaction arena?
+  - simple operational semantics that includes the concept of code
+    ownership?
+  - investigate how to extend other languages, in particular Squeak
+    and Java
+
+Bibliography
+
+

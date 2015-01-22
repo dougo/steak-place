@@ -1,0 +1,148 @@
+\documentclass{article}
+\usepackage{amstex}
+\usepackage{theorem}
+\usepackage{fancyheadings}
+
+\setlength{\parindent}{0pt}	% Don't indent paragraphs.
+
+%\addtolength{\voffset}{-0.25in}
+%\addtolength{\textheight}{0.5in}
+\addtolength{\hoffset}{-0.5in}	% Reduce left and right margins by 1/2 inch.
+\addtolength{\textwidth}{1in}
+
+\pagestyle{fancy}
+\setlength{\headrulewidth}{0pt}
+
+\lhead{COM 3350 Assignment 2}
+\rhead{Doug Orleans (\texttt{dougo@@ccs.neu.edu})}
+
+\theorembodyfont{\rmfamily}		% don't use italics
+\theoremstyle{break}			% put a line break after the header
+\newtheorem{exercise}{Exercise}
+\theoremstyle{plain}
+\newtheorem{subexercise}{}[exercise]
+\renewcommand{\thesubexercise}{(\alph{subexercise})}
+\newenvironment{answer}{\begin{quotation}\noindent}{\end{quotation}}
+
+\newcommand{\sipser}{\textit{Sipser}}
+\newcommand{\encoding}[1]{\ensuremath{\langle#1\rangle}}
+\newcommand{\qed}{~\ensuremath{\square}}
+\newcommand{\Th}{\ensuremath{\operatorname{Th}}}
+\newcommand{\Nat}{\ensuremath{\mathcal{N}}}
+\newcommand{\tred}{\ensuremath{\leq_{\text{T}}}}
+\newcommand{\ATM}{\ensuremath{A_{\textsf{TM}}}}
+\newcommand{\set}[1]{\ensuremath{\{#1\}}}
+\newcommand{\ruleset}[2]{\set{#1|~#2}}
+\newcommand{\union}{\ensuremath{\cup}}
+
+\begin{document}
+
+\begin{exercise}[\sipser, 6.4]
+Is the statement $\exists x \forall y [x+y=y]$ a member of
+$\Th(\Nat,+)$?  Why or why not?  What about the statement $\exists x
+\forall y [x+y=x]$?
+\end{exercise}
+\begin{answer}
+The statement $\exists x \forall y [x+y=y]$ is true in the model
+$(\Nat,+)$ with $x=0$; however, the statement
+$\exists x \forall y [x+y=x]$ cannot be made true in the model
+$(\Nat,+)$ because it's only true for $y=0$.\qed
+\end{answer}
+
+\begin{exercise}[\sipser, 6.9]
+Give a model of the sentence
+\begin{eqnarray*}
+\phi_{\text{eq}} =
+&       &\forall x [R_1(x,x)] \\
+&\wedge &\forall x,y [R_1(x,y) \leftrightarrow R_1(y,x)] \\
+&\wedge &\forall x,y,z [(R_1(x,y) \wedge R_1(y,z)) \to R_1(x,z).
+\end{eqnarray*}
+\end{exercise}
+\begin{answer}
+The model $(\Nat,=)$ satisfies this sentence.  (Any equivalence
+relation will do.)\qed
+\end{answer}
+
+\begin{exercise}[\sipser, 6.10]
+Give a model of the sentence
+\begin{eqnarray*}
+\phi_{\text{lt}} =
+&	&\phi_{\text{eq}} \\
+&\wedge &\forall x [R_1(x,x) \to \neg R_2(x,x)] \\
+&\wedge &\forall x,y [\neg R_1(x,y) \to R_2(x,y) \oplus R_2(y,x)] \\
+&\wedge &\forall x,y,z [(R_2(x,y) \wedge R_2(y,z)) \to R_2(x,z) \\
+&\wedge &\forall x \exists y [R_2(x,y)].
+\end{eqnarray*}
+\end{exercise}
+\begin{answer}
+The model $(\Nat,=,>)$ satisfies this sentence.\qed
+\end{answer}
+
+\begin{exercise}[\sipser, 6.3]
+Show that if $A\tred B$ and $B\tred C$ then $A\tred C$.
+\end{exercise}
+\begin{answer}
+Let $M^B$ be the oracle Turing machine that decides $A$, and $M^C$ be
+the oracle Turing machine that decides $B$.  Then $M^B$ can use $M^C$
+as an oracle to decide $A$; thus $A\tred C$.\qed
+\end{answer}
+
+\begin{exercise}[\sipser, 6.7]
+Show that for any two languages $A$ and $B$ a language $J$ exists
+where $A\tred J$ and $B\tred J$.
+\end{exercise}
+\begin{answer}
+Let $a$ and $b$ be symbols not in the alphabets of $A$ and $B$.  Let
+$J$ be the language
+\begin{displaymath}
+\ruleset{aw}{w\in A} \union \ruleset{bw}{w\in B}.
+\end{displaymath}
+Then we can build a machine $M^J$ that accepts input $w$ iff $aw$ is
+in $J$, thus deciding $A$, and a machine $N^J$ that accepts input $w$
+iff $bw$ is in $J$, thus deciding $B$.  Hence both $A$ and $B$
+Turing-reduce to $J$.\qed
+\end{answer}
+
+\pagebreak
+\begin{exercise}[\sipser, 6.13]\label{desc}
+Show how to compute the descriptive complexity of strings $K(x)$ with
+an oracle for \ATM.
+\end{exercise}
+\begin{answer}
+The set of Turing machines is countable, since each description is a
+finite string of symbols from a finite alphabet.  Also, any language
+over a finite alphabet is countable.  Thus we can construct a machine
+that enumerates strings \encoding{M,w} in increasing order by length,
+and for each one asks the oracle for \ATM\ whether $M$ followed by
+$X$, a machine that accepts $x$, accepts $w$.  The first such string
+for which the oracle answers yes will then be the minimal description
+of $x$, and we can return $K(x)=$ the length of \encoding{M,w}.\qed
+\end{answer}
+
+\begin{exercise}[\sipser, 6.14]
+Use the result of Exercise~\ref{desc} to give a function $f$ that is
+computable with an oracle for \ATM, where for each $n$, $f(n)$ is an
+incompressible string of length $n$.
+\end{exercise}
+\begin{answer}
+We can construct a machine which, given $n$, enumerates each string of
+length $n$, and for each one runs the machine constructed in
+Exercise~\ref{desc} to find its descriptive complexity, halting when
+it finds a string whose descriptive complexity is equal to its length
+with that string on its tape.  Then the function $f$ is the function
+computed by this machine.\qed
+\end{answer}
+
+\begin{exercise}[\sipser, 6.21]
+In Corollary~4.15 we showed that the set of all languages is
+uncountable.  Use this result to prove that languages exist that are
+not recognizable by an oracle Turing machine with oracle for \ATM.
+\end{exercise}
+\begin{answer}
+An oracle Turing machine is still finite, i.e.~it has a finite
+description over a finite description language.  Thus there are only
+countably many oracle Turing machines for a particular oracle;
+therefore there are more languages than oracle Turing machines with
+oracle for \ATM, so some must not be recognizable.\qed
+\end{answer}
+\end{document}

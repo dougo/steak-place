@@ -1,0 +1,26 @@
+Solution to "Last Day of Summer" by Cameron Fox
+
+W
+GET KNIFE
+E
+E
+ENTER BOAT
+CUT ROPE
+N
+E
+N
+X SUNDIAL
+GET ROD
+N
+S
+W
+GIVE MAN KNIFE
+E
+N
+WEAR HAT
+N
+OPEN DESK
+GET BOOK
+S
+S
+GIVE GREENGROCER BOOK

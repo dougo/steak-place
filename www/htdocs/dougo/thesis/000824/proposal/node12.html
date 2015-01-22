@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 99.2beta8 (1.42)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Syntax</TITLE>
+<META NAME="description" CONTENT="Syntax">
+<META NAME="keywords" CONTENT="proposal">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v99.2beta8">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="proposal.css">
+
+<LINK REL="next" HREF="node13.html">
+<LINK REL="previous" HREF="node11.html">
+<LINK REL="up" HREF="node10.html">
+<LINK REL="next" HREF="node13.html">
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<A NAME="tex2html142"
+  HREF="node13.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.gif"></A> 
+<A NAME="tex2html140"
+  HREF="node10.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.gif"></A> 
+<A NAME="tex2html134"
+  HREF="node11.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.gif"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html143"
+  HREF="node13.html">Semantics</A>
+<B> Up:</B> <A NAME="tex2html141"
+  HREF="node10.html">FM: Featherweight MOO</A>
+<B> Previous:</B> <A NAME="tex2html135"
+  HREF="node11.html">Purpose</A>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00062000000000000000">
+Syntax</A>
+</H2>
+
+<P>
+<PRE>
+P -&gt; "return" E ";" P -&gt; E ";" P
+
+E -&gt; "#-1" | "#0" | "#1"			// constants
+E -&gt; "this" | "args" "[" INT "]"		// variables
+E -&gt; E ":" ID "(" [ EL ] ")"			// verb invocation
+E -&gt; "create" "(" E ")"				// object creation
+E -&gt; "set_verb_code" "(" E "," STR "," ESTR ")"	// verb update
+
+[Note: set_verb_code has different syntax and semantics in full MOO,
+but a MOO database can be made to accept this syntax and act as
+defined below with the help of a #0:bf_set_verb_code wrapper.]
+
+EL -&gt; E | E "," EL
+ESTR -&gt; E | STR
+
+INT -&gt; DIGIT+
+STR -&gt; "\"" CHAR* "\""
+ID -&gt; LETTER (LETTER|DIGIT)*
+</PRE>
+
+<P>
+<BR><HR>
+<ADDRESS>
+Doug Orleans
+2000-08-12
+</ADDRESS>
+</BODY>
+</HTML>

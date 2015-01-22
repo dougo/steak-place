@@ -1,0 +1,219 @@
+This is TeX, Version 3.14159 (C version 6.1) (format=latex 96.10.15)  14 MAY 1997 01:15
+**hw6
+(hw6.tex
+LaTeX2e <1996/06/01>
+Hyphenation patterns for english, german, loaded.
+(/share/unix/packages/TeX/texmf/tex/latex/base/article.cls
+Document Class: article 1996/05/26 v1.3r Standard LaTeX document class
+(/share/unix/packages/TeX/texmf/tex/latex/base/size10.clo
+File: size10.clo 1996/05/26 v1.3r Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(/share/unix/packages/TeX/texmf/tex/latex/amslatex/amstex.sty
+Package: amstex 1995/01/27 v1.2 AMS extra math features
+\@mathmargin=\skip43
+\@emptytoks=\toks15
+\ex@=\dimen103
+\Mathstrutbox@=\box26
+\strutbox@=\box27
+\big@size=\dimen104
+\pmbraise@=\dimen105
+LaTeX Info: Redefining \frac on input line 349.
+LaTeX Info: Redefining \nobreakspace on input line 394.
+\classnum@=\count87
+\DOTSCASE@=\count88
+LaTeX Info: Redefining \dots on input line 600.
+LaTeX Info: Redefining \ldots on input line 683.
+LaTeX Info: Redefining \cdots on input line 687.
+LaTeX Font Info:    Redeclaring math symbol \Gamma on input line 712.
+LaTeX Font Info:    Redeclaring math symbol \Delta on input line 713.
+LaTeX Font Info:    Redeclaring math symbol \Theta on input line 714.
+LaTeX Font Info:    Redeclaring math symbol \Lambda on input line 715.
+LaTeX Font Info:    Redeclaring math symbol \Xi on input line 716.
+LaTeX Font Info:    Redeclaring math symbol \Pi on input line 717.
+LaTeX Font Info:    Redeclaring math symbol \Sigma on input line 718.
+LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 719.
+LaTeX Font Info:    Redeclaring math symbol \Phi on input line 720.
+LaTeX Font Info:    Redeclaring math symbol \Psi on input line 721.
+LaTeX Font Info:    Redeclaring math symbol \Omega on input line 722.
+LaTeX Font Info:    Redeclaring font encoding OML on input line 738.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 739.
+\skewcharcount@=\count89
+\familycount@=\count90
+\pointcount@=\count91
+\accentdimen@=\dimen106
+\accentmu@=\count92
+\dspbrk@lvl=\count93
+\tag@help=\toks16
+\c@MaxMatrixCols=\count94
+\dotsspace@=\muskip10
+\and@=\count95
+\andhelp@=\toks17
+\@envbody=\toks18
+\hashtoks@=\toks19
+\atcount@=\count96
+\lwidth@=\dimen107
+\rwidth@=\dimen108
+\maxlwidth@=\dimen109
+\maxrwidth@=\dimen110
+\totwidth@=\dimen111
+\lineht@=\dimen112
+\savealignat@=\box28
+\gwidth@=\dimen113
+\gmaxwidth@=\dimen114
+\glineht@=\dimen115
+\multlinegap=\dimen116
+\multlinetaggap@=\dimen117
+\mwidth@=\dimen118
+\mlineht@=\dimen119
+\mtagbox@=\box29
+\ltwidth@=\dimen120
+\rtwidth@=\dimen121
+\c@parentequation=\count97
+\athelp@=\toks20
+\minaw@=\dimen122
+\bigaw@=\dimen123
+\uproot@=\count98
+\leftroot@=\count99
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 1996.
+LaTeX Info: Redefining \nobreakspace on input line 2040.
+)
+(/share/unix/packages/TeX/texmf/tex/latex/tools/theorem.sty
+Package: theorem 1995/11/23 v2.2c Theorem extension package (FMi)
+\theorem@style=\toks21
+\theorem@bodyfont=\toks22
+\theorempreskipamount=\skip44
+\theorempostskipamount=\skip45
+
+(/share/unix/packages/TeX/texmf/tex/latex/tools/thp.sty
+File: thp.sty 1995/11/23 v2.2c Theorem extension package (FMi)
+))
+(/share/unix/packages/TeX/texmf/tex/latex/fancyheadings/fancyheadings.sty
+\headrulewidth=\dimen124
+\footrulewidth=\dimen125
+\plainheadrulewidth=\dimen126
+\plainfootrulewidth=\dimen127
+\headwidth=\dimen128
+)
+(/share/unix/packages/TeX/texmf/tex/latex/misc/program.sty
+\@gtempa=\dimen129
+\@gtempa=\dimen130
+\@gtempa=\dimen131
+\@gtempa=\dimen132
+\@gtempa=\dimen133
+\@gtempa=\dimen134
+\@gtempa=\dimen135
+\@gtempa=\dimen136
+\@gtempa=\dimen137
+\@gtempa=\dimen138
+\@gtempa=\dimen139
+\@gtempa=\dimen140
+\@gtempa=\dimen141
+\@gtempa=\dimen142
+\@gtempa=\dimen143
+\@gtempa=\dimen144
+\@gtempa=\dimen145
+\@gtempa=\dimen146
+\@gtempa=\dimen147
+\@gtempa=\dimen148
+\@gtempa=\dimen149
+\@gtempa=\dimen150
+\@gtempa=\dimen151
+\@gtempa=\dimen152
+\@gtempa=\dimen153
+\@gtempa=\dimen154
+\@gtempa=\dimen155
+\@gtempa=\dimen156
+\@gtempa=\dimen157
+\@gtempa=\dimen158
+\@gtempa=\dimen159
+\@gtempa=\dimen160
+\@gtempa=\dimen161
+\@gtempa=\dimen162
+\@gtempa=\dimen163
+\@gtempa=\dimen164
+\@gtempa=\dimen165
+\@gtempa=\dimen166
+\@gtempa=\dimen167
+\@gtempa=\dimen168
+\@gtempa=\dimen169
+\@gtempa=\dimen170
+\@gtempa=\dimen171
+\@gtempa=\dimen172
+\@gtempa=\dimen173
+\@gtempa=\dimen174
+\@gtempa=\dimen175
+\@gtempa=\dimen176
+\@gtempa=\dimen177
+\@gtempa=\dimen178
+\c@programline=\count100
+\old@nxttabmar=\count101
+\symeulerletters=\mathgroup6
+\powersetbox=\box30
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <14.4> on input line 790.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 790.
+LaTeX Font Info:    Try loading font information for U+msa on input line 790.
+
+(/share/unix/packages/TeX/texmf/tex/latex/amsfonts/Umsa.fd
+File: Umsa.fd 1995/01/05 v2.2e AMS font definitions
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 790.
+
+(/share/unix/packages/TeX/texmf/tex/latex/amsfonts/Umsb.fd
+File: Umsb.fd 1995/01/05 v2.2e AMS font definitions
+)
+LaTeX Font Info:    Try loading font information for U+eur on input line 790.
+
+(/share/unix/packages/TeX/texmf/tex/latex/amsfonts/Ueur.fd
+File: Ueur.fd 1995/01/05 v2.2e AMS font definitions
+))
+(/share/unix/packages/TeX/texmf/tex/latex/tools/thb.sty
+File: thb.sty 1995/11/23 v2.2c Theorem extension package (FMi)
+)
+\c@exercise=\count102
+\c@subexercise=\count103
+
+No file hw6.aux.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 66.
+[1
+
+] [2] (hw6.aux) ) 
+Here is how much of TeX's memory you used:
+ 1276 strings out of 10910
+ 11918 string characters out of 72011
+ 65447 words of memory out of 262141
+ 4158 multiletter control sequences out of 9500
+ 12924 words of font info for 47 fonts, out of 150000 for 255
+ 14 hyphenation exceptions out of 607
+ 32i,12n,24p,215b,424s stack positions out of 300i,40n,60p,3000b,4000s
+
+Output written on hw6.dvi (2 pages, 10356 bytes).

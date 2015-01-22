@@ -1,0 +1,256 @@
+1. MOO
+
+I. Object model: object-based (i.e. not class based).  Objects have
+   methods ("verbs") and fields ("properties") which are dynamically
+   inherited through a single-inheritance chain of parent/child
+   relationships.  Methods can re-send to their parents; all methods
+   are virtual, in that the value of the "this" variable is preserved
+   on a re-send.  The inheritance relation may not be cyclic.
+
+II. Programming language: all program code lives in method bodies
+    (i.e. no global variables or "static" blocks).  Syntax is C-like,
+    but without static typing.  Method arguments are not named;
+    methods have access to a single "args" variable which is a list,
+    and which can be taken apart into local variables using scattering
+    assignment (similar to perl): {a, b, c} = {1, 2, 3} simultaneously
+    assigns 1, 2, and 3 to the variables a, b, and c, respectively.
+    Syntactic constructs include if-elseif-else-endif, for-endfor,
+    while-endwhile (both with break and continue), try-except-endtry
+    (for exception handling), and fork-endfork (for multitasking).
+    There is no scoping, and methods are invoked with call-by-value
+    semantics.  There is a large set of builtin functions which are
+    invoked directly, i.e. not on an object (e.g. "length(l)" to
+    compute the length of a list).
+
+III. Data types: integers, floats, strings, objects, errors, lists.
+     No first-class functions.  An error value is one of an enumerated
+     set of builtin error values.  List values are heterogenous and
+     allow random-access with 1-based integer indexing.  Objects are
+     numbered sequentially from 0, and can be referred to by a literal
+     expression "#nnn".  Object numbers are never reused after object
+     deletion.  Most data types can be coerced to each other
+     (e.g. strings to ints, ints to objects, and all data types have
+     string representations), but there is no implicit coercion.  All
+     values except objects are immutable; list subscript assignment is
+     syntactic sugar for copy-and-mutate.  All values except objects
+     are allocated on the heap and garbage collected with
+     reference-counting.
+
+IV. Reflection: many things can be queried programmatically at runtime:
+	- the list of methods and fields on an object
+	- method code, both source (in pretty-printed tokenized form;
+	  original source is not maintained) and compiled bytecode (in
+	  text form)
+	- the parent of an object and the list of children
+	- ownership and permissions of objects, methods, and fields
+	- the list objects and methods on the call stack
+    Most of these can be modified programmatically as well; the
+    exceptions are that method bytecode can only be modified by
+    recompiling from modified source code, and that an object's
+    children can only be changed indirectly by changing the parent of
+    a child.  Method, field, and builtin function names can be
+    computed at runtime for invocation.  Arbitrary expressions may be
+    evaluated at runtime with the eval() builtin.
+
+V. Security: each object, method, and field has an owner (which must
+   be a user object) and readable-by-others and writable-by-others
+   flags.  Each object has an inheritable-by-others ("fertile") flag.
+   Each method has an executable-by-others flag.  Each property has a
+   change-ownership-on-children flag; if it is set, then inherited
+   fields on child objects are owned by the owner of the child object,
+   rather than the owner of the field.  An executing method may only
+   read, write, and invoke methods which are either owned by the owner
+   of the currently executing method, or have the corresponding flag
+   set.  This provides a form of encapsulation, but it differs from
+   the usual notion of encapsulation in which private fields on an
+   object may only be accessed by methods on that object itself--
+   instead, all methods owned by the same owner may access private
+   fields.  User objects may be given the "wizard" flag, in which case 
+   their owned methods may read, write, or invoke anything.  A
+   wizard-owned method may also change its current effective ownership
+   to any other object; this allows a wizard user to write a method
+   that executes with its calling method's ownership.
+
+VI. Concurrency: cooperative multitasking, with enforced time and
+    instruction limits.  A task may relenquish control with a call to
+    suspend() (with an integer argument, which is the minimum number
+    of seconds until the task is resumed); a call to read() (which
+    waits for a line of input from a user) also relenquishes control
+    to another task, resuming at some point after a line has been
+    read.  Tasks have unique id numbers, and may be resumed or
+    terminated by their owners (or wizard users).  There is no "join"
+    operation on tasks.  There is no way to catch the exception thrown
+    when the time or instruction limit is reached; however, the
+    remaining time or number of instructions may be queried (e.g. so
+    that the task can suspend if it needs to keep going).  Task
+    scheduling attempts to ensure that each user has the same total
+    time for all his or her tasks, rather than giving each individual
+    task an equal share.
+
+VII. Persistence: all objects, tasks, and other data is kept in memory 
+     monolithically; periodically, the process forks in order to take
+     a snapshot of the current state and write it to disk.  This
+     state can be restored at a later date by a new process.
+
+VIII. Distribution: none, although it can be simulated to some extent
+      with a form of remote procedure calls, using the builtin
+      functions open_network_connection() and listen().
+
+1a. MOO with Waifs
+
+A recent experimental extension of MOO to add a new data type,
+"waifs", which act as lightweight objects.  In essence, normal MOO
+objects are regarded as classes; each waif value has a class, an
+owner, and a set of field values corresponding to its class's fields.
+Methods may be invoked on a waif value in exactly the same way that
+methods on objects are invoked; the methods are dynamically looked up
+on the class object.  Waifs are garbage collected, like lists, but
+they are also mutable; rather than having to use another form of GC
+than reference counting, there is a restriction that no cycles may be
+formed in the graph of waif field references.  Because MOO objects
+have virtual-world presence, there is a lot of overhead in memory and
+allocation time for things like the object's name, location, and
+contents, as well as the space required to hold the list of methods
+and fields.  In addition, objects are not garbage collected; they must 
+be explicitly destroyed, which may leave dangling references.  In
+practice, this means that objects are rarely used as data structures;
+instead, lists are used, with an ad-hoc assignment of fields to
+indices.  Waifs fix this by being lightweight and garbage collected
+yet still providing named fields and methods.
+
+2. ColdC/Genesis [AWAITING COMMENTS FROM SOMEONE WHO KNOWS MORE ABOUT
+   COLDC THAN I DO]
+
+I. Object model: object-based, like MOO.  Unlike MOO, however,
+   objects can have multiple parents; ancestor precedence is
+   determined by a "left-to-right, up-to-join" rule: methods on the
+   leftmost ancestry have precedence, unless they are also obscured on 
+   the right side.  For example, in this object structure:
+
+	A
+       / \
+      B   C
+       \ /
+	D
+
+    (i.e. A is a superclass of B and C, which are superclasses of D)
+    If a method m is defined on both A and C, then the one on C will
+    be executed when D.m() is called.  But if there is a definition of
+    m on B, then it will be executed.  Methods can re-send to the next
+    ancestor in this ordering, with the value of the "this()"
+    primitive function preserved.  The inheritance hierarchy may not
+    be cyclic.
+    
+II. Programming language: Mostly like MOO, except all method-local
+    variables must be declared at the top of the method body, and method
+    arguments are named, with an optional "rest" argument to allow a
+    variable number of arguments.  Object variables on the current
+    object can be referred to directly by name without having to
+    specify "this()" as the receiver, although that is needed if there
+    is also a local variable or argument with the same name.
+    Statements can be block-structured with curly braces, but there
+    are no block-local variables.  Syntactic constructs are similar to 
+    MOO's, with the addition of switch-case; there is no fork
+    construct, however: instead, a method is marked as "forked", and
+    it spawns a new task when invoked.  Methods are
+    invoked with call-by-value semantics.  Primitive functions are
+    called like MOO's, i.e. no receiver.
+
+III. Data types: same as MOO, with the addition of symbols,
+     dictionaries, and frobs.  No first-class functions.  An error
+     code can be any arbitrary symbol.  Symbols are interned strings,
+     i.e. comparison is done by pointer equality, not string compare.
+     Dictionaries allow key-indexed random access, where a key may be
+     any arbitrary value.  Objects have both unique integer IDs and,
+     optionally, unique symbol IDs.  Frobs are light-weight objects,
+     similar to waifs (see 1a.); a frob has an object and a value.
+     Any value may appear as the receiver to a method call expression:
+     if it's an object, the method is invoked on the object as normal;
+     if it's a frob, the method is invoked on the frob's object with
+     the frob's value as the first argument; otherwise, it's invoked
+     on a special object whose name is the same as the receiver's
+     type.  For example,
+
+	 $string.concat("foo", "bar")
+	 <$string, "foo">.concat("bar")
+         "foo".concat("bar")
+
+     are all equivalent.  All values except objects are immutable, 
+     and are garbage collected with reference-counting.  Integers are
+     promoted to floats where necessary in math ops (e.g. 1 + 2.0 is
+     legal).  String concatenation can be done with +, and if one of
+     the arguments is not a string, the primitive toliteral() is
+     called on it first.
+
+IV. Reflection: roughly the same capabilities as MOO.  A minor
+    difference is that primitive introspective functions, such as
+    "parents()", operates on the current object (the value of "this")
+    rather than taking an arbitrary object as argument.  This generally
+    means that the root object defines a .parents() method that calls
+    parents(), but it can be overridden if needed.
+
+V. Security: methods may be marked with one of the following access
+   modes:
+
+    public -- callable from anywhere
+    private -- callable from a method on the defining object
+    protected -- callable from a method on a descendant of the
+	         defining object
+    root -- callable from $root
+    driver -- callable from the driver (kernel)
+    frob -- callable only as a frob call, e.g. <$foo, #[]>.bar()
+
+   Fields, though, are always private.  As in MOO, the call stack is
+   available for inspection to determine permissions, but there is no
+   built-in notion of ownership.  Methods may also be marked as
+   "non-overridable", which means that no descendant object may define 
+   the same method, or "locked", which means that the method may not
+   be changed at runtime.  In addition, a primitive function
+   may be "bound" to a specific object, so that only that object may
+   invoke the primitive; for example, the shutdown() primitive (which
+   exits the system) might be bound to a $system object, and the
+   $system.shutdown() method would make sure the caller had the
+   appropriate privileges before calling shutdown().
+
+VI. Concurrency: cooperative multitasking as in MOO.  There is no fork 
+    construct, but a method may be marked as "forked" in which case
+    any invocation of the method spawns a new task.  In addition,
+    there is an "atomic()" primitive which prevents any other tasks
+    from running until atomic mode is turned off.  Unlike MOO,
+    suspend() and fork don't take a seconds argument, so you have to
+    do some sort of scheduling using the special method
+    $sys.heartbeat(), which is called once per second (this interval
+    can be set with the set_heartbeat() primitive).
+
+VII. Persistence: all data is stored on disk and cached in memory as
+     needed; the backup() primitive atomically syncs the cache to disk
+     (and asynchronously copies the data to a backup file).  Unlike
+     MOO, tasks are not saved to disk, so they will not live across a
+     shutdown and restore.
+
+VIII. Distribution: like MOO, there is none, but incoming and outgoing 
+      network connections can be made.
+
+3. LPC/DGD
+
+I. Object model
+II. Programming language
+III. Data types
+IV. Reflection
+V. Security
+VI. Concurrency
+VII. Persistence
+VIII. Distribution
+
+
+4. MUF/Muq
+
+I. Object model
+II. Programming language
+III. Data types
+IV. Reflection
+V. Security
+VI. Concurrency
+VII. Persistence
+VIII. Distribution
+

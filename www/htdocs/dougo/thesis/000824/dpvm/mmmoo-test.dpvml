@@ -1,0 +1,66 @@
+;-*-Scheme-*-
+
+;; ----- following is in Scheme -----
+
+,load minimmoo/mmmoo-front.scm
+
+(mmmoo-repl)
+
+;; ----- following is in mmmool -----
+
+(defclass *foo* (*object*) ((slot1 *object*)))
+(defclass *bar* (*object*) ((slot1 *object*)))
+(defclass *baz* (*foo*) ((baz-slot *object*)))
+
+(define foo1 (make *foo* (list "foo1")))
+(define bar1 (make *bar* (list "bar1")))
+(define baz1 (make *baz* (list "baz1-bazslot" "baz1-slot1")))
+
+(slot1 foo1)
+
+(defmethod f (x) (*object*) *object* "f on *object*")
+(defmethod f (x) (*foo*) *object* "f on *foo*")
+
+(f 2)
+
+
+;; ----- following is in dpvml -----
+
+;; to add a new method to make for a class, do:
+;; add method to make
+(add-method
+ make
+ (as <method>
+     (lambda (c slotvals)			; look at this fun pred!
+	  (-> (list-pred (eq-pred new-class)
+			 (apply list-pred (map slotspec-pred slotspecs)))
+	      new-class-pred)
+	  (make-instance new-class slotvals))))
+
+(load-dpvml-file "../minimmoo/mmmoo-runtime.dpvml")
+
+(define *foo* <class>
+  (make-class "*foo*" (list *object*) (list (list "s1" *object*))))
+
+(define foo1 <top> (make-instance *foo* (list (as <object> 1))))
+
+(define foo <generic> (make-generic (-> <top> <top>)))
+
+(define m1 <top> (as <method>
+		     (lambda (x) (-> (list-pred (class-pred *foo*)) <top>)
+			  (print "*foo* method of foo, got ~a~%" x))))
+
+;; (apply m1 (list foo1))
+
+(add-method foo m1)
+
+(add-method foo 
+	    (as <method>
+		(lambda (x) (-> (list-pred <top>) <top>)
+		     (print "Top method of foo, got ~a" x))))
+
+(apply-generic foo (list foo1))
+(apply-generic foo (list (as <object> 3)))
+
+
+;; eof

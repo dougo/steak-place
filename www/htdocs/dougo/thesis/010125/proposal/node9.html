@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 99.2beta8 (1.42)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Remaining Tasks</TITLE>
+<META NAME="description" CONTENT="Remaining Tasks">
+<META NAME="keywords" CONTENT="proposal">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v99.2beta8">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="proposal.css">
+
+<LINK REL="next" HREF="node10.html">
+<LINK REL="previous" HREF="node8.html">
+<LINK REL="up" HREF="proposal.html">
+<LINK REL="next" HREF="node10.html">
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<A NAME="tex2html109"
+  HREF="node10.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.gif"></A> 
+<A NAME="tex2html107"
+  HREF="proposal.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.gif"></A> 
+<A NAME="tex2html101"
+  HREF="node8.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.gif"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html110"
+  HREF="node10.html">FM: Featherweight MOO</A>
+<B> Up:</B> <A NAME="tex2html108"
+  HREF="proposal.html">Ph.D. Thesis Proposal: A</A>
+<B> Previous:</B> <A NAME="tex2html102"
+  HREF="node8.html">BOB: A prototype collaborative</A>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00050000000000000000">
+Remaining Tasks</A>
+</H1>
+
+<P>
+The completion of the dissertation requires a number of tasks.  Its
+main contribution to the field will be the BOB language as a
+substantial prototype for a next-generation collaborative programming
+language.  To that end, more design and implementation work needs to
+be done, as well as more in-depth study and comparison of existing
+collaborative languages.  My strategy for BOB is not simply to add a
+bunch of features that are useful to collaborative languages, but to
+add a meta-object protocol (MOP) that is powerful enough to support
+implementation of all of these features as extensions to the base
+language.  This has two big advantages: the base language can remain
+very simple and elegant, and the various features can be implemented
+several different ways in order to experiment with different design
+ideas without having to change the whole language.  A particular
+benefit of this latter feature is that different implementations can
+exist simultaneously, so that, for example, two groups of users can
+use two different security models for sharing code within each group,
+and the groups can use a third security model for interacting between
+groups.  My plan is to concentrate on designing a good, solid MOP, and 
+to develop basic proof-of-concept implementations for the various
+collaborative features without spending too much time on any one in
+particular.
+
+<P>
+I don't yet have a detailed idea of how to design a MOP for BOB;
+however, since BOB shares many features with CLOS, it will probably be
+quite similar to CLOS's MOP.  Fortunately the design of the CLOS MOP
+is described extensively in [??], so that will provide a good road
+map.  The main idea is to make everything an object; currently,
+generic functions are objects (which inherit from the generic function
+meta-object, <TT>&lt;gf&gt;</TT>), but handlers are not yet objects.  Then,
+``behind the scenes'' functions in the BOB implementation need to be
+made into generic functions, so that they can be overridden by
+user-defined methods.  For example, the <TT>best-handler</TT> function
+chooses the most specific applicable handler from a list of handlers
+and a list of arguments; if it were a generic function, then you could
+attach a method that overrides the default behavior with special
+behavior when the best handler happens to be owned by another user and
+marked private (perhaps throwing an exception, or just ignoring it and
+choosing the next best handler).
+
+<P>
+
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html109"
+  HREF="node10.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.gif"></A> 
+<A NAME="tex2html107"
+  HREF="proposal.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.gif"></A> 
+<A NAME="tex2html101"
+  HREF="node8.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.gif"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html110"
+  HREF="node10.html">FM: Featherweight MOO</A>
+<B> Up:</B> <A NAME="tex2html108"
+  HREF="proposal.html">Ph.D. Thesis Proposal: A</A>
+<B> Previous:</B> <A NAME="tex2html102"
+  HREF="node8.html">BOB: A prototype collaborative</A>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Doug Orleans
+2000-08-12
+</ADDRESS>
+</BODY>
+</HTML>

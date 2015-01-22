@@ -1,0 +1,1153 @@
+\documentclass{article}
+%\usepackage{tex2page}
+\usepackage{amsmath}
+\usepackage{theorem}
+
+\newcommand{\defn}[1]{\textbf{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\parm}[1]{\code{\textit{#1}}}
+
+% Reduce all margins by 1/2 inch.
+\addtolength{\voffset}{-0.5in}
+\addtolength{\textheight}{1.0in}
+\addtolength{\hoffset}{-0.5in}
+\addtolength{\textwidth}{1.0in}
+
+\title{Ph.D. Thesis Proposal: \\
+Programming Language Support For\\
+Separation Of Concerns}
+\author{Doug Orleans}
+
+\begin{document}
+
+%\begin{htmlonly}
+%This document is also available in
+%\htmladdnormallink{postscript}{../proposal.ps} form.
+%\end{htmlonly}
+
+\maketitle
+
+%\setlength{\parindent}{0in}
+%\setlength{\parskip}{0.1in}
+
+%\tableofchildlinks
+
+\begin{abstract}
+\noindent
+Separation of concerns is a useful problem-solving technique.
+Ideally, each program module should embody one (and only one) concern
+of the problem that the program is solving.  In practice, this
+correspondence is limited by the constructs available in the
+programming language; some kinds of concerns are easier or harder to
+separate in a given language, and crosscutting concerns are hard to
+separate in any currently popular language.  Programming languages
+should provide support for separation of concerns for as many kinds of
+concerns as possible, and they can achieve this while remaining
+conceptually simple.  I describe a language called Fred that attempts
+to meet these criteria, based on predicate dispatching,
+aspect-oriented programming, and units.  I provide an extended example
+of some reusable components that separate crosscutting concerns.
+\end{abstract}
+
+\section{Introduction}
+\label{introduction}
+
+In 1976, Edsger W.~Dijkstra described a technique for problem
+solving~\cite[page 211]{dijkstra-SOC}: ``study in depth an aspect of
+one's subject matter in isolation, for the sake of its own
+consistency, all the time knowing that one is occupying oneself with
+only one of the aspects''; he dubbed this technique \defn{separation
+of concerns}.  It is not easy to decide how a problem should be
+decomposed into separate concerns, but realizing that a decomposition
+is needed is an important first step in solving the problem.
+
+Ideally, the decomposition of a problem into separate concerns should
+lead directly to the modularization of a program that solves the
+problem---that is to say, each program module should embody one (and
+only one) concern of the problem.  The more this is true, the easier
+the program is to be understood, modified, or reused; the less this is 
+true, the more the program tends to be tangled, brittle, and
+overspecialized.
+
+In practice, this correspondence is limited by the constructs
+available in the programming language.  Object-oriented languages make
+it easy to modularize data-structure concerns (as classes), but
+functional concerns can end up scattered across multiple classes.
+Functional languages such as ML have roughly the opposite problem.  In
+addition, there are concerns that cannot be properly modularized using
+the constructs of \emph{any} currently popular programming language,
+because the concerns cut across the modularization that is supported
+by the existing constructs.  This realization has led to the design of
+\defn{aspect-oriented programming (AOP)}~\cite{AOP} languages that
+support the modularization of crosscutting concerns.
+
+AOP language design is an active area of research; some of the more
+prominent languages under development are AspectJ~\cite{AspectJ},
+HyperJ~\cite{HyperJ}, ComposeJ~\cite{ComposeJ},
+DemeterJ~\cite{DemeterJ}, and the language of aspectual
+components~\cite{ACs}.  They all address the problem of crosscutting
+concerns, by extending Java~\cite{JLS} with new constructs for
+expressing concerns that could not be expressed modularly in plain
+Java.
+
+I have developed my own AOP language called Fred~\cite{Fred}.  It is a
+dynamically typed language with a very simple core set of constructs
+together with some syntactic sugar for expressing behavior in a
+variety of styles.  Its central feature is a dynamic dispatch
+mechanism that generalizes predicate
+dispatching~\cite{predicate-dispatch} to allow behavior that is common
+to multiple operations to be expressed in a single method, called a
+\defn{branch}.  My prototype implementation is embedded in
+MzScheme~\cite{MzScheme} as a set of procedures and macros; branches
+can be combined with MzScheme's \defn{units}~\cite{units} to form
+reusable components of crosscutting behavior.
+
+The goal of Fred is to be simple yet general, supporting the widest
+variety of concern modularization: the basic constructs should be easy
+to understand operationally, but they should be able (with suitable
+syntactic sugar) to emulate the constructs of the other AOP languages,
+including aspects, hyperslices, composition filters, adaptive
+visitors, and aspectual collaborations.  A secondary goal is to be
+efficiently implementable, as much as possible without adding too many
+constraints on the expressibility of the language.
+
+In summary, my proposed thesis is that programming languages should
+provide support for separation of concerns for as many kinds of
+concerns as possible, and that they can achieve this while remaining
+conceptually simple.  The remainder of this paper describes a
+programming language that attempts to meet these criteria.
+Section~\ref{Fred} introduces the core constructs of Fred, along with
+some of the syntactic sugar.  Section~\ref{example} shows an example
+of a Fred program with reusable components.  Section~\ref{research}
+outlines the further research required to complete the dissertation.
+
+\section{Fred: A Simple Yet General AOP Language}
+\label{Fred}
+
+As mentioned in section~\ref{introduction}, Fred is embedded in
+MzScheme.  This means that a Fred program may use syntax and
+procedures from Scheme~\cite{R5RS}; in particular \code{define}
+and \code{lambda} will be needed.
+
+The main idea behind Fred is that of \defn{extensible decisions}.  In
+an OOP language with dynamic dispatch, every message send triggers a
+decision, namely which method to execute.  Unlike an \code{if} or
+\code{switch} statement, however, the decision is extensible: new
+methods can be added incrementally, in subclasses or sibling classes,
+without modifying code.  In single-dispatch OOP, the decision depends
+solely on the run-time type of the receiver; with multiple dispatch,
+the decision can also depend on the run-time types of the other
+arguments.  With predicate dispatching, the decision can depend on any
+arbitrary expression involving the arguments.  In AspectJ,
+crosscutting behavior can be specified as extensions to existing
+decisions, in the form of advice, but the decision condition is even
+more general than predicate dispatching: a pointcut expression can
+involve the message, or the execution context or history.  Each join
+point represents a decision to be made about what code to execute.
+Fred unifies all of these ways of extending decisions into one general
+dynamic dispatch mechanism.
+
+There are four basic kinds of behavioral entities in Fred:
+\defn{messages}, \defn{primary branches}, \defn{around branches}, and
+\defn{decision points}.  Fred provides syntax for defining the first three:
+
+\begin{itemize}
+\item \code{(define-msg \parm{name})}
+      creates a message and binds it to the variable \parm{name} in
+      the current lexical environment.  Messages are procedures and
+      can be sent to a list of values using the same syntax as
+      procedure application.
+\item \code{(define-branch \parm{condition} \parm{body})} and
+      \code{(define-around \parm{condition} \parm{body})} create a
+      primary or around branch whose condition predicate is the value
+      of \parm{condition} and whose body is the value of \parm{body}.
+      Both arguments must evaluate to procedures of one argument, a
+      decision point.  The branch is added to the global set of
+      branches.
+\end{itemize}
+
+Decision points are not created explicitly; when a message is
+sent, a decision point is implicitly created and passed to the
+condition predicates of every defined branch.  The set of branches
+whose condition predicates return true (that is, any value besides
+\code{\#f}) for a given decision point is known as the set of
+\defn{applicable branches}; it is a runtime error (``message not
+understood'') if this set is empty.  The most precedent branch from
+this set is selected and the decision point is passed to its body
+procedure; it is a runtime error (``message ambiguous'') if there is
+more than one most precedent applicable branch, unless they are all
+around branches, in which case one is selected arbitrarily.  The
+branch body procedure can call the special function
+\code{follow-next-branch} to pass the decision point to the body
+procedure of the most precedent applicable branch that is not already
+being executed.  The precedence relation between branches is based on
+logical implication of condition predicate expressions, except that
+around branches always precede primary branches; this relation is
+described in further detail later in this section.
+
+There are three procedures for inspecting the context
+of a decision point:
+
+\begin{itemize}
+\item \code{(dp-msg \parm{dp})} returns the message that was sent.
+      (\code{(msg-name \parm{msg})} returns the name of a message as a
+      symbol.)
+\item \code{(dp-args \parm{dp})} returns the list of values the
+      message was sent to.
+\item \code{(dp-previous \parm{dp})} returns the decision
+      point that was being processed when the message was sent.
+\end{itemize}
+
+These basic building blocks are enough to define the behavior of a
+program separated by concern.  For example, using MzScheme's structure
+type facility, we can make a simple \code{person} class:
+
+\begin{verbatim}
+(define-struct person (fname lname))
+(define-msg full-name)
+(define-branch
+  (lambda (dp) (and (eq? (dp-msg dp) full-name)
+                    (= (length (dp-args dp)) 1)
+                    (person? (car (dp-args dp)))))
+  (lambda (dp)
+    (let ((this (car (dp-args dp))))
+      (string-append (person-fname this) " "
+                     (person-lname this)))))
+\end{verbatim}
+
+A \code{person} object has two fields, \code{fname} and \code{lname}.
+When the \code{full-name} message is sent to a \code{person} object,
+the values of the \code{fname} and \code{lname} fields of that object
+are concatenated (with a space in between).  Thus \code{full-name} acts
+as a method on the \code{person} class, although it is defined outside
+of the class definition and could appear in a separate part of the
+program.
+
+We can also make a \code{knight} subclass with new behavior for
+handling \code{full-name}:
+
+\begin{verbatim}
+(define-struct (knight person) ())
+(define-branch
+  (lambda (dp) (and (eq? (dp-msg dp) full-name)
+                    (= (length (dp-args dp)) 1)
+                    (knight? (car (dp-args dp)))))
+  (lambda (dp)
+    (string-append "Sir " (follow-next-branch))))
+\end{verbatim}
+
+Notice that this branch's condition predicate overlaps with that of
+the previous one: if \code{full-name} is sent to a \code{knight}
+object, then both conditions will be true.  In this case, the second
+branch has precedence, because its condition predicate logically
+implies the first branch's---that is, the first branch's condition
+predicate is always true whenever the second branch's condition
+predicate is true.  In particular, \code{(person?\ x)} is always true
+whenever \code{(knight?\ x)} is true, because \code{knight} is a
+subclass of \code{person}.
+
+The idea of branch precedence being based on logical implication
+between condition predicates is taken directly from Ernst et.~al.'s
+predicate dispatching system~\cite{predicate-dispatch}.  The main
+advantage of this is that branch precedence is a straightforward
+generalization of the usual method overriding rules in object-oriented
+languages: subclass methods override superclass methods, or in the
+case of multiple dispatch, more specific methods override less
+specific methods.
+
+However, sometimes you want a branch with a very general condition
+predicate to precede other branches with more specific condition
+predicates.  For example, suppose you wanted to trace all messages
+sent to \code{person} objects:
+
+\begin{verbatim}
+(define-around
+  (lambda (dp)
+    (person? (car (dp-args dp))))
+  (lambda (dp)
+    (printf "Received message ~a.~n" (msg-name (dp-msg dp)))
+    (follow-next-branch)))
+\end{verbatim}
+
+Its condition predicate does not logically imply any of the condition
+predicates of the other branches, but it needs to be followed before
+they do.  (In particular, it needs to precede the first branch above,
+since that branch's body procedure does not call
+\code{follow-next-branch}!)  Making it an around branch causes it to
+precede any primary branch, so it will be followed before the others.
+
+Logical implication of predicates is undecidable in general, so Fred
+can only have a conservative approximation to the implication
+relation.  To determine predicate implication, Fred uses: the subtype
+relation, both for user-defined structure types and built-in Scheme
+types (such as the numeric type hierarchy); substitution of equals for
+equals (e.g.~\code{(eq?\ x 'foo)} implies \code{(symbol?\ x)} because
+\code{(symbol?\ 'foo)} is true); and propositional calculus rules (such
+as \code{(and} $P$ $Q$\code{)} implies \code{$P$}).  Although Fred
+currently computes this relation between applicable branches at
+message send time, the relation could instead be computed between all
+branches at branch definition time.  A static analyzer could even
+guarantee that ``message ambiguous'' errors will never occur, by
+rejecting a program unless it can determine that all pairs of branch
+predicates are either related by implication in one direction or
+logically exclusive, i.e.~one implies the negation of the other.
+
+Fred provides some helper functions and syntax to make condition
+predicates more concise, in the manner of AspectJ's pointcut
+designators:
+
+\begin{itemize}
+\item \code{(call \parm{msg})} produces a condition predicate that
+      returns true for any decision point whose message is \parm{msg}.
+\item \code{(args \parm{type-pred}} \ldots\ [\code{..}]\code{)}
+      produces a condition predicate that returns true for any
+      decision point such that each \parm{type-pred} returns true for
+      the corresponding argument of the decision point.  The
+      predefined type predicate \code{?}\ returns true for all values.
+      If \code{..} is specified at the end of the \code{args} form,
+      then the number of arguments may be more than the number of type
+      predicates.
+\item \code{(cflow \parm{condition})} produces a condition predicate
+      that returns true if \parm{condition} is true for the decision
+      point or any of its predecessors (using \code{dp-previous} to
+      walk up the stack).  \code{(cflowbelow \parm{condition})} is the
+      similar but does not check the decision point itself.  (An
+      example using \code{cflow} to solve a ``vanishing aspects''
+      problem appears in~\cite{Fred}.)
+\item \code{(\&\& \parm{condition}} \ldots\code{)},
+      \code{(|| \parm{condition}} \ldots\code{)}, and
+      \code{(!\ \parm{condition})} can be used to
+      combine condition predicates into logical formulas.
+\end{itemize}
+
+Fred also provides some syntax to bind some variables in the body of a
+branch to parts of the decision point, similar to arguments to advice
+in AspectJ:
+
+\begin{itemize}
+\item \code{(with-msg (\parm{msg}) \parm{body}} \ldots\code{)} produces a body
+      procedure that binds \parm{msg} to the message of the decision
+      point in the scope of the \parm{body} expressions.
+\item \code{(with-args \parm{formals} \parm{body}} \ldots\code{)} produces a
+      body procedure that binds \parm{formals} to the arguments of the
+      decision point in the scope of the \parm{body} expressions.
+\item \code{(with-msg-and-args \parm{formals} \parm{body}}
+      \ldots\code{)} produces a body procedure that binds
+      \code{formals} to the message and arguments of the decision
+      point in the scope of the \parm{body} expressions.
+\end{itemize}
+
+Thus, the three example branches could be written as follows:
+
+\begin{verbatim}
+(define-branch (&& (call full-name) (args person?))
+  (with-args (this)
+    (string-append (person-fname this) " "
+                   (person-lname this)))))
+(define-branch (&& (call full-name) (args knight?))
+  (lambda (dp)
+    (string-append "Sir " (follow-next-branch))))
+(define-around (args person? ..)
+  (with-msg (msg)
+    (printf "Received message ~a.~n" (msg-name msg))
+    (follow-next-branch)))
+\end{verbatim}
+
+Fred also provides syntactic sugar for concise definition of
+branches that act like ordinary predicate dispatching methods,
+i.e.~their condition predicate only involves a single \code{call} test
+and some predicates over the arguments:
+
+\begin{itemize}
+\item \code{(define-method \parm{msg} \parm{formals}}
+            [\code{\& \parm{pred}}] \code{\parm{body}} \ldots\ \code{)}
+      adds a primary branch whose condition predicate tests that the
+      decision point message is \parm{msg} and that \parm{pred} is
+      true (if supplied), with the arguments bound to \parm{formals}.
+      The branch body also has the arguments bound to \parm{formals}.
+\end{itemize}
+
+This allows us to rewrite the first two example branches as follows:
+
+\begin{verbatim}
+(define-method full-name (this) & (person? this)
+  (string-append ((person-fname this) " " (person-lname this))))
+(define-method full-name (this) & (knight? this)
+  (string-append "Sir " (follow-next-branch)))
+\end{verbatim}
+
+Additionally, each formal parameter in the \parm{formals} list can be
+replaced by an application whose first argument is a variable, which
+is bound to the corresponding argument:
+
+\begin{verbatim}
+(define-method full-name ((person? this))
+  (string-append ((person-fname this) " " (person-lname this))))
+(define-method full-name ((knight? this))
+  (string-append "Sir " (follow-next-branch)))
+\end{verbatim}
+
+Two abbreviations also exist for around branches:
+
+\begin{itemize}
+\item \code{(define-before \parm{condition} \parm{body})} adds an
+      around branch whose body invokes the \parm{body} procedure and
+      then follows the next branch.
+\item \code{(define-after \parm{condition} \parm{body})} adds an
+      around branch whose body follows the next branch and then
+      invokes the \parm{body} procedure.
+\end{itemize}
+
+Thus we can rewrite the third example branch as follows:
+
+\begin{verbatim}
+(define-before (args person? ..)
+  (with-msg (msg)
+    (printf "Received message ~a.~n" (msg-name msg))))
+\end{verbatim}
+
+Instead of using MzScheme's structure mechanism to define data
+structures, Fred provides some syntax for defining classes and fields:
+
+\begin{itemize}
+\item \code{(define-class \parm{name} \parm{parent}} \ldots\code{)}
+      creates a class with the given \code{parent} classes and binds 
+      it to the variable \parm{name} in the current lexical
+      environment.
+\item \code{(define-field \parm{name} \parm{type}}
+      [\code{\parm{default}}]\code{)}
+      creates storage for the given \parm{type}, which is either a
+      class or a type predicate.  It defines two messages in the
+      current lexical environment, \code{get-\parm{name}} and
+      \code{set-\parm{name}!}, and adds two branches to get and put
+      values from and to the storage.  The \code{get-\parm{name}}
+      branch returns the value of \parm{default} if no value has been
+      stored for its argument using the \code{set-\parm{name}!} branch.
+      \code{(add-field \parm{name} \parm{type}}
+      [\code{\parm{default}}]\code{)}
+      adds the two branches, assuming the two messages have already
+      been defined.
+\end{itemize}
+
+Fred also provides two messages for instantiating classes, and one
+procedure for testing instances:
+
+\begin{itemize}
+\item \code{(make \parm{class} \parm{initarg}} \ldots\code{)} creates
+      an instance of \parm{class} and sends the \code{init} message to
+      the instance and the \parm{initarg} values.  The default branch
+      for \code{init} does nothing.
+\item \code{(is-a? \parm{obj} \parm{class})} returns true if
+      \parm{obj} is an instance of \parm{class} or one of its descendants.
+\end{itemize}
+
+Also, a class can be used in place of a type predicate in an
+\code{args} or \code{define-method} form.  Thus we can rewrite the
+previous example as follows:
+
+\begin{verbatim}
+(define-class person)
+(define-field fname person)
+(define-field lname person)
+(define-method init ((person this) fname lname)
+  (set-fname! this fname)
+  (set-lname! this lname))
+(define-msg full-name)
+(define-method full-name ((person this))
+  (string-append (get-fname this) " " (get-lname this)))
+
+(define-class knight person)
+(define-method full-name ((knight this))
+  (string-append "Sir " (follow-next-branch)))
+
+(define-before (args person ..)
+  (with-msg (msg)
+    (printf "Received message ~a.~n" (msg-name msg))))
+\end{verbatim}
+
+\section{An Example}
+\label{example}
+
+In order to give a better feel for how the mechanisms described in
+section~\ref{Fred} fit together to make reusable components of
+crosscutting concerns, I will present a complete example of a
+crosscutting component used with two different base programs.  The
+component is itself built up from several smaller reusable components.
+The example is based on the ``challenge problem'' of Ovlinger
+et.~al.~\cite{acc}.
+
+The example uses MzScheme's \defn{units} facility~\cite{units}.  There
+are two kinds of units, \defn{atomic} and \defn{compound}:
+
+\begin{itemize}
+\item \code{(unit (import \parm{iname}} \ldots\code{)\ (export
+      \parm{ename}} \ldots\code{)\ \parm{body}} \ldots\code{)}
+      creates an atomic unit.  The \parm{iname} variables are bound in
+      the scope of the \parm{body} expressions, which must define the
+      \code{ename} variables.
+\item \code{(compound-unit (import \parm{iname}} \ldots\code{)\ (link
+      (\parm{tag} (\parm{unit} \parm{linkage}} \ldots\code{))}\ 
+      \ldots\code{)\ (export (\parm{tag} \parm{ename})} \ldots\code{))}
+      creates a compound unit from other units.  The units are linked
+      together by assigning each unit a unique \parm{tag} variable,
+      and providing \parm{linkage} specifications for each of a unit's
+      imports.  A \parm{linkage} specifications can either be one of the
+      \parm{iname} variables or the form \code{(\parm{tag}
+      \parm{var})} where \parm{var} is one of the export variables
+      from the unit corresponding to \parm{tag}.  Similarly, the
+      \parm{ename} variables come from units corresponding to their
+      \parm{tag} variables.
+\end{itemize}
+
+Units are invoked with \code{(invoke-unit \parm{unit} \parm{arg}}
+\ldots\code{)}.  Invoking an atomic unit binds its import variables to
+the values of the \code{arg} expressions, then evaluates its body
+expressions in order.  Invoking a compound unit also binds its import
+variables, but then invokes each of its sub-units in order, binding
+their import variables to the exported values from the other units.
+
+The first base program is shown in figure~\ref{container}.  It defines
+an abstract \code{Item} class and two concrete subclasses,
+\code{Simple} and \code{Container}.  \code{Simple} objects have
+weight, while \code{Container}s have capacity and a list of contained
+\code{Item}s.  The \code{check} operation determines whether a
+\code{Container}, or any \code{Container}s inside it, are over
+capacity, and prints a message if so.  Figure~\ref{test-container}
+defines a test case for the program.
+
+\begin{figure}
+\caption{The \code{container} unit}
+\label{container}
+\begin{verbatim}
+(define container
+  (unit (import)
+        (export Item get-name
+                Simple get-weight
+                Container get-capacity get-contents add-item!
+                check)
+        
+    (define-class Item)
+    (define-field name Item)
+    (define-method init ((Item this) name)
+      (set-name! this name))
+
+    (define-class Simple Item)
+    (define-field weight Simple)
+    (define-method init ((Simple this) name weight)
+      (init this name)
+      (set-weight! this weight))
+
+    (define-class Container Item)
+    (define-field capacity Container)
+    (define-field contents Container '())
+    (define-method init ((Container this) name capacity)
+      (init this name)
+      (set-capacity! this capacity))
+    (define-msg add-item!)
+    (define-method add-item! ((Container this) (Item i))
+      (set-contents! this (append (get-contents this) (list i))))
+
+    (define-msg check)
+    (define-method check ((Simple this))
+      (printf "Simple object ~a weighs ~a~n" (get-name this) (get-weight this))
+      (get-weight this))
+    (define-method check ((Container this))
+      (let ((total (apply + (map check (get-contents this)))))
+        (printf "Container ~a weighs ~a~n" (get-name this) total)
+        (when (> total (get-capacity this))
+          (printf "Container ~a overloaded~n" (get-name this)))
+        total))
+
+    ))
+\end{verbatim}
+\end{figure}
+
+\begin{figure}
+\caption{Testing the \code{container} unit}
+\label{test-container}
+\begin{verbatim}
+(define test-container
+  (unit (import Simple Container add-item! check)
+        (export main)
+    (define (main)
+      (let ((c1 (make Container "basket" 4))
+            (c2 (make Container "bowl" 1))
+            (c3 (make Container "bag" 1))
+            (apple (make Simple "apple" 1))
+            (pencil (make Simple "pencil" 1))
+            (orange (make Simple "orange" 1))
+            (kiwi (make Simple "kiwi" 1))
+            (banana (make Simple "banana" 1)))
+        (add-item! c3 kiwi)
+        (add-item! c2 c3)
+        (add-item! c2 apple)
+        (add-item! c1 orange)
+        (add-item! c1 pencil)
+        (add-item! c1 c2)
+        (check c1)
+        (add-item! c2 banana)
+        (check c1)
+        (void)))
+  ))
+
+(define container-program
+  (compound-unit
+    (import)
+    (link [C (container)]
+          [TC (test-container (C Simple) (C Container)
+                              (C add-item!) (C check))])
+    (export (TC main))))
+\end{verbatim}
+\end{figure}
+
+\pagebreak
+
+Notice that the \code{check} operation does a recursive traversal over
+a composite \code{Container} object.  An optimization would be to
+memoize the results for each container and sub-container, but the
+caches would have to be invalidated when a container's contents are
+modified (with \code{add-item!}).  Since memoization is a common
+technique that is applicable in many different situations, we can make
+a generic \code{memoize} unit (figure~\ref{memoize}) that is
+parameterized over two condition predicates: \code{memoize?}, which
+returns true for all decision points corresponding to invocations of
+the operation that we want to memoize, and \code{invalidate?}, which
+returns true for all decision points corresponding to operations that
+cause some caches to be invalidated.  The \code{memoize} unit also
+imports two functions that extract relevant data from a decision point
+that matches one of the two conditions: \code{dp-key} extracts the
+input to the function being memoized, while \code{dp-keys} extracts
+the list of keys whose caches should be invalidated.  The cache is
+implemented as a field, since fields can be defined outside of any
+particular class; the type predicate for the field is \code{?}, since
+the type of the keys is irrelevant.
+
+\begin{figure}
+\caption{The \code{memoize} unit}
+\label{memoize}
+\begin{verbatim}
+;; Memoize a computation: the first time a decision point occurs,
+;; store the return value, and return it the next time a decision
+;; point with the same key occurs instead of recomputing.
+(define memoize
+  (unit (import memoize? dp-key
+                invalidate? dp-keys)
+        (export)
+
+    (define-field cached-value ?)
+    (define (clear-cache! c)
+      (printf "clear cache~n")
+      (set-cached-value! c #f))
+
+    (define-around memoize?
+      (lambda (dp)
+        (let ((key (dp-key dp)))
+          (if (not (get-cached-value key))
+              (set-cached-value! key (follow-next-branch))
+              (printf "using cached value~n"))
+          (get-cached-value key))))
+
+    (define-before invalidate?
+      (lambda (dp)
+        (for-each clear-cache! (dp-keys dp))))))
+\end{verbatim}
+\end{figure}
+
+Notice that the \code{memoize} unit does not export anything, it
+simply imports some condition predicates and defines some branches
+that use them.  Branches are not bound to variables; they exist in a
+global table, so there's nothing to export.  This is in contrast to
+Findler and Flatt's style of programming with units and
+mixins~\cite{units-mixins}, where each unit imports some classes,
+defines classes that extend the imported classes, and exports the new
+classes.  The effect of such a unit is to add behavior to a class by
+replacing it with a subclass that has the added behavior.  In Fred,
+however, behavior can be added directly by defining branches, so
+there's no need to export replacement classes.  This approach is
+simpler and potentially more efficient, since there isn't an artifical
+extension to the inheritance chain with every increment.
+
+Now in order to implement the \code{dp-keys} function required by the
+\code{memoize} unit, we need to keep track of what containers an item
+is inside; we only know what items are inside a container, but there
+is no link pointing in the other direction.  Keeping backlinks for a
+tree structure is another common technique that we can implement using
+a generic \code{backlink} unit (figure~\ref{backlink}).  This unit
+imports one condition predicate, \code{child-add?}, which returns true
+for all decision points corresponding to the addition of a new child
+node to a parent node; the \code{dp-parent} and \code{dp-child}
+functions extract the parent and child nodes from the decision point.
+The \code{backlink} unit exports one message, \code{get-parent}, which
+returns the parent node of a given node, or \code{\#f} if it is a root
+node (i.e. it hasn't been added to any parent).  Similar to the
+\code{memoize} unit, it stores the backlink in a field that is not
+attached to any class, since we don't care what the type of nodes is.
+
+\begin{figure}
+\caption{The \code{backlink} unit}
+\label{backlink}
+\begin{verbatim}
+;; Keep track of the parent node for each node in a tree structure.
+;; child-add? is a condition predicate representing an addition of a
+;; new child node to a parent node.  dp-parent and dp-child extract
+;; the parent and child from the addition dp.  get-parent returns the
+;; parent node of a node, or #f if it is a root.
+(define backlink
+  (unit (import child-add? dp-parent dp-child)
+        (export get-parent)
+
+    (define-field parent ?)
+
+    (define-after child-add?
+      (lambda (dp)
+        (set-parent! (dp-child dp) (dp-parent dp))))))
+\end{verbatim}
+\end{figure}
+
+Given these two generic units, we can build a compound unit that
+memoizes a recursive function over a tree structure.  The
+\code{memoize-tree} unit (figure~\ref{memoize-tree}) is
+more specialized than the \code{memoize} unit, but still generic
+enough to be used with any kind of tree structure data types.  The
+\code{dp-keys} function is provided to the \code{memoize} unit by an
+adapter unit (defined inline) that traverses the backlinks from a node
+to the root of the tree it belongs to, using the \code{get-parent}
+function exported from the \code{backlink} unit.  The \code{memoize?} 
+and \code{child-add?} condition predicates (plus their extractors) are
+imported and passed on to the sub-units.
+
+\begin{figure}
+\caption{The \code{memoize-tree} unit}
+\label{memoize-tree}
+\begin{verbatim}
+;; Memoize a computation on nodes of a tree that recurs on the node's
+;; children.  Invalidate a node's cache whenever a new child is about
+;; to be added to the node.
+(define memoize-tree
+  (compound-unit
+    (import memoize? dp-node
+            child-add? dp-parent dp-child)
+    (link [B (backlink child-add? dp-parent dp-child)]
+          [UB ((unit (import dp-parent get-parent)
+                     (export dp-ancestors)
+                 (define (dp-ancestors dp)
+                   (let loop ((node (dp-parent dp)))
+                     (if (not node)
+                         '()
+                         (cons node (loop (get-parent node))))))
+                 ) dp-parent (B get-parent))]
+          [M (memoize memoize? dp-node
+                      child-add? (UB dp-ancestors))])
+    (export)))
+\end{verbatim}
+\end{figure}
+
+We can further specialize this unit for a tree structure that is
+implemented by a set of classes using the Composite design
+pattern~\cite{design-patterns}.  The \code{memoize-composite-function}
+unit (figure~\ref{memoize-composite-function}) imports two classes,
+\code{Component} and a subclass \code{Composite}, as well as two
+messages, \code{func} and \code{add-component!}.  The former is the
+function to be memoized, and takes a \code{Component} object as its
+first argument; the latter takes at least two arguments, a
+\code{Composite} object $C$ and a \code{Component} object $O$, and
+adds $O$ to $C$.  These are adapted to the \code{memoize-tree} unit by
+providing condition predicates and extractors in terms of the imported
+classes and messages.
+
+\begin{figure}
+\caption{The \code{memoize-composite-function} unit}
+\label{memoize-composite-function}
+\begin{verbatim}
+;; Memoize a recursive function over a set of classes that use the
+;; Composite pattern.  Invalidate the cache when a component is added
+;; to a composite.
+(define memoize-composite-function
+  (compound-unit
+    (import Component func Composite add-component!)
+    (link [A ((unit (import Component func Composite add-component!)
+                    (export func-call? dp-node
+                            child-add? dp-parent dp-child)
+
+                (define func-call?
+                  (&& (call func) (args Component ..)))
+                (define (dp-node dp)
+                  (car (dp-args dp)))           ; the Component
+
+                (define child-add?
+                  (&& (call add-component!) (args Composite Component ..)))
+                (define (dp-parent dp)
+                  (car (dp-args dp)))           ; the Composite
+                (define (dp-child dp)
+                  (cadr (dp-args dp)))          ; the Component
+                ) Component func Composite add-component!)]
+          [M (memoize-tree (A func-call?) (A dp-node)
+                           (A child-add?) (A dp-parent) (A dp-child))])
+    (export)))
+\end{verbatim}
+\end{figure}
+
+We now have two different generic crosscutting components that memoize
+a recursive function over a tree structure: \code{memoize-tree} is
+similar to the AspectJ implementation of the challenge problem
+in~\cite{acc}, which uses abstract pointcuts in the style of Clarke
+and Walker~\cite{comp-patt}, while \code{memoize-composite-function}
+is similar to the implementation using aspectual collaborations, which
+imports a participant graph of classes.  The latter is simpler to use
+when the base program does actually use the Composite design pattern;
+it's just a matter of name mapping
+(figure~\ref{cached-container-program}).
+(Figure~\ref{container-output} shows the program output comparing the
+effects of using and not using the caching aspect.)  However, the
+former can be used in a wider variety of situations, such as an
+implementation using Scheme lists and \code{set-cdr!}.  Fred supports
+both styles of parameterized components equally well, due to the
+generality of units and branches.
+
+\begin{figure}
+\caption{Putting it all together}
+\label{cached-container-program}
+\begin{verbatim}
+(define cached-container-program
+  (compound-unit
+    (import)
+    (link [C (container)]
+          [M (memoize-composite-function (C Item) (C check)
+                                         (C Container) (C add-item!))]
+          [TC (test-container (C Simple) (C Container)
+                              (C add-item!) (C check))])
+    (export (TC main))))
+
+(define caching-comparison
+  (unit (import main cached-main)
+        (export)
+    (printf "Running the program without caching:~n")
+    (main)
+    (printf "~nRunning the program with caching:~n")
+    (cached-main)
+    (newline)
+    ))
+
+(define (compare base cached)
+  (invoke-unit
+   (compound-unit
+     (import)
+     (link [B (base)]
+           [C (cached)]
+           [P (caching-comparison (B main) (C main))])
+    (export))))
+
+(compare container-program cached-container-program)
+\end{verbatim}
+\end{figure}
+
+In order to demonstrate that the \code{memoize-composite-function}
+unit is truly reusable, I have constructed a completely different base
+program that also uses the Composite design pattern and has a
+recursive function that could be optimized with memoization.
+Figure~\ref{GUI} shows a \code{GUI} unit that computes an \code{Image}
+from a tree of nested \code{Widget} objects; figure~\ref{test-GUI}
+shows a test program.  Again, using the aspect is just a matter of
+name mapping (figure~\ref{cached-GUI-program}).  The comparison output
+is shown in figure~\ref{GUI-output}.
+
+\section{Research Plan}
+\label{research}
+
+Perhaps the most important work to be done to complete the
+dissertation is to compare the capabilities of Fred with the major AOP
+languages.  I believe that it can do most of the interesting things
+that they can do, and with some additions to the core facilities it
+can do the rest.  The first step in the comparison will be to define
+syntactic sugar for the features of the other languages; this has been
+done for the basic features of AspectJ, namely the primitive pointcut
+designators \code{call}, \code{args} (which subsumes \code{target}),
+and \code{cflow}.  A similar approach should be suitable for defining
+aspects (both concrete and abstract), as well as HyperJ's hyperslices,
+ComposeJ's composition filters, DemeterJ's adaptive visitors, and
+aspectual collaborations.  My hunch is that all of these constructs
+can be defined as units containing branches.
+
+The next step will be to come up with a good set of examples that can
+be defined in all the different languages, and show that the essential
+features of the implementations are preserved when translated to Fred.
+The caching example presented in this paper is one candidate; the
+cords library from my first paper about Fred~\cite{Fred} is another.
+The papers describing the other languages should also provide plenty
+of examples to choose from.
+
+One major difference between Fred and the other languages is that Fred
+is dynamically typed while they are all statically typed, being
+extensions to Java.  I don't think this will prohibit useful
+comparisons between the languages; the type declarations can simply be
+erased from the programs in the other languages, and the crosscutting
+nature of the concerns implemented by the programs will still be
+evident.  That is to say, the support for separation of concerns in
+AOP languages is not provided by the static type system, but by the
+features of the dynamically typed subset.  If this turns out not to be
+true for some of the languages, then I may need to add some kind of
+static type system to Fred in order to make a fair comparison.
+
+A further interesting exercise in language comparison would be to
+formally define the dynamic semantics of (some interesting subset of)
+the languages, and use Felleisen's notion of \defn{expressibility} to
+demonstrate that Fred is at least as expressible as the other AOP
+languages, if not strictly more expressible.  While I may not have the
+time to complete formal proofs, I should be able to come up with
+example programs that intuitively satisfy the requirements for
+comparing expressbility.
+
+There are a number of capabilities that I have already been planning to
+add to Fred in order to emulate the features of other AOP languages.
+One is the ability to declare inheritance relations between classes
+separately from the definitions of the classes, similar to the
+\code{declare parents} feature of AspectJ.  (This feature is also
+present in BeCecil~\cite{BeCecil}, a spiritual ancestor to Fred.)
+
+Another feature that would be useful is to be able to bind variables
+in a branch's condition predicate that are visible to the branch's
+body procedure.  The predicate dispatching language of Ernst
+et.~al.~\cite{predicate-dispatch} has this feature, which is very
+similar to the context exposure feature of AspectJ: pointcuts can bind
+variables that can be accessed in advice.  The example program in
+section~\ref{example} shows an alternate mechanism that does something
+similar: selectors that extract information from a decision point can
+be supplied to a unit alongside a condition predicate.
+
+It may turn out that a finer-grained mechanism for overriding the
+precedence relation is needed than simply having primary branches and
+around branches.  AspectJ has the \code{dominates} relation between
+aspects that contributes to advice precedence; something along these
+lines could be added to Fred.
+
+There is much room for improvement in the efficiency of Fred's current
+implementation.  Chambers and Chen~\cite{efficient-pd} describe
+several techniques for efficiently implementing predicate dispatching,
+by computing a dispatch tree from a set of predicates.  These
+techniques can be used in Fred, although the dispatch tree would have
+to be recomputed when a new branch is added; there may be some way to
+structure the tree so that it would only need partial recomputation.
+There may also be some static analysis techniques that could assist in
+optimization.
+
+One common criticism of AOP is that it seems to break one of the
+benefits of encapsulation: the code for one concern may be affected by
+the code in some other concern, but you can't tell that from looking
+at one concern in isolation.  This problem could be alleviated with a
+smart code browser tool that would show exactly what concerns have
+code that could affect the code you're looking at.  The AspectJ team
+has developed aspect browser plugins for various development
+environments; something similar could be developed as an extension to
+DrScheme~\cite{DrScheme}.
+
+\bibliography{proposal}
+\bibliographystyle{abbrv}
+
+\pagebreak
+\appendix
+\section{Auxiliary Figures}
+
+\begin{figure}[h!]
+\caption{Output of \code{container} comparison}
+\label{container-output}
+\small
+\begin{verbatim}
+Running the program without caching:
+Simple object orange weighs 1
+Simple object pencil weighs 1
+Simple object kiwi weighs 1
+Container bag weighs 1
+Simple object apple weighs 1
+Container bowl weighs 2
+Container bowl overloaded
+Container basket weighs 4
+Simple object orange weighs 1
+Simple object pencil weighs 1
+Simple object kiwi weighs 1
+Container bag weighs 1
+Simple object apple weighs 1
+Simple object banana weighs 1
+Container bowl weighs 3
+Container bowl overloaded
+Container basket weighs 5
+Container basket overloaded
+
+Running the program with caching:
+clear cache
+clear cache
+clear cache
+clear cache
+clear cache
+clear cache
+Simple object orange weighs 1
+Simple object pencil weighs 1
+Simple object kiwi weighs 1
+Container bag weighs 1
+Simple object apple weighs 1
+Container bowl weighs 2
+Container bowl overloaded
+Container basket weighs 4
+clear cache
+clear cache
+using cached value
+using cached value
+using cached value
+using cached value
+Simple object banana weighs 1
+Container bowl weighs 3
+Container bowl overloaded
+Container basket weighs 5
+Container basket overloaded
+\end{verbatim}
+\end{figure}
+
+\begin{figure}
+\caption{The \code{GUI} unit}
+\label{GUI}
+\begin{verbatim}
+(define GUI
+  (unit (import)
+        (export Image show overlay translate
+                Widget get-image
+                Label get-text
+                Canvas
+                Panel add-widget!)
+
+    (define-class Image)
+    (define-field bits Image '())
+    (define-method init ((Image this) bits) (set-bits! this bits))
+    (define-msg show)
+    (define-method show ((Image it)) (reverse (get-bits it)))
+    (define-msg overlay)
+    (define-method overlay ((Image i1) (Image i2))
+      (make Image (append (get-bits i1) (get-bits i2))))
+    (define-msg translate)
+    (define-method translate ((Image this) (complex? vector))
+      (make Image (map (lambda (bit) (cons (+ vector (car bit)) (cdr bit)))
+                       (get-bits this))))
+      
+    (define-class Widget)
+
+    (define-class Label Widget)
+    (define-field text Label)
+    (define-method init ((Label this) text) (set-text! this text))
+
+    (define-class Canvas Widget)
+    (define-msg set-image!)
+    (add-field image Canvas)
+    (define-method init ((Canvas this) image) (set-image! this image))
+
+    (define-class Panel Widget)
+    (define-field widgets Panel '())
+    (define-msg add-widget!)
+    (define-method add-widget! ((Panel this) (Widget w) (complex? loc))
+      (set-widgets! this (cons (cons loc w) (get-widgets this)))
+      (void))
+
+    (define-msg get-image)
+    (define-method get-image ((Label this))
+      (make Image (list (list 0 (get-text this)))))
+    (define-method get-image ((Panel this))
+      (let loop ((widgets (get-widgets this)))
+        (if (null? widgets)
+            (make Image '())
+            (overlay (translate (get-image (cdar widgets)) (caar widgets))
+                     (loop (cdr widgets))))))))
+\end{verbatim}
+\end{figure}
+
+\begin{figure}
+\caption{Testing the \code{GUI} unit}
+\label{test-GUI}
+\begin{verbatim}
+(define test-GUI
+  (unit (import Image show
+                Label
+                Canvas
+                Panel add-widget! get-image)
+        (export main)
+    (define (main)
+      (let ((main-panel (make Panel))
+            (text-panel (make Panel))
+            (picture-panel (make Panel)))
+        (add-widget! text-panel (make Label "hello") 0)
+        (add-widget! text-panel (make Label "world") 6)
+        (add-widget! main-panel text-panel 1+1i)
+        (add-widget! picture-panel
+                     (make Canvas (make Image '((0 x) (1+1i x) (2+2i x))))
+                     0)
+        (add-widget! picture-panel
+                     (make Canvas (make Image '((2 x) (1+1i x) (0+2i x))))
+                     0)
+        (add-widget! main-panel picture-panel 5+2i)
+        (add-widget! main-panel (make Label "OK") 5+6i)
+        (printf "~s~n" (show (get-image main-panel)))
+        (add-widget! text-panel (make Label "!") 11)
+        (printf "~s~n" (show (get-image main-panel)))
+        (void)))))
+
+(define GUI-program
+  (compound-unit
+    (import)
+    (link [G (GUI)]
+          [TG (test-GUI (G Image) (G show)
+                        (G Label)
+                        (G Canvas)
+                        (G Panel) (G add-widget!) (G get-image))])
+    (export (TG main))))
+\end{verbatim}
+\end{figure}
+
+\begin{figure}
+\caption{Reusing the \code{memoize-composite-function} unit}
+\label{cached-GUI-program}
+\begin{verbatim}
+(define cached-GUI-program
+  (compound-unit
+    (import)
+    (link [G (GUI)]
+          [M (memoize-composite-function (G Widget) (G get-image)
+                                         (G Panel) (G add-widget!))]
+          [TG (test-GUI (G Image) (G show)
+                        (G Label)
+                        (G Canvas)
+                        (G Panel) (G add-widget!) (G get-image))])
+    (export (TG main))))
+
+(compare GUI-program cached-GUI-program)
+\end{verbatim}
+\end{figure}
+
+\begin{figure}
+\caption{Output of \code{GUI} comparison}
+\label{GUI-output}
+\begin{verbatim}
+Running the program without caching:
+((1+1i "hello") (7+1i "world") (7+4i x) (6+3i x) (5+2i x) (5+4i x)
+ (6+3i x) (7+2i x) (5+6i "OK"))
+((1+1i "hello") (7+1i "world") (12+1i "!") (7+4i x) (6+3i x) (5+2i x)
+ (5+4i x) (6+3i x) (7+2i x) (5+6i "OK"))
+
+Running the program with caching:
+clear cache
+clear cache
+clear cache
+clear cache
+clear cache
+clear cache
+clear cache
+((1+1i "hello") (7+1i "world") (7+4i x) (6+3i x) (5+2i x) (5+4i x)
+ (6+3i x) (7+2i x) (5+6i "OK"))
+clear cache
+clear cache
+using cached value
+using cached value
+using cached value
+using cached value
+((1+1i "hello") (7+1i "world") (12+1i "!") (7+4i x) (6+3i x) (5+2i x)
+ (5+4i x) (6+3i x) (7+2i x) (5+6i "OK"))
+\end{verbatim}
+\end{figure}
+
+
+\end{document}

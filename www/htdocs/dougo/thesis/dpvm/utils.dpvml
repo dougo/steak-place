@@ -1,0 +1,18 @@
+;-*-Scheme-*-
+;	$Id: utils.dpvml,v 1.5 2000/03/07 17:44:34 gregs Exp gregs $	
+
+;; utility functions, defined in dpvml
+
+(define <string-list> <pred> (elt-pred <string>))
+
+;; return sublist containing elts of lst that pass filter f
+(define (filter f lst)
+  (-> (list-pred <callable> <list>) <list>)
+  (let loop ((in lst) (out (list))) <top>
+       (if (null? in)
+	   (reverse out)
+	   (if (f (car in))
+	       (loop (cdr in) (cons (car in) out))
+	       (loop (cdr in) out)))))
+
+;; eof

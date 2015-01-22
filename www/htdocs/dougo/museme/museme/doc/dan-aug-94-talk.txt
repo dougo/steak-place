@@ -1,0 +1,80 @@
+* MUSEME (spiffy printed overhead)
+  - (a work in progress)
+
+* In the beginning (theory)
+  - _simple_ shared scheme and MUD-like interaction facility
+  - play with certain ideas: notably capabilities over acls, and
+    cooperation between mutually suspicious parties
+
+* Big Ideas
+  - Trusted third parties
+  - You can't prevent all cheating, so don't try (example)
+  - Black boxes w/ t3s allow mut. suspicious parties to cooperate some
+
+* Shared Scheme
+  - telnet, login w/ password
+  - nameserver deals w/ that auth. you trust it. (you have no choice).
+  - you have your own REPL/env. no one else can get to it. (you know
+    this, because you trust the nameserver).
+  - env is persistent (in theory :-)
+  - (you can share data, but that's not very important here)
+
+* MUD (ignoring implementation for now)
+  - transcript showing many features
+
+* MUD details
+  - Widgets
+    - have name, aliases, description/describer, and handlers
+    - must present key to create and perform certain ops on (capability)
+    - extended by adding handlers
+  - Keys
+    - normal, master, limited
+    - limited: good for only one widget and only unlocks handlers that
+      it created itself (for untrusted extenders)
+  - Resolver
+    - intercepts attempts to operate widget primitives on strings/nums,
+      replaces them with widgets using current resolver.
+    - resolver uses your inventory and `context': list of things you've
+      seen in current room.
+    - (should probably cache, but it doesn't)
+  - Extending widgets (ie, Move)
+    - you give a limited key to the extender, it extends it in ways
+      that you might not be able to see, but it can.
+    - still not fully trustworthy: ie, if untrusted dude made Move,
+      he'd have the secret handlers so he could move you around at will.
+      IWBNI there was some way he could prove that he wasn't doing/
+      couldn't do that. (JAR's safe-scheme)
+    - and how do you add a verb??? (global-define?, conflicts...)
+  - Embedded scheme objects
+    - it's there, but primitive...
+    - allow you to use MUD/Scheme objects interchangeably?
+
+* MUSEME vs. SCHMUSE
+  - We're better :-)
+  - longest function names:
+    M: maybe-eat-telnet-command (24 characters)
+    S: frisk-descriptor-recursive-subexpr-descender-for-frisk-descr-env (64)
+    S*: frob-grovel-full-lexical-mumble
+  - size:
+    M: 17 files, 40K, runs in Scheme48
+    S: 139 files, almost 1M, runs in MIT Scheme
+  - ease of connectivity
+    S: client also runs in MIT Scheme
+    M: can connect with straight telnet, making it more accessible to
+       luser high-school students in Idaho.
+
+* Future
+  - Persistence
+    - easy
+    - but need some way to change server and users' code independently...
+  - Concurrency
+    - ? ok if we atomize certain actions on shared world?
+    - but who gets to make things be atomic?
+  - Distributedness
+    - old binding-lookup-intercept trick to catch externals?
+    - make local vs. remote widgets
+    - probably all of your env is on your computer. maybe it caches
+      remote schtuff?
+  - Connection details (crash, ^c)
+  - Interface (", :, parens and indenting [hack an emacs client?])
+

@@ -1,0 +1,133 @@
+\newcommand{\etalchar}[1]{$^{#1}$}
+\begin{thebibliography}{VBBCN96}
+
+\bibitem[BCLZ93]{SchMUSE}
+Michael~R. Blair, Natalya Cohen, David~M. LaMacchia, and Brian~K. Zuzga.
+\newblock {MIT} {SchMUSE}: Class-based remote delegation in a capricious
+  distributed environment.
+\newblock AI memo 1547, MIT, 1993.
+
+\bibitem[CL97]{BeCecil}
+Craig Chambers and Gary Leavens.
+\newblock {BeCecil}, a core object-oriented language with block structure and
+  multimethods: Semantics and typing.
+\newblock In {\em proceedings of the The Fourth International Workshop on
+  Foundations of Object-Oriented Languages (FOOL 4)}, Paris, France, January
+  1997.
+
+\bibitem[DHW98]{ACM-MOO}
+John~C. Doppke, Dennis Heimbigner, and Alexander~L. Wolf.
+\newblock Software process modeling and execution within virtual environments.
+\newblock {\em ACM Transactions on Software Engineering and Methodology},
+  7(1):1--40, January 1998.
+
+\bibitem[EKC98]{predicate-dispatch}
+Michael~D. Ernst, Craig Kaplan, and Craig Chambers.
+\newblock Predicate dispatching: A unified theory of dispatch.
+\newblock In {\em ECOOP}, pages 186--211, 1998.
+
+\bibitem[Eva93]{remy}
+Rémy Evard.
+\newblock Collaborative networked communication: {MUDs} as systems tools.
+\newblock In {\em Proceedings of the Seventh Systems Administration Conference
+  (LISA VII)}, pages 1--8, Monterey, CA, November 1993.
+
+\bibitem[Gil98]{Cold}
+Brandon Gillespie.
+\newblock The {C}old project.
+\newblock Web site, 1998.
+\newblock \\ \url{http://www.cold.org/}.
+
+\bibitem[HLM{\etalchar{+}}98]{UserManual}
+Geoff Hulten, Karl Lieberherr, Josh Marshall, Doug Orleans, and Binoy Samuel.
+\newblock The {Demeter/Java} user manual.
+\newblock In progress, 1998.
+
+\bibitem[Hor98]{Neverworld}
+Ian Horswill.
+\newblock Virtual environments and communities.
+\newblock Web site, 1998.
+\newblock \\ \url{http://www.cs.nwu.edu/\~{}ian/} (middle of page).
+
+\bibitem[HS95]{CRC-MOO}
+Chris Hand and Mark Skipper.
+\newblock A virtual environment for collaborative object-oriented design.
+\newblock Technical Report TR95/5, Dept of Computer Science, De Montfort
+  University, 1995.
+
+\bibitem[KLS{\etalchar{+}}98]{distance-learning}
+Robert Kozma, Ruth Lang, Mark Schlager, Patricia Schank, Martin Fong, and Chris
+  DiGiano.
+\newblock Virtual places for collaborative distance learning.
+\newblock Center for Technology in Learning, SRI International, 1998.
+
+\bibitem[KP96]{MOP-tutorial}
+Gregor Kiczales and Andreas Paepcke.
+\newblock Open implementations and metaobject protocols.
+\newblock Xerox PARC Tutorial, 1996.
+
+\bibitem[LO97]{preventive-maintenance}
+Karl Lieberherr and Doug Orleans.
+\newblock Preventive program maintenance in {Demeter/Java}.
+\newblock In {\em Proceedings of International Conference on Software
+  Engineering}, pages 604--605, Boston, MA, 1997.
+
+\bibitem[Mal94]{CL-HTTP}
+John~C. Mallery.
+\newblock A {C}ommon {LISP} hypermedia server.
+\newblock In {\em Proceedings of The First International Conference on The
+  World-Wide Web}, Geneva: CERN, May 1994.
+
+\bibitem[MF96]{COTERIE}
+Blair MacIntyre and Steven Feiner.
+\newblock Language-level support for exploratory programming of distributed
+  virtual environments.
+\newblock In {\em Proc. UIST '96}, pages 83--95, Seattle, WA., November 1996.
+
+\bibitem[ML98]{APPC}
+Mira Mezini and Karl Lieberherr.
+\newblock Adaptive plug-and-play components for evolutionary software
+  development.
+\newblock Technical Report NU-CCS-98-3, Northeastern University, College of
+  Computer Science, April 1998.
+
+\bibitem[Orl98]{NL-VR}
+Doug Orleans.
+\newblock Natural language processing for multi-user virtual worlds.
+\newblock COM 3411 class report, Spring quarter 1998.
+
+\bibitem[Ree96]{security-kernel}
+Jonathan Rees.
+\newblock A security kernel based on the lambda calculus.
+\newblock AI memo 1564, MIT, March 1996.
+
+\bibitem[Sar98]{Matrix}
+Vijay Saraswat.
+\newblock {M}atrix design notes.
+\newblock Web site, 1998.
+\newblock \\ \url{http://matrix.research.att.com/vj/matrix.html}.
+
+\bibitem[Spr96]{SPARCL}
+Lindsey Spratt.
+\newblock {\em Seeing the Logic of Programming With Sets}.
+\newblock PhD thesis, Electrical Engineering and Computer Science Department of
+  the University of Kansas, 1996.
+
+\bibitem[Str98]{POO}
+Joe Strout.
+\newblock {POO} ({P}ythonic {MOO}).
+\newblock Web site, 1998.
+\newblock \\ \url{http://www.strout.net/python/poo/}.
+
+\bibitem[VBBCN96]{AstroVR}
+Dave Van~Buren, Michael Brundage, Pavel Curtis, and David~A. Nichols.
+\newblock {AstroVR}, an on-line collaborative environment for research in
+  astrophysics.
+\newblock Project at CalTech, 1996.
+
+\bibitem[ZSE{\etalchar{+}}96]{LabSpace}
+N.J. Zaluzec, R.~Stevens, R.~Evard, T.~Disz, R.~Olson, and T.~Kuhfuss.
+\newblock Tele-presence microscopy \& the {ANL} {LabSpace} ({eLab}) project.
+\newblock {\em Powergrid Journal}, 1.01, 1996.
+
+\end{thebibliography}

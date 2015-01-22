@@ -1,0 +1,230 @@
+\documentclass{article}
+\usepackage{amstex}
+\usepackage{amssymb}
+\usepackage{theorem}
+\usepackage{fancyheadings}
+%\usepackage{program}
+
+\setlength{\parindent}{0pt}	% Don't indent paragraphs.
+
+\addtolength{\voffset}{-0.5in}
+\addtolength{\textheight}{1in}
+\addtolength{\hoffset}{-0.5in}	% Reduce left and right margins by 1 inch.
+\addtolength{\textwidth}{1in}
+
+\pagestyle{fancy}
+\setlength{\headrulewidth}{0pt}
+
+\lhead{COM 3350 Assignment 7}
+\rhead{Doug Orleans (\texttt{dougo@@ccs.neu.edu})}
+
+\theorembodyfont{\rmfamily}		% don't use italics
+\theoremstyle{break}			% put a line break after the header
+\newtheorem{exercise}{Exercise}
+\theoremstyle{plain}
+\newtheorem{subexercise}{}[exercise]
+\renewcommand{\thesubexercise}{\alph{subexercise}.}
+\newenvironment{answer}{\begin{quotation}\noindent}{\end{quotation}}
+
+\newcommand{\sipser}{\textit{Sipser}}
+\newcommand{\encoding}[1]{\ensuremath{\langle#1\rangle}}
+\newcommand{\qed}{~\ensuremath{\square}}
+\newcommand{\Th}{\ensuremath{\operatorname{Th}}}
+\newcommand{\Nat}{\ensuremath{\mathcal{N}}}
+\newcommand{\tred}{\ensuremath{\leq_{\text{T}}}}
+\newcommand{\ATM}{\ensuremath{A_{\textsf{TM}}}}
+\newcommand{\defin}[1]{\textbf{\textit{#1}}}
+\newcommand{\sym}[1]{\ensuremath{\mathtt{#1}}}
+\newcommand{\symbf}[1]{\textbf{\sym{#1}}}
+\newcommand{\set}[1]{\ensuremath{\{#1\}}}
+\newcommand{\enumlang}[1]{\set{\sym{#1}}}
+\newcommand{\union}{\cup}
+\newcommand{\setname}[1]{\textit{#1}}
+\renewcommand{\liminf}{\ensuremath{\lim_{n\to\infty}}}
+\newcommand{\TM}{\textsf{TM}}
+\newcommand{\NTM}{\textsf{NTM}}
+\newcommand{\DFA}{\textsf{DFA}}
+\newcommand{\NFA}{\textsf{NFA}}
+\renewcommand{\P}{\textrm{P}}
+\newcommand{\NP}{\textrm{NP}}
+\newcommand{\coNP}{\textrm{coNP}}
+\newcommand{\emptystring}{\ensuremath{\boldsymbol\varepsilon}}
+
+%\renewcommand{\AND}{\ \keyword{and}\ }
+%\newcommand{\ENDWHILE}{\untab\addtocounter{programline}{-1}}
+%\newcommand{\ENDIF}{\untab\untab\addtocounter{programline}{-1}}
+%\newcommand{\ACCEPT}{\keyword{accept}\ }
+%\newcommand{\REJECT}{\keyword{reject}\ }
+%\renewcommand{\keyword}[1]{\textbf{#1}} 
+%\renewcommand{\prognumstyle}{\textrm} 
+%\NumberProgramstrue 
+%\normalbaroutside 
+
+\renewcommand{\a}{\stepcounter{subexercise}\textbf{\thesubexercise}\ }
+
+\begin{document}
+
+\begin{exercise}
+\begin{subexercise}[\sipser, 9.2]
+Prove that TIME($2^n$) $\subsetneq$ TIME($2^{2n}$).
+\end{subexercise}
+\begin{displaymath}
+\lim_{n\to\infty}\frac{2^n}{2^{2n}/\lg 2^{2n}}
+=\lim_{n\to\infty}\frac{2n2^n}{2^{2n}} 
+=\lim_{n\to\infty}\frac{2n}{2^n} 
+=\lim_{n\to\infty}\frac{2}{n2^{n-1}} 
+=0
+\end{displaymath}
+\begin{answer}
+Thus $2^n=o(2^{2n}/\lg 2^{2n})$, and since $2^{2n}$ is time
+constructible, it follows from Corollary~9.11 that TIME($2^n$)
+$\subsetneq$ TIME($2^{2n}$).\qed
+\end{answer}
+
+\begin{subexercise}[\sipser, 9.3]
+Prove that NTIME($n$) $\subsetneq$ PSPACE.
+\end{subexercise}
+\begin{answer}
+NTIME($n$) $\subseteq$ NSPACE($n$) $\subseteq$ SPACE($n^2$)
+$\subsetneq$ SPACE($n^3$) $\subseteq$ PSPACE.\qed
+\end{answer}
+\end{exercise}
+
+\begin{exercise}
+\begin{subexercise}[\sipser, 9.6]
+Prove that if $A\in\P$ then $\P^A=\P$.
+\end{subexercise}
+\begin{answer}
+For any language $L\in\P^A$, we can replace writing a string to the
+oracle tape with simply computing whether the string is in $A$, which
+computation is in $\P$.  Thus $L\in\P$.  Also, for any $L\in\P$, we
+can construct a polynomial-time oracle Turing machine that simply
+ignores its oracle, making $L\in\P^A$.\qed
+\end{answer}
+
+\begin{subexercise}[\sipser, 9.9]
+Show that if $\NP = \P^{\setname{SAT}}$ then $\NP = \coNP$.
+\end{subexercise}
+\begin{answer}
+Since oracle Turing machines are deterministic, $\P^A$ is closed under
+complementation for any language $A$.  Thus,
+\begin{displaymath}
+L\in\NP
+\implies L\in\P^{\setname{SAT}}
+\implies\overline L\in\P^{\setname{SAT}}
+\implies\overline L\in\NP
+\implies L\in coNP.
+\end{displaymath}
+Also, $L\in\coNP$ implies $\overline L\in\NP$, which by the above
+reasoning implies $\overline L\in\coNP$, which implies
+$L\in\NP$.\qed
+\end{answer}
+\end{exercise}
+
+\begin{exercise}[\sipser, 9.7]
+Give regular expressions with exponentiation that generate the
+following languages over the alphabet $\enumlang{0,1}$.
+\begin{subexercise}
+All strings of length 500.
+\end{subexercise}
+\begin{answer}
+$(\sym 0\union\sym 1)^{500}$
+\end{answer}
+\begin{subexercise}
+All strings of length 500 or less.
+\end{subexercise}
+\begin{answer}
+$(\sym 0\union\sym 1\union\emptystring)^{500}$
+\end{answer}
+\begin{subexercise}
+All strings of length 500 or more.
+\end{subexercise}
+\begin{answer}
+$(\sym 0\union\sym 1)^{500}(\sym 0\union\sym 1)^*$
+\end{answer}
+\begin{subexercise}
+All strings of length different than 500.
+\end{subexercise}
+\begin{answer}
+$(\sym 0\union\sym 1\union\emptystring)^{499}\union(\sym 0\union\sym 1)^{501}(\sym 0\union\sym 1)^*$
+\end{answer}
+\begin{subexercise}
+All strings that contain exactly 500 \sym 1s.
+\end{subexercise}
+\begin{answer}
+$(\sym 0^*\sym 1)^{500}\sym 0^*$
+\end{answer}
+\begin{subexercise}
+All strings that contain at least 500 \sym 1s.
+\end{subexercise}
+\begin{answer}
+$(\sym 0^*\sym 1)^{500}(\sym 0\union\sym 1)^*$
+\end{answer}
+\begin{subexercise}
+All strings that contain at most 500 \sym 1s.
+\end{subexercise}
+\begin{answer}
+$(\sym 0^*(\sym 1\union\emptystring))^{500}\sym 0^*$
+\end{answer}
+\begin{subexercise}
+All strings of length 500 or more that contain a \sym 0\ in the 500th
+position.
+\end{subexercise}
+\begin{answer}
+$(\sym 0\union\sym 1)^{499}\sym 0(\sym 0\union\sym 1)^*$
+\end{answer}
+\begin{subexercise}
+All strings that contain two \sym 0s that have at least 500 symbols
+between them.
+\end{subexercise}
+\begin{answer}
+$(\sym 0\union\sym 1)^*\sym 0(\sym 0\union\sym 1)^{500}\sym 0(\sym 0\union\sym 1)^*$
+\end{answer}
+\end{exercise}
+
+\addtocounter{exercise}{-1}
+\begin{exercise}[\sipser, 9.8]
+If $R$ is a regular expression, let $R^{\set{m,n}}$ represent the
+expression \[R^m\union R^{m+1}\union\cdots\union R^n.\]
+Show how to implement the $R^{\set{m,n}}$ operator using the ordinary
+exponentiation operator, but without ``$\cdots$''.
+\end{exercise}
+\begin{answer}
+$R^m(R\union\emptystring)^{n-m}.$\qed
+\end{answer}
+
+\begin{exercise}[\sipser, 9.10]
+Show the error in the following fallacious ``proof'' that P $\not=$ NP.
+Assume that P = NP.  Then \setname{SAT} $\in$ P.  So, for some $k$,
+\setname{SAT} $\in$ TIME($n^k$).  Because every language in NP is
+polynomial time reducible to \setname{SAT}, NP $\subseteq$
+TIME($n^k$).  Therefore P $\subseteq$ TIME($n^k$).  But, by the time
+hierarchy theorem, TIME($n^{k+1}$) contains a language which isn't in
+TIME($n^k$), which contradicts P $\subseteq$ TIME($n^k$).  Therefore P
+$\not=$ NP.
+\end{exercise}
+\begin{answer}
+Every language in NP is polynomial time reducible to \setname{SAT},
+but this reduction might take $\Omega(n^k)$ time, which would dominate
+the $O(n^k)$ time to decide \setname{SAT}.  Thus we can't deduce that
+NP $\subseteq$ TIME($n^k$).\qed
+\end{answer}
+
+\begin{exercise}[\sipser, 9.11]
+Show that the language \setname{MAX-CLIQUE} from problem~7.30 is in
+$\NP^{\setname{SAT}}$.
+\end{exercise}
+\begin{answer}
+Since both \setname{CLIQUE} and \setname{SAT} are NP-complete,
+\setname{CLIQUE} $\leq_{\text{P}}$ \setname{SAT}.  Thus, we could
+build an oracle Turing machine with an oracle for \setname{SAT} that,
+given $\encoding{G,k}$, for each $i$ from $|G|$ down to $k$, asked its
+oracle if $f(\encoding{G,i})\in\setname{SAT}$, where $f$ is a
+polynomial-time computable function that reduces \setname{CLIQUE} to
+\setname{SAT}.  The machine would accept if and only if the oracle
+answered ``no'' for every $i>k$ and ``yes'' for $i=k$.  Since this
+algorithm is a polynomial repetition of a polynomial time function,
+it's actually in $\P^{\setname{SAT}}$ (which is of course a subset of
+$\NP^{\setname{SAT}}$).\qed
+\end{answer}
+\end{document}

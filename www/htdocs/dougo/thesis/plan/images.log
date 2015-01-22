@@ -1,0 +1,98 @@
+This is TeX, Version 3.14159 (C version 6.1) (format=latex 96.10.15)  16 OCT 1998 23:28
+**./images.tex
+(images.tex
+LaTeX2e <1996/06/01>
+Hyphenation patterns for english, german, loaded.
+
+(/share/unix/packages/TeX/texmf/tex/latex/base/article.cls
+Document Class: article 1996/05/26 v1.3r Standard LaTeX document class
+(/share/unix/packages/TeX/texmf/tex/latex/base/size10.clo
+File: size10.clo 1996/05/26 v1.3r Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+) (/share/unix/packages/TeX/lib/inputs/html.sty)
+\sizebox=\box26
+\lthtmlwrite=\write3
+(images.aux)
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+latex2htmlLength hsize=349.0pt
+latex2htmlLength vsize=669.135pt
+latex2htmlLength hoffset=0.0pt
+latex2htmlLength voffset=0.0pt
+latex2htmlLength topmargin=0.0pt
+latex2htmlLength topskip=0.00002pt
+latex2htmlLength headheight=0.0pt
+latex2htmlLength headsep=0.0pt
+latex2htmlLength parskip=0.0pt plus 1.0pt
+latex2htmlLength oddsidemargin=62.0pt
+latex2htmlLength evensidemargin=62.0pt
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 101.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 101.
+! Missing } inserted.
+<inserted text> 
+                }
+l.101 \etalchar $
+                 
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+! Extra }, or forgotten $.
+\lthtmlboxmathZ ...expandafter \box \next \egroup 
+                                                  
+l.103 \lthtmlfigureZ
+                    
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+l2hSize :tex2html_wrap279:3.62892pt::0.0pt::349.0pt.
+! Missing $ inserted.
+<inserted text> 
+                $
+l.104 \hfill\lthtmlcheckvsize
+                             \clearpage}
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+[1
+
+
+] (images.aux) ) 
+Here is how much of TeX's memory you used:
+ 304 strings out of 10910
+ 3113 string characters out of 72011
+ 44540 words of memory out of 262141
+ 3248 multiletter control sequences out of 9500
+ 3640 words of font info for 14 fonts, out of 150000 for 255
+ 14 hyphenation exceptions out of 607
+ 23i,4n,18p,171b,161s stack positions out of 300i,40n,60p,3000b,4000s
+
+Output written on images.dvi (1 page, 148 bytes).

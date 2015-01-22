@@ -1,0 +1,152 @@
+<html>
+<head>
+<title>How to run Java programs on Solaris at CCS</title>
+</head>
+<body>
+<h2>How to compile and run Java programs at CCS</h2>
+On Solaris, at CCS:
+
+<P>
+To compile:
+
+<PRE>
+jikes -classpath $CLASSPATH\:$JIKESPATH -d . -g +E *.java
+</PRE>
+
+(where JIKESPATH has the Java system classes,
+currently /arch/unix/packages/j2sdk1_3_0beta/jre/lib/rt.jar on Solaris).  
+You have to introduce an environment variable JIKESPATH,
+for example in your .software file. I use:
+
+<PRE>
+JAVA_HOME=/arch/unix/packages/j2sdk1_3_0beta
+# Location of JDK libs, for the Jikes compiler
+JIKESPATH=$JAVA_HOME/jre/lib/rt.jar
+</PRE>
+in my .software file.  (The Java 2 SDK should already be in your path,
+if you have e.g. "@all" or "@gnu-all" in your .software file; use
+
+<PRE>
+which java
+</PRE>
+
+to find out where the current version is.)
+
+<P>
+The +E gives error
+messages in a format that Emacs can parse.  "jikes -help" shows all
+the available options.
+
+<P> jikes is at:
+
+<PRE>
+/arch/com/bin/jikes
+</PRE>
+An alternative to jikes is to use javac from the Java 2 SDK.
+Why should you use jikes over javac? jikes gives you better error messages
+and it compiles much faster. 
+
+<P>
+To run:<br>
+<PRE>
+java Main
+</PRE>
+provided Main contains the main() method.
+
+<P>
+To get jikes for your machine, use:
+
+<A href="
+http://www.research.ibm.com/jikes/
+">Jikes compiler home page.</a>
+
+<h2> Compiling Java files that have been created by Demeter/Java. </h2>
+
+In some homeworks you get generated Java files to take the tedious
+work from you. The Java files live in a directory that has
+usually the name gen.
+<A HREF="
+http://www.ccs.neu.edu/research/demeter/DemeterJava/quick-help/TABLE-OF-CONTENTS.txt
+">Contents of generated java code.</A>
+
+<P>
+To compile and run the provided Java classes, you need to put
+the file at
+<A HREF="
+http://www.ccs.neu.edu/research/demeter/DemeterJava/rt.jar
+">http://www.ccs.neu.edu/research/demeter/DemeterJava/rt.jar</A>
+into your CLASSPATH.
+This jar file contains the runtime support package
+(edu.neu.ccs.demeter.*), as well as DJ (edu.neu.ccs.demeter.dj.*)
+and the AP Library (edu.neu.ccs.demeter.aplib.*,
+edu.neu.ccs.demeter.aplib.cd.*, and edu.neu.ccs.demeter.aplib.sg.*).
+
+<P>
+The same file is also at: /proj/demsys/demjava/rt.jar
+for users of CCS Solaris machines.
+
+To compile them, use:
+
+<PRE>
+jikes -classpath $CLASSPATH\:$JIKESPATH -g *.java
+</PRE>
+
+If you prefer to use javac, you can simply use:
+
+<PRE>
+javac *.java
+</PRE>
+
+
+To run the program, use:
+
+<PRE>
+java Main < program.input
+</PRE>
+where program.input contains an object description
+that is given as input to your Java program.
+Study class Main.java to see how the parser is invoked.
+
+
+<h2> Using jikes to compile Demeter/Java programs</h2>
+
+You need to add $JIKESPATH to your CLASSPATH environment variable when 
+running demjava:
+
+<P>
+In one command, in csh or tcsh,
+
+<PRE>
+    env CLASSPATH=$CLASSPATH\:$JIKESPATH demjava MODULENAME
+</PRE>
+
+    This is equivalent to, in sh, ksh, or bash,
+
+<PRE>
+    CLASSPATH=$CLASSPATH:$JIKESPATH demjava MODULENAME
+</PRE>
+where MODULENAME is one of the allowed modules, e.g. test, new, etc.
+Run demjava -help to see all possible module names.
+
+In the *.prj file it is recommended that you use
+
+<PRE>
+// Java compiler arguments.
+COMPILE_ARGS =  -g -depend +E
+</PRE>
+
+for the compiler arguments.
+
+<P>
+From Doug Orleans:
+The crux of the matter is that jikes needs the Java library classes to
+be on the classpath, and the way it handles its own JIKESPATH variable
+is sort of strange (it doesn't add JIKESPATH to the CLASSPATH, it
+uses one or the other but not both).  But I didn't feel comfortable
+just putting jre/lib/rt.jar in my CLASSPATH permanently,
+because Java doesn't need it.  So I do it as I've described.  Your
+mileage may vary.
+<P>
+Prepared by Karl Lieberherr with input from Doug Orleans and Johan Ovlinger.
+</body>
+</html>

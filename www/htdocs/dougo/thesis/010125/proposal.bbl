@@ -1,0 +1,171 @@
+\newcommand{\etalchar}[1]{$^{#1}$}
+\begin{thebibliography}{KLM{\etalchar{+}}97}
+
+\bibitem[AT98]{comp-filt}
+Mehmet Aksit and Bedir Tekinerdogan.
+\newblock \htmladdnormallink{Solving the modeling problems of object-oriented
+  languages by composing multiple aspects using composition
+  filters}{http://trese.cs.utwente.nl/composition_filters/filter_aspects.htm}.
+\newblock Technical report, TRESE project, University of Twente, Centre for
+  Telematics and Information Technology, P.O. Box 217, 7500 AE, Enschede, The
+  Netherlands, 1998.
+\newblock AOP'98 workshop position paper.
+
+\bibitem[B{\"o}l98]{AOP-ST}
+Kai B{\"o}llert.
+\newblock \htmladdnormallink{Aspect-Oriented Programming, Case Study: System
+  Management Application}{http://www.theoinf.tu-ilmenau.de/~kaib/aop/}.
+\newblock Graduation thesis, Fachhochschule Flensburg, 1998.
+
+\bibitem[BOSW98]{GJ}
+Gilad Bracha, Martin Odersky, David Stoutamire, and Philip Wadler.
+\newblock \htmladdnormallink{Making the future safe for the past: Adding
+  Genericity to the Java Programming
+  Language}{http://www.cs.bell-labs.com/who/wadler/pizza/gj/Documents/}.
+\newblock In {\em Proceedings of 1998 ACM OOPSLA Conference}, Vancouver,
+  October 1998.
+
+\bibitem[Car94]{Obliq}
+L.~Cardelli.
+\newblock \htmladdnormallink{Obliq: {A} language with distributed
+  scope}{http://research.compaq.com/SRC/personal/luca/Obliq/Obliq.html}.
+\newblock Technical Report 122, Digital Equipment Corporation Systems Research
+  Center, Palo Alto, CA, June 1994.
+
+\bibitem[Cha93]{Cecil}
+Craig Chambers.
+\newblock \htmladdnormallink{The Cecil Language: Specification and
+  Rationale}{http://www.cs.washington.edu/research/projects/cecil/www/Papers/c%
+ecil-spec.html}.
+\newblock Technical Report TR-93-03-05, University of Washington, Department of
+  Computer Science and Engineering, March 1993.
+
+\bibitem[Cla73]{come-from}
+R.~Lawrence Clark.
+\newblock \htmladdnormallink{A Linguistic Contribution to GOTO-less
+  programming}{http://www.fortran.com/fortran/come_from.html}.
+\newblock {\em DATAMATION}, December 1973.
+
+\bibitem[CLCM00]{MultiJava}
+Curtis Clifton, Gary~T. Leavens, Craig Chambers, and Todd Millstein.
+\newblock \htmladdnormallink{{MultiJava}: Modular Open Classes and Symmetric
+  Multiple Dispatch for
+  Java}{http://www.cs.washington.edu/research/projects/cecil/www/Papers/oopsla%
+00.html}.
+\newblock In {\em Proceedings of the ACM Conference on Object-Oriented
+  Programming Systems, Languages, and Applications (OOPSLA)}, 2000.
+
+\bibitem[CvE98]{JRes}
+Grzegorz Czajkowski and Thorsten von Eicken.
+\newblock \htmladdnormallink{JRes: A Resource Accounting Interface for
+  Java}{http://www.cs.cornell.edu/slk/papers.html}.
+\newblock In {\em Proceedings of the 1998 ACM OOPSLA Conference}, Vancouver,
+  BC, October 1998.
+
+\bibitem[EKC98]{predicate-dispatch}
+Michael~D. Ernst, Crag Kaplan, and Craig Chambers.
+\newblock \htmladdnormallink{Predicate Dispatching: {A} Unified Theory of
+  Dispatch}{http://www.cs.washington.edu/research/projects/cecil/www/Papers/gu%
+d.html}.
+\newblock In {\em Proceedings of ECOOP '98, the 12th European Conference on
+  Object-Oriented Programming}, pages 186--211, Brussels, Belgium, July 20--24
+  1998.
+
+\bibitem[FF00]{ob-quant}
+Robert~E. Filman and Daniel~P. Friedman.
+\newblock \htmladdnormallink{Aspect-Oriented Programming is Quantification and
+  Obliviousness}{http://ic.arc.nasa.gov/ic/darwin/oif/leo/filman/filman.html}.
+\newblock In {\em Proceedings of the Workshop on Advanced Separation of
+  Concerns, OOPSLA 2000}, Minneapolis, October 2000.
+
+\bibitem[GJS96]{JLS}
+James Gosling, Bill Joy, and Guy Steele.
+\newblock {\em \htmladdnormallink{The Java Language
+  Specification}{http://java.sun.com/docs/books/jls/}}.
+\newblock Addison Wesley, 1996.
+
+\bibitem[GR89]{Smalltalk}
+Adele Goldberg and David Robson.
+\newblock {\em \htmladdnormallink{Smalltalk 80 The
+  Language}{http://users.ipa.net/~dwighth/smalltalk/bluebook/bluebook_imp_toc.%
+html}}.
+\newblock Addison-Wesley, 1989.
+
+\bibitem[K{\etalchar{+}}]{AspectJ}
+Gregor Kiczales et~al.
+\newblock \htmladdnormallink{AspectJ}{http://aspectj.org}.
+\newblock Project web page.
+\newblock \texttt{\\ http://aspectj.org}.
+
+\bibitem[KCR98]{R5RS}
+Richard Kelsey, William Clinger, and Jonathan Rees.
+\newblock \htmladdnormallink{Revised$^5$ Report on the Algorithmic Language
+  Scheme}{http://www-swiss.ai.mit.edu/~jaffer/r5rs_toc.html}, February 1998.
+
+\bibitem[KdRB91]{AMOP}
+Gregor Kiczales, Jim des Rivi{\`e}res, and Daniel~G. Bobrow.
+\newblock {\em \htmladdnormallink{The Art of the Metaobject
+  Protocol}{http://www.parc.xerox.com/csl/groups/sda/publications/papers/Kicza%
+les-AMOP/}}.
+\newblock The MIT Press, 1991.
+
+\bibitem[Kic92]{tiny-clos}
+Gregor Kiczales.
+\newblock \htmladdnormallink{Tiny CLOS source
+  code}{http://www.parc.xerox.com/spl/projects/oi/software.html}.
+\newblock OI software archives web page, December 1992.
+\newblock \texttt{\\ http://www.parc.xerox.com/spl/projects/oi/software.html}.
+
+\bibitem[KLM{\etalchar{+}}97]{AOP}
+Gregor Kiczales, John Lamping, Anurag Mendhekar, Chris Maeda, Cristina~Videira
+  Lopes, Jean-Marc Loingtier, and John Irwin.
+\newblock \htmladdnormallink{Aspect-Oriented
+  Programming}{http://www.parc.xerox.com/csl/groups/sda/publications/papers/Ki%
+czales-ECOOP97/}.
+\newblock In {\em Proceedings of the European Conference on Object-Oriented
+  Programming (ECOOP)}. Springer-Verlag, June 1997.
+
+\bibitem[Koo95]{Sina}
+P.~Koopmans.
+\newblock \htmladdnormallink{On the design and realization of the Sina
+  compiler}{http://trese.cs.utwente.nl/publications/paperinfo/koopmans.thesis.%
+pi.ref.htm}.
+\newblock {MSc.} thesis, Dept. of Computer Science, University of Twente,
+  August 1995.
+
+\bibitem[MHO96]{SOP}
+Hafedh Mili, William Harrison, and Harold Ossher.
+\newblock \htmladdnormallink{Supporting Subject-Oriented Programming in
+  Smalltalk}{http://www.research.ibm.com/sop/abstracts/smalltalk.htm}, August
+  1996.
+\newblock Presented at TOOLS USA 96.
+
+\bibitem[OT00]{MDSOC}
+Harold Ossher and Peri Tarr.
+\newblock \htmladdnormallink{Multi-Dimensional Separation of Concerns and The
+  Hyperspace Approach}{http://www.research.ibm.com/hyperspace/MDSOC.htm}.
+\newblock In {\em Proceedings of the Symposium on Software Architectures and
+  Component Technology: The State of the Art in Software Development}. Kluwer,
+  2000.
+
+\bibitem[Ste90]{CLtL}
+Guy~L. Steele.
+\newblock {\em \htmladdnormallink{Common Lisp the
+  Language}{http://www.cs.cmu.edu/Groups/AI/html/cltl/cltl2.html}}.
+\newblock Digital Press, 2nd edition, 1990.
+
+\bibitem[TCKI00]{OpenJava}
+Michiaki Tatsubori, Shigeru Chiba, Marc-Olivier Killijian, and Kozo Itano.
+\newblock \htmladdnormallink{{OpenJava}: A Class-Based Macro System for
+  Java}{http://www.hlla.is.tsukuba.ac.jp/~mich/openjava/}.
+\newblock In Francesco Tisato~(Eds.) Walter~Cazzola, Robert J.~Stroud, editor,
+  {\em Lecture Notes in Computer Science 1826, Reflection and Software
+  Engineering}, pages 117--133. Springer-Verlag, 2000.
+
+\bibitem[UCCH91]{Self}
+David Ungar, Craig Chambers, Bay-Wei Chang, and Urs H{\"o}lzle.
+\newblock \htmladdnormallink{Organizing Programs Without
+  Classes}{http://www.sun.com/research/self/papers/organizing-programs.html}.
+\newblock {\em Lisp and Symbolic Computation}, 4(3):223--242, July 1991.
+
+\end{thebibliography}

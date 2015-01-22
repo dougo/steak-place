@@ -1,0 +1,205 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 99.2beta8 (1.42)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>BOB: A prototype collaborative language</TITLE>
+<META NAME="description" CONTENT="BOB: A prototype collaborative language">
+<META NAME="keywords" CONTENT="proposal">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v99.2beta8">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="proposal.css">
+
+<LINK REL="next" HREF="node9.html">
+<LINK REL="previous" HREF="node7.html">
+<LINK REL="up" HREF="proposal.html">
+<LINK REL="next" HREF="node9.html">
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<A NAME="tex2html99"
+  HREF="node9.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.gif"></A> 
+<A NAME="tex2html97"
+  HREF="proposal.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.gif"></A> 
+<A NAME="tex2html91"
+  HREF="node7.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.gif"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html100"
+  HREF="node9.html">Remaining Tasks</A>
+<B> Up:</B> <A NAME="tex2html98"
+  HREF="proposal.html">Ph.D. Thesis Proposal: A</A>
+<B> Previous:</B> <A NAME="tex2html92"
+  HREF="node7.html">Evaluation</A>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00040000000000000000">
+BOB: A prototype collaborative language</A>
+</H1>
+One approach to implementing a collaborative language would be to
+embed mechanisms for collaboration in an existing single-programmer
+language.  Dynamically extensible languages such as Lisp or Smalltalk
+and their descendants would be best suited for this.  This approach
+gives all the benefits of a full-featured general purpose language
+more or less for free; for example, you could write a simple program
+in CLOS that accepted connections on a socket and attached a
+read-eval-print loop to each connection in a separate thread, along
+with a small library of functions for publishing values to other
+connections' environments, and you would have a collaborative
+programming language with all the features described in section
+<A HREF="node3.html#features">2.1</A> except for resource control and security.
+Unfortunately, these two are very difficult to integrate with an
+existing language; for example, one can easily circumvent Common
+Lisp's module encapsulation and reference an internal symbol in
+another package by simply using two colons (i.e. ``foo::bar'').
+One would have to write secure, multi-programmer-aware versions of
+practically every function in the CLOS library.  [TBD: explain this a
+little better- e.g. find-class]
+
+<P>
+[TBD: talk about Java, JRes, security, but class loading is not
+incremental enough]
+
+<P>
+An alternate approach is, of course, to implement a new language from
+scratch.  This has the advantage of complete control over the
+features; security and incremental update can be designed in from the
+start.  It is also a good approach for pedagogical reasons: you can
+define a very clean, simple prototype language without needing to deal 
+with all the issues that would be required for a full-featured
+practical language but are irrelevant to a collaborative programming
+language.  However, even just implementing the features described in
+section <A HREF="node3.html#features">2.1</A> is quite a task!  Multitasking and persistence, 
+in particular, can be very tricky to implement, and while they are
+(practically speaking) required for a collaborative programming
+language, their implementation has little to do with the
+collaborative-ness.  (More importantly, I just don't have the
+expertise needed to implement them in the time frame of my PhD!)
+
+<P>
+What I've decided on is a hybrid approach that gives me much of the
+best of both worlds.  I have begun to implement a prototype language
+embedded in Larceny, an implementation of Scheme created by Lars
+Hansen, a fellow doctoral student at Northeastern.  Scheme's biggest
+advantage over Common Lisp is that environments are truly encapsulated
+[TBD: back this up!] and can serve as the basis of a simple security
+kernel, as Jonathan Rees has outlined [??].  The advantage of the
+Larceny implementation is that it provides multithreading and
+persistence (in the form of heap dumping and loading), as well as
+support for first-class environments.  So far, I've mainly
+concentrated on building an object system in Larceny suitable for a
+collaborative programming language; I decided to base it on the
+untyped subset of BeCecil, a simplified version of Cecil whose
+semantics are specified in [??], hence the (working) name ``BOB'',
+which stands for ``Based On BeCecil''.
+
+<P>
+The BOB object system is, like BeCecil, centered around generic
+functions (also known as multimethods) similar to those in CLOS and
+Dylan.  It also provides a multiple-dispatch version of instance
+variables called storage tables, elegantly unifying fields and methods
+into the same lookup mechanism.  Unlike BeCecil, however, everything
+is dynamically modifiable; methods and storage tables can be added to
+or deleted from generic functions, and the object inheritance relation
+can be mutated, all at runtime.  Figure&nbsp;<A HREF="node8.html#bob-syntax">1</A> summarizes
+the core syntax of BOB.
+
+<P>
+
+<P></P>
+<DIV ALIGN="CENTER"><A NAME="bob-syntax"></A><A NAME="273"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figure 1:</STRONG>
+The core syntax of BOB, as extensions to the Scheme syntax
+grammar.</CAPTION>
+<TR><TD><IMG
+ WIDTH="501" HEIGHT="321" BORDER="0"
+ SRC="img2.gif"
+ ALT="\begin{figure}
+\renewcommand {\:}{$\longrightarrow${}}
+\renewcommand {\Vert}{$...
+... {\noindent\hbox{\rm$\langle$parents$\rangle$}})\unskip\end{tabbing}\end{figure}"></TD></TR>
+</TABLE>
+</DIV><P></P>
+
+<P>
+<TT>define-object</TT> defines an object in the current lexical scope
+with the given name and parent(s).  If no parents are specified, the
+new object inherits directly from <TT>&lt;object&gt;</TT>, the root of the
+inheritance hierarchy.
+
+<P>
+<TT>define-gf</TT> defines a generic function in the current lexical
+scope with the given name.  Methods, acceptors, and storage tables
+(collectively known as <I>handlers</I>) can be attached to generic
+functions by side-effect with <TT>add-method!</TT>,
+<TT>add-acceptor!</TT>, and <TT>add-storage!</TT>.  Each formal
+argument of a handler has a specializer object (which defaults to
+<TT>&lt;object&gt;</TT> if not provided); the specializers of the handlers are
+used when determining what handler is used when a generic function is
+called.  There are two ways to call a generic function:
+<I>invoking</I> and <I>assigning</I>.  Correspondingly, each
+generic function has two lists of handlers, its <I>invocables</I>
+and its <I>assignables</I>; methods attached to a generic function
+are added to its invocables list, acceptors are added to assignables,
+and storage tables are added to both lists.  Invoking a generic
+function uses the same syntax as a procedure call in Scheme.  The
+invocables of the generic function are searched for an appropriate
+match, based on the runtime types of the arguments (i.e., the parent
+objects) and the lists of specializers of the handlers in the
+invocables list.  In order for a handler to be eligible, its
+specializers must all be ancestors of the corresponding arguments;
+the best match is chosen among the eligible handlers based on how far
+up the inheritance chain the specializers are.  If the best match is a 
+method, it is executed; if it's a storage table, the value stored in
+the table with the arguments as the key is returned.  [TBD: assigning]
+
+<P>
+[TBD: better explanations, examples!]
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html99"
+  HREF="node9.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.gif"></A> 
+<A NAME="tex2html97"
+  HREF="proposal.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.gif"></A> 
+<A NAME="tex2html91"
+  HREF="node7.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.gif"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html100"
+  HREF="node9.html">Remaining Tasks</A>
+<B> Up:</B> <A NAME="tex2html98"
+  HREF="proposal.html">Ph.D. Thesis Proposal: A</A>
+<B> Previous:</B> <A NAME="tex2html92"
+  HREF="node7.html">Evaluation</A>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Doug Orleans
+2000-08-12
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,207 @@
+\begin{thebibliography}{10}
+
+\bibitem{comp-filt}
+M.~Aksit and B.~Tekinerdogan.
+\newblock Solving the modeling problems of object-oriented languages by
+  composing multiple aspects using composition filters.
+\newblock Technical report, TRESE project, University of Twente, Centre for
+  Telematics and Information Technology, P.O. Box 217, 7500 AE, Enschede, The
+  Netherlands, 1998.
+\newblock AOP'98 workshop position paper.
+
+\bibitem{cords}
+H.-J. Boehm, R.~Atkinson, and M.~Plass.
+\newblock Ropes: an alternative to strings.
+\newblock {\em Software Practice \& Experience}, 25(12):1315--1330, December
+  1995.
+
+\bibitem{mixins}
+G.~Bracha and W.~Cook.
+\newblock Mixin-based inheritance.
+\newblock In N.~Meyrowitz, editor, {\em Proceedings of the Conference on
+  Object-Oriented Programming: Systems, Languages, and Applications /
+  Proceedings of the European Conference on Object-Oriented Programming}, pages
+  303--311, Ottawa, Canada, 1990. ACM Press.
+
+\bibitem{jumping}
+J.~Brichau, W.~de~Meuter, and K.~de~Volder.
+\newblock Jumping aspects.
+\newblock Workshop on Aspects and Dimensions of Concerns at ECOOP (position
+  paper), Cannes, France, June 2000.
+
+\bibitem{predicate-classes}
+C.~Chambers.
+\newblock Predicate classes.
+\newblock In O.~M. Nierstrasz, editor, {\em Proceedings of the European
+  Conference on Object-Oriented Programming ({ECOOP})}, volume 707, pages
+  268--296, Berlin, Heidelberg, New York, Tokyo, 1993. Springer-Verlag.
+
+\bibitem{efficient-pd}
+C.~Chambers and W.~Chen.
+\newblock Efficient multiple and predicate dispatching.
+\newblock In {\em Proceedings of OOPSLA '99}, Denver, CO, November 1999.
+
+\bibitem{DrScheme}
+J.~Clements, P.~Graunke, S.~Krishnamurthi, and M.~Felleisen.
+\newblock Little languages and their programming environments.
+\newblock Monterey Workshop.
+
+\bibitem{MultiJava}
+C.~Clifton, G.~T. Leavens, C.~Chambers, and T.~Millstein.
+\newblock {MultiJava}: Modular open classes and symmetric multiple dispatch for
+  java.
+\newblock In {\em Proceedings of the ACM Conference on Object-Oriented
+  Programming Systems, Languages, and Applications (OOPSLA)}, 2000.
+
+\bibitem{cook89denotational}
+W.~Cook and J.~Palsberg.
+\newblock A denotational semantics of inheritance and its correctness.
+\newblock In N.~Meyrowitz, editor, {\em Proceedings of the Conference on
+  Object-Oriented Programming Systems, Languages, and Applications ({OOPSLA})},
+  volume~24, pages 433--444, New York, NY, 1989. ACM Press.
+
+\bibitem{vanishing}
+P.~Costanza.
+\newblock Vanishing aspects.
+\newblock Position paper, OOPSLA 2000 workshop on Advanced Separation of
+  Concerns, October 2000.
+
+\bibitem{predicate-dispatching}
+M.~D. Ernst, C.~Kaplan, and C.~Chambers.
+\newblock Predicate dispatching: {A} unified theory of dispatch.
+\newblock In {\em Proceedings of ECOOP '98, the 12th European Conference on
+  Object-Oriented Programming}, pages 186--211, Brussels, Belgium, July 20--24
+  1998.
+
+\bibitem{flatt97plt}
+M.~Flatt.
+\newblock {PLT} {MzScheme}: Language manual.
+\newblock Technical Report TR97-280, Rice University, 1997.
+
+\bibitem{flatt98units}
+M.~Flatt and M.~Felleisen.
+\newblock Units: Cool modules for {HOT} languages.
+\newblock In {\em Proceedings of the {ACM} {SIGPLAN}~'98 Conference on
+  Programming Language Design and Implementation}, pages 236--248, 1998.
+
+\bibitem{gamma94design}
+E.~Gamma, R.~Helm, R.~Johnson, and J.~Vlissides.
+\newblock {\em Design Patterns: Elements of Reusable Object-Oriented Software}.
+\newblock Addison Wesley, Massachusetts, 1994.
+
+\bibitem{JLS}
+J.~Gosling, B.~Joy, and G.~Steele.
+\newblock {\em The Java Language Specification}.
+\newblock Addison Wesley, 1996.
+
+\bibitem{subdiv-proc}
+W.~Harrison and H.~Ossher.
+\newblock Subdivided procedures: {A} language extension supporting extensible
+  programming.
+\newblock In {\em Proceedings: 1990 International Conference on Computer
+  Languages}, pages 190--197. IEEE Computer Society Press, 1990.
+
+\bibitem{cords-in-AspectJ}
+J.~Huang.
+\newblock Experience using {AspectJ} to implement cord.
+\newblock Position paper, OOPSLA 2000 workshop on Advanced Separation of
+  Concerns, October 2000.
+
+\bibitem{DemeterJ}
+G.~Hulten, K.~Lieberherr, J.~Marshall, D.~Orleans, and B.~Samuel.
+\newblock {\em {DemeterJ} User Manual}.
+\newblock \texttt{\\http://www.ccs.neu.edu/research/demeter/}.
+
+\bibitem{kiczales01overview}
+G.~Kiczales, E.~Hilsdale, J.~Hugunin, M.~Kersten, J.~Palm, and W.~G. Griswold.
+\newblock An overview of {AspectJ}.
+\newblock In {\em Proceedings of the European Conference on Object-Oriented
+  Programming}, 2001.
+
+\bibitem{kiczales97aspectoriented}
+G.~Kiczales, J.~Lamping, A.~Menhdhekar, C.~Maeda, C.~Lopes, J.-M. Loingtier,
+  and J.~Irwin.
+\newblock Aspect-oriented programming.
+\newblock In M.~Ak\c{s}it and S.~Matsuoka, editors, {\em {ECOOP} '97 ---
+  Object-Oriented Programming 11th European Conference, Jyv{\"a}skyl{\"a},
+  Finland}, volume 1241, pages 220--242. Springer-Verlag, New York, NY, 1997.
+
+\bibitem{Sina}
+P.~Koopmans.
+\newblock On the definition and implementation of the {Sina/st} language.
+\newblock {MSc.} thesis, Dept. of Computer Science, University of Twente,
+  Enschede, the Netherlands, July 1995.
+
+\bibitem{asp-collab}
+K.~Lieberherr, D.~H. Lorenz, and J.~Ovlinger.
+\newblock Aspectual collaborations for collaboration-oriented concerns.
+\newblock Technical Report {NU-CCS-01-08}, College of Computer Science,
+  Northeastern University, Boston, MA 02115, Nov. 2001.
+
+\bibitem{AP-book}
+K.~J. Lieberherr.
+\newblock {\em Adaptive Object-Oriented Software: The {Demeter} {Method} with
+  Propagation Patterns}.
+\newblock PWS Publishing Company, Boston, 1996.
+\newblock ISBN 0-534-94602-X.
+
+\bibitem{strategies}
+K.~J. Lieberherr, B.~Patt-Shamir, and D.~Orleans.
+\newblock {Traversals of Object Structures: Specification and Efficient
+  Implementation}.
+\newblock Technical Report {NU-CCS-02-02}, College of Computer Science,
+  Northeastern University, Boston, MA, February 2002.
+
+\bibitem{mezini-thesis}
+M.~Mezini.
+\newblock {\em Variation-Oriented Programming Beyond Classes and Inheritance}.
+\newblock PhD thesis, University of Siegen, 1997.
+
+\bibitem{DJ-reflection}
+D.~Orleans and K.~Lieberherr.
+\newblock {DJ}: Dynamic adaptive programming in {Java}.
+\newblock In {\em Proceedings of Reflection 2001: Meta-level Architectures and
+  Separation of Crosscutting Concerns}, Kyoto, Japan, September 2001. Springer
+  Verlag.
+
+\bibitem{Dylan}
+A.~Shalit.
+\newblock {\em The {Dylan} Reference Manual: The Definitive Guide to the New
+  Object-Oriented Dynamic Language}.
+\newblock Addison-Wesley, Reading, Mass., 1997.
+
+\bibitem{mixin-layers}
+Y.~Smaragdakis and D.~Batory.
+\newblock Implementing layered design with mixin layers.
+\newblock In E.~Jul, editor, {\em Proceedings {ECOOP}'98}, pages 550--570,
+  Brussels, Belgium, 1998.
+
+\bibitem{CLtL}
+G.~L. Steele.
+\newblock {\em Common Lisp the Language}.
+\newblock Digital Press, 2nd edition, 1990.
+
+\bibitem{HyperJ}
+P.~Tarr and H.~Ossher.
+\newblock {\em {Hyper/J} User and Installation Manual}.
+\newblock IBM T. J. Watson Research Center, Yorktown Heights, NY, USA, 2000.
+
+\bibitem{MDSOC}
+P.~L. Tarr, H.~Ossher, W.~H. Harrison, and S.~M.~S. Jr.
+\newblock N degrees of separation: Multi-dimensional separation of concerns.
+\newblock In {\em International Conference on Software Engineering}, pages
+  107--119, 1999.
+
+\bibitem{AspectJ-prog-guide}
+{The AspectJ Team}.
+\newblock {\em The {AspectJ} Programming Guide}.
+\newblock \texttt{\\ http://aspectj.org/doc/dist/progguide/}.
+
+\bibitem{ComposeJ}
+J.~Wichman.
+\newblock {ComposeJ}: The development of a preprocessor to facilitate
+  composition filters in the {Java} language.
+\newblock {MSc.} thesis, Dept. of Computer Science, University of Twente,
+  Enschede, the Netherlands, December 1999.
+
+\end{thebibliography}

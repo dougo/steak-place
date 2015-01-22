@@ -1,0 +1,65 @@
+==================================================================
+https://keybase.io/dougo
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of http://steak.place.org
+  * I am dougo (https://keybase.io/dougo) on keybase.
+  * I have a public key with fingerprint 043E C6C9 8C98 0F33 F205  F2C1 681A FED5 2BD6 77A6
+
+To claim this, I am signing this object:
+
+{
+    "body": {
+        "key": {
+            "fingerprint": "043ec6c98c980f33f205f2c1681afed52bd677a6",
+            "host": "keybase.io",
+            "key_id": "681afed52bd677a6",
+            "uid": "84897df413951e3715b5161fe1809b00",
+            "username": "dougo"
+        },
+        "service": {
+            "hostname": "steak.place.org",
+            "protocol": "http:"
+        },
+        "type": "web_service_binding",
+        "version": 1
+    },
+    "ctime": 1396313729,
+    "expire_in": 157680000,
+    "prev": "b6d6abaabaa271a5effa46123f11e9927ca1d4d2df1ed5a827f3f6b0f4386c25",
+    "seqno": 4,
+    "tag": "signature"
+}
+
+with the aforementioned key, yielding the PGP signature:
+
+-----BEGIN PGP MESSAGE-----
+Version: Keybase OpenPGP v0.1.1
+Comment: https://keybase.io/crypto
+
+yMHrAnicbVF/SFRZFB5/Vm9JU9xA2J3Yh+If2fDue/N+TQTqSixbWa2aouL4ftw7
+8xrnvfHNm1FHJXRAgpBFiIkKhGULCqNgCQ1lc5QIJQqESdLSKILI2FzJwj8UvU/s
+vy4HLvc73/edc+55tD/DQaQ1Bl81Xxt515L2JLkacVR7cnq7SNlQO0lPFxmAOxfS
+dB80Q6amW6SHpNwMVDhFFHBQiGEQTbGIVgAnAAlBlaVlleN5iSNLSb8RthXYRpbC
+0KUZGMMPr6Zi9Dv8yE5CcAsiryI3YEQWQIYHrMwCDiAIBEqUKcomhqGpS0GI2aoR
+8RlkTymJoaimYKhrp+5uOmxBKeAKtUoKdBmmD2tDpmEZitGKk37LCnlsrdUZssnt
+UPbu2nhlTVfx3FgQhWZYM3TSAzBTsTTbF/fGMYDhabGUhB0hzYRezWawPCdQ+Nhl
+YBRbypzKSbJkB80DiYUISW4O0AwCAIoizSsSUN0qrSKA/0ISaB4xiJMp5GYETqFZ
+XD8M23SD9Lhxm5LPHknz6ZIVMSHZM5VsynSkEY7srHR7cw5i34Fv+6wd2utInCPu
+VN/fbC9gjp8+kh2/nhf/q+bpWNlc5I1cdzDyh0QONlyJxf5fHavS+hLO+PhmsDBr
+pC5VM+rXUlf7bxQS/3798HBPZ93iT6M5LceK5n+kJh87SwIX/b+XDy9unCl+DfvX
+mf8aOIOv5czbzuDQxkTbr9NxYnniPDF6uGwhveN9pVGbiaKO8svDuWhg7c/6v1d8
+Yu+DWxcGZzLJL87fuuNM8kRGSe5AaulTjJ0NZyypyY+ByMkXaD59qqDetZz/9m5F
+5drCD6fWq5ovzeX//Hm2v6/p+UjjzMuz/7i2EhUpps+8uVyUpxZ3T8YqD02v6ONz
+vyS2jq7fI57BbWqmEKU=
+=O7qw
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/dougo
+
+==================================================================

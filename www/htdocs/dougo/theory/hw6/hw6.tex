@@ -1,0 +1,228 @@
+\documentclass{article}
+\usepackage{amstex}
+\usepackage{theorem}
+\usepackage{fancyheadings}
+\usepackage{program}
+
+\setlength{\parindent}{0pt}	% Don't indent paragraphs.
+
+\addtolength{\voffset}{-1in}
+\addtolength{\textheight}{2in}
+\addtolength{\hoffset}{-1in}	% Reduce left and right margins by 1 inch.
+\addtolength{\textwidth}{2in}
+
+\pagestyle{fancy}
+\setlength{\headrulewidth}{0pt}
+
+\lhead{COM 3350 Assignment 6}
+\rhead{Doug Orleans (\texttt{dougo@@ccs.neu.edu})}
+
+\theorembodyfont{\rmfamily}		% don't use italics
+\theoremstyle{break}			% put a line break after the header
+\newtheorem{exercise}{Exercise}
+\theoremstyle{plain}
+\newtheorem{subexercise}{}[exercise]
+\renewcommand{\thesubexercise}{\alph{subexercise}.}
+\newenvironment{answer}{\begin{quotation}\noindent}{\end{quotation}}
+
+\newcommand{\sipser}{\textit{Sipser}}
+\newcommand{\encoding}[1]{\ensuremath{\langle#1\rangle}}
+\renewcommand{\qed}{~\ensuremath{\square}}
+\newcommand{\Th}{\ensuremath{\operatorname{Th}}}
+\newcommand{\Nat}{\ensuremath{\mathcal{N}}}
+\newcommand{\tred}{\ensuremath{\leq_{\text{T}}}}
+\newcommand{\ATM}{\ensuremath{A_{\textsf{TM}}}}
+\renewcommand{\true}{\textsc{TRUE}}
+\renewcommand{\false}{\textsc{FALSE}}
+\newcommand{\defin}[1]{\textbf{\textit{#1}}}
+\newcommand{\setname}[1]{\textit{#1}}
+\renewcommand{\liminf}{\ensuremath{\lim_{n\to\infty}}}
+\newcommand{\TM}{\textsf{TM}}
+\newcommand{\NTM}{\textsf{NTM}}
+\newcommand{\DFA}{\textsf{DFA}}
+\newcommand{\NFA}{\textsf{NFA}}
+\newcommand{\emptystring}{\ensuremath{\boldsymbol\varepsilon}}
+\newcommand{\sym}[1]{\texttt{#1}}
+
+\renewcommand{\AND}{\ \keyword{and}\ }
+\newcommand{\ENDWHILE}{\untab\addtocounter{programline}{-1}}
+\newcommand{\ENDIF}{\untab\untab\addtocounter{programline}{-1}}
+\newcommand{\ACCEPT}{\keyword{accept}\ }
+\newcommand{\REJECT}{\keyword{reject}\ }
+\renewcommand{\keyword}[1]{\textbf{#1}} 
+\renewcommand{\prognumstyle}{\textrm} 
+\NumberProgramstrue 
+\normalbaroutside 
+
+\renewcommand{\a}{\stepcounter{subexercise}\textbf{\thesubexercise}\ }
+
+\begin{document}
+
+\begin{exercise}[\sipser, 8.5]
+Show that NL is closed under the operations union, intersection, and
+star.
+\end{exercise}
+\begin{answer}
+Union: Given two \NTM s $M_1$ and $M_2$ such that $L(M_1)$ and
+$L(M_2)$ are in NL, construct a \NTM\ $M$ that nondeterministically
+chooses which of $M_1$ and $M_2$ to run on its input.  $M$ uses no
+more space than $M_1$ and $M_2$, thus nondeterministically decides
+$L(M_1)\cup L(M_2)$ in logarithmic space.
+\end{answer}
+\begin{answer}
+Intersection: Given two \NTM s $M_1$ and $M_2$ such that $L(M_1)$ and
+$L(M_2)$ are in NL, construct a \NTM\ $M$ that first runs $M_1$ on its
+input, and rejects if $M_1$ rejects; otherwise, erases its work tape,
+resets its heads, and runs $M_2$.  $M$ uses no more space than $M_1$
+and $M_2$, thus nondeterministically decides $L(M_1)\cap L(M_2)$ in
+logarithmic space.
+\end{answer}
+\begin{answer}
+Star: Given a \NTM\ $M$ such that $L(M)$ is in NL, construct the
+following \NTM.
+\begin{quotation}
+\noindent Let $M'=$ ``On input $w$,
+\begin{enumerate}
+\item If $w=\emptystring$, accept.
+\item Otherwise, let $i=1$.
+\item While $i\leq |w|$:
+\begin{enumerate}
+\item Nondeterministically choose $j$ between $i$ and $|w|$, inclusive.
+\item Erase the work tape (except for $\encoding i\encoding j$), and
+run $M$ on $w_{i\ldots j}$, rejecting if $M$ rejects.
+\item Set $i=j+1$.
+\end{enumerate}
+\item Accept.''
+\end{enumerate}
+\end{quotation}
+Storing $\encoding i\encoding j$ requires only $O(\log |w|)$
+space; thus, $M'$ nondeterministically decides $L(M)^*$ in logarithmic
+space.\qed
+\end{answer}
+
+\begin{exercise}[\sipser, 8.8]
+Show that $A_{\NFA}$ is NL-complete.
+\end{exercise}
+\begin{answer}
+We can reduce \setname{PATH} to it: given $\encoding{G,s,t}$ produce a
+\NFA\ $M$ with one state per node in $G$, a transition labeled
+$\emptystring$ for every edge in $G$, and with $s$ as the start state
+and $t$ the only final state.  Now deciding whether $M$ accepts
+$\emptystring$ decides whether there is a path from $s$ to $t$ in $G$;
+since this translation requires only a constant amount of work space,
+\setname{PATH} $\leq_{\text{L}} A_{\NFA}$, and since \setname{PATH} is
+NL-complete, $A_{\NFA}$ is NL-hard.  To see that $A_{\NFA}$ is in NL,
+the only work space needed while simulating a \NFA\ with a \NTM\ are
+pointers to the current state and the current input symbol, which can
+be recorded in logarithmic space.  Thus $A_{\NFA}$ is NL-complete.\qed
+\end{answer}
+
+\begin{exercise}[\sipser, 8.11]
+Let $A$ be the language of properly nested parentheses.  For example,
+\sym{(())} and \sym{(()(()))()} are in $A$, but \sym{)(} is
+not.  Show that $A$ is in L.
+\end{exercise}
+\begin{answer}
+We can construct a machine that simply scans the input linearly and
+keeping a counter of the number of unclosed open parentheses,
+i.e.~start at 0, increment whenever it sees a \sym(, and
+decrement whenever it sees a \sym).  If the counter ever goes
+negative, or if the counter is not at 0 when it reaches the end of
+input, it rejects, otherwise it accepts.  Storing the counter takes
+logarithmic space in the length of the input, thus $A$ is in L.\qed
+\end{answer}
+
+\begin{exercise}[\sipser, 8.12]
+Let $B$ be the language of properly nested parentheses and brackets.
+For example, \sym{([()()]()[])} is in $B$, but \sym{([)]} is
+not.  Show that $B$ is in L.
+\end{exercise}
+\begin{answer}
+The natural way to do this would be to keep a stack, pushing every
+open symbol, and popping for every close symbol, making sure that the
+popped open symbol matches the current close symbol; however, this
+would require linear space.  For each symbol, we can calculate what
+its depth on the stack would have been by simply keeping a counter, as
+in the previous algorithm; thus we can simulate a stack by passing
+over the input for $d = 0\ldots|w|/2$, keeping track of what would be
+in the $d$th position of the stack as we go, and making sure that the
+corresponding symbols at the $d$th level match.  This takes $O(|w|^2)$
+time, but it only needs to keep two things in memory: $d$, which needs
+logarithmic space, and the current symbol to match at the $d$th level,
+which only needs a constant amount of space.  Thus this algorithm
+decides $B$ in logarithmic space, meaning $B$ is in L.\qed
+\end{answer}
+
+\begin{exercise}[\sipser, 8.18]
+A \textit{chain} is a sequence of strings $s_1,s_2,\ldots,s_k$,
+wherein every string differs from the preceding one in exactly one
+character.  For example the following is a chain of English words:
+\begin{quote}
+head, hear, near, fear, bear, beer, deer, deed, feed, feet, fret, free
+\end{quote}
+Let
+\begin{align*}
+\setname{DFACHAIN} = \{\encoding{M,s,t}|~
+&M \text{ is a \DFA\ where $L(M)$ contains a} \\
+&\text{chain of strings, starting with $s$, and ending with $t$.}\}
+\end{align*}
+Show that \setname{DFACHAIN} is in PSPACE.
+\end{exercise}
+\begin{answer}
+We can construct a \NTM\ that decides \setname{DFACHAIN} using only
+polynomial space:
+\begin{quotation}
+\noindent Let $A=$ ``On input $\encoding{M,s,t}$,
+\begin{enumerate}
+\item While $s \not= t$:
+	\begin{enumerate}
+	\item Nondeterministically choose a string $s'$ that differs
+	from $s$ in exactly one character.  There are only a finite
+	number of choices, since $s$ is finite and the alphabet is
+	finite.
+	\item Decide whether $M$ accepts $s'$,
+	i.e.,~$\encoding{M,s'}\in A_{\DFA}$.  If not, reject. 
+	\item Set $s=s'$.
+	\end{enumerate}
+\item Accept.''
+\end{enumerate}
+\end{quotation}
+Since we need not store the whole chain, the only work space needed is
+for $s'$, which is the same length as $s$, and the space needed by
+deciding $A_{\DFA}$, which is logarithmic by Exercise~8.7.  (Note that
+the while loop may not terminate, because the choice of $s'$ might
+keep repeating a previous choice, but we can put an upper bound on the
+number of iterations equal to the number of possible strings of length
+$|s|$.)  $A$ nondeterministically decides \setname{DFACHAIN} in
+polynomial space; thus, \setname{DFACHAIN} is in NPSPACE, which is
+equal to PSPACE.\qed
+\end{answer}
+
+\begin{exercise}[\sipser, 8.20]
+An undirected graph is \defin{bipartite} if its nodes may be divided
+into two sets so that all edges go from a node in one set to a node in
+the other set.  Show that a graph is bipartite if and only if it
+doesn't contain a cycle that has an odd number of nodes.  Let
+\begin{displaymath}
+\setname{BIPARTITE}=\{\encoding{G}|~G\text{ is a bipartite graph}\}.
+\end{displaymath}
+Show that \setname{BIPARTITE} $\in$ NL.
+\end{exercise}
+\begin{answer}
+Choose any node in $G$, and traverse $G$ depth-first from there,
+putting nodes in alternate sets as you go.  If you hit a node that's
+already been assigned to the same set as the one you assigned the
+previous node to, then you know $G$ can't be bipartite; the only way
+this can happen is if $G$ has a cycle of odd length.  Otherwise, if we
+can repeat this traversal until all nodes are assigned successfully,
+$G$ must be bipartite.  A full depth-first traversal, however, needs
+more than logarithmic space; instead, we can decide
+$\overline{\setname{BIPARTITE}}$ by nondeterministically following a
+path through $G$, keeping track of the first node and the length of
+the path, and accepting if and only if we come across the first node
+again after an odd number of nodes.  (Again, this may not terminate,
+but we can put an upper bound of $|G|+1$ nodes.)  The work space
+needed is logarithmic in $|G|$, thus \setname{BIPARTITE} is in coNL;
+since coNL = NL, \setname{BIPARTITE} is thus in NL.\qed
+\end{answer}
+\end{document}

@@ -1,0 +1,223 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 99.2beta8 (1.42)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>DJ</TITLE>
+<META NAME="description" CONTENT="DJ">
+<META NAME="keywords" CONTENT="dj">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v99.2beta8">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="dj.css">
+
+<LINK REL="next" HREF="node4.html">
+<LINK REL="previous" HREF="node2.html">
+<LINK REL="up" HREF="dj.html">
+<LINK REL="next" HREF="node4.html">
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<A NAME="tex2html46"
+  HREF="node4.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.gif"></A> 
+<A NAME="tex2html44"
+  HREF="dj.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.gif"></A> 
+<A NAME="tex2html38"
+  HREF="node2.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.gif"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html47"
+  HREF="node4.html">Generic Programming</A>
+<B> Up:</B> <A NAME="tex2html45"
+  HREF="dj.html">DJ: Dynamic Adaptive Programming</A>
+<B> Previous:</B> <A NAME="tex2html39"
+  HREF="node2.html">Example</A>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00030000000000000000">
+DJ</A>
+</H1>
+
+<P>
+DJ is a library of classes that make traversals like the previous
+example much easier to define, understand, and maintain.
+Figure&nbsp;<A HREF="node3.html#fig:DJ">3</A> shows an alternate implementation of the
+<TT>Schema</TT> class that defines the two traversals succinctly
+using the <TT>ClassGraph</TT> and <TT>Visitor</TT> classes from the
+<TT>edu.neu.ccs.demeter.dj</TT> package.
+
+<P>
+
+<P></P>
+<DIV ALIGN="CENTER"><A NAME="fig:DJ"></A><A NAME="212"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figure 3:</STRONG>
+Using <TT>traverse</TT> from the DJ library.</CAPTION>
+<TR><TD><TABLE  WIDTH="100%">
+<TR><TD>
+<PRE>
+import java.util.*;
+import edu.neu.ccs.demeter.dj.*;
+
+class Schema {
+  Attribute attrs[];
+  SchemaItem items[];
+  static final ClassGraph cg = new ClassGraph();
+  public Set getDefinedTypeNames() {
+    final Set def = new HashSet();
+    cg.traverse(this, "from Schema via -&gt;TypeDef,attrs,* to Attribute",
+                new Visitor() {
+                    void before(Attribute host) {
+                      if (host.name.equals("name"))
+                        def.add(host.value);
+                    }
+                  });
+    return def;
+  }
+  public Set getUndefinedTypeNames() {
+    final Set def = getDefinedTypeNames();
+    final Set undef = new HashSet();
+    cg.traverse(this, "from Schema via -&gt;Decl,attrs,* to Attribute",
+                new Visitor() {
+                    void before(Attribute host) {
+                      if (host.name.equals("type")
+                          &amp;&amp; !def.contains(host.value))
+                        undef.add(host.value);
+                    }
+                  });
+    return undef;
+  }
+}
+</PRE></TD></TR>
+</TABLE></TD></TR>
+</TABLE>
+</DIV><P></P>
+
+<P>
+A <TT>ClassGraph</TT> object is a simplified representation of a UML
+[<A
+ HREF="node9.html#rational:UML-LUG">2</A>] class diagram; its nodes are types (classes and
+primitive types) and its edges are associations, generalizations, and
+specializations.  In Demeter terminology, a (uni-directional)
+association relationship is implemented as a <TT>construction</TT> edge
+if its multiplicity is 1 (or 0..1) or a <TT>repetition</TT> edge if its
+multiplicity is *; a generalization relationship is implemented as an
+<B>inheritance</B> edge; and a specialization relationship is
+implemented as an <B>alternation</B> edge.  The default
+<TT>ClassGraph</TT> constructor builds a graph object using reflection
+from all the classes in the default package; a string containing a
+package name can be provided as a constructor argument to build a
+class graph from another package.  The
+<TT>addPackage(String&nbsp;pkgname)</TT> and <TT>addClass(Class&nbsp;cl)</TT>
+methods can be used to add other packages and classes to a class graph
+object.  A traversal is done with the <TT>traverse</TT> method on a
+<TT>ClassGraph</TT> object.  It takes three arguments: the root of the
+object structure to be traversed; a string specifying the traversal
+strategy to be used; and an <B>adaptive visitor</B> object
+describing what to do at points in the traversal.
+
+<P>
+A traversal strategy specifies the end points of the traversal, using
+the <B><TT>from</TT></B> keyword for the source and the <B><TT>to</TT></B>
+keyword for the target.  In between, any number of constraints can be
+specified with <B><TT>via</TT></B> or <B><TT>bypassing</TT></B>.  The two
+traversals in figure&nbsp;<A HREF="node3.html#fig:DJ">3</A> traverse from <TT>Schema</TT> to
+<TT>Attribute</TT>; in other words, they visit attributes in a schema,
+because type names appear in attribute values for both definitions and
+references.  They differ in their constraints: to find the names of
+types defined by the schema, the first traversal only looks at
+attributes of type definitions (<TT>TypeDef</TT> objects); to find the
+names of types referenced by the schema, the second traversal only
+looks at attributes of declarations (<TT>Decl</TT> objects).  The
+<TT>-&gt;TypeDef,attrs,*</TT> syntax is a pattern specifying the set of
+construction edges whose source is class <TT>TypeDef</TT> and whose
+label (field name) is <TT>attrs</TT>; the asterisk means that an edge in
+the set can have any target type.
+
+<P>
+[explain traversal, done without flattening]
+
+<P>
+An adaptive visitor class is a subtype of the <TT>Visitor</TT> class in
+the DJ package; it implements the Adaptive Visitor pattern described
+in&nbsp;[<A
+ HREF="node9.html#karl:demeter">12</A>, pp.&nbsp;426-427].  The Adaptive Visitor pattern
+differs from the Visitor pattern as presented in&nbsp;[<A
+ HREF="node9.html#gang-of-4">5</A>]
+in two ways: only a minimal set of methods needs to be defined, namely
+those describing the functional behavior to be performed at points
+along the traversal, rather than one method each for every class in
+the traversal; and no <TT>accept</TT> methods need to be defined, nor
+does traversal behavior need to be defined in the visitor methods.
+These two differences result in a unit of behavior that can adapt both
+to changes in the object model and changes in the traversal.
+
+<P>
+The <TT>traverse</TT> method traverses the object structure according to
+the traversal strategy, visiting objects in the structure and calling
+methods on the adaptive visitor object.  When an object of type <IMG
+ WIDTH="16" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img3.gif"
+ ALT="$T$"> is
+reached in the traversal, if there is a visitor method named
+<TT>before</TT> whose parameter is type <IMG
+ WIDTH="16" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img3.gif"
+ ALT="$T$">, that method is called with
+the visited object as the argument.  Then, each field on the object is
+traversed if needed.  Finally, before returning to the previous
+object, if there is a visitor method named <TT>after</TT> whose
+parameter is type <IMG
+ WIDTH="16" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img3.gif"
+ ALT="$T$">, that method is called with the visited object
+as the argument.  The <TT>Visitor</TT> subclasses defined inline in
+figure&nbsp;<A HREF="node3.html#fig:DJ">3</A> only define one <TT>before</TT> method each, which
+is executed at <TT>Attribute</TT> objects, the end point of the
+traversal.
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html46"
+  HREF="node4.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.gif"></A> 
+<A NAME="tex2html44"
+  HREF="dj.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.gif"></A> 
+<A NAME="tex2html38"
+  HREF="node2.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.gif"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html47"
+  HREF="node4.html">Generic Programming</A>
+<B> Up:</B> <A NAME="tex2html45"
+  HREF="dj.html">DJ: Dynamic Adaptive Programming</A>
+<B> Previous:</B> <A NAME="tex2html39"
+  HREF="node2.html">Example</A>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Doug Orleans
+2001-03-12
+</ADDRESS>
+</BODY>
+</HTML>

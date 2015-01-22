@@ -1,0 +1,310 @@
+\documentclass{article}
+\usepackage{amstex}
+\usepackage{theorem}
+\usepackage{fancyheadings}
+\usepackage{program}
+
+\setlength{\parindent}{0pt}	% Don't indent paragraphs.
+
+%\addtolength{\voffset}{-0.25in}
+%\addtolength{\textheight}{0.5in}
+\addtolength{\hoffset}{-0.5in}	% Reduce left and right margins by 1/2 inch.
+\addtolength{\textwidth}{1in}
+
+\pagestyle{fancy}
+\setlength{\headrulewidth}{0pt}
+
+\lhead{COM 3350 Assignment 3}
+\rhead{Doug Orleans (\texttt{dougo@@ccs.neu.edu})}
+
+\theorembodyfont{\rmfamily}		% don't use italics
+\theoremstyle{break}			% put a line break after the header
+\newtheorem{exercise}{Exercise}
+\theoremstyle{plain}
+\newtheorem{subexercise}{}[exercise]
+\renewcommand{\thesubexercise}{\alph{subexercise}.}
+\newenvironment{answer}{\begin{quotation}\noindent}{\end{quotation}}
+
+\newcommand{\sipser}{\textit{Sipser}}
+\newcommand{\encoding}[1]{\ensuremath{\langle#1\rangle}}
+\renewcommand{\qed}{~\ensuremath{\square}}
+\newcommand{\Th}{\ensuremath{\operatorname{Th}}}
+\newcommand{\Nat}{\ensuremath{\mathcal{N}}}
+\newcommand{\tred}{\ensuremath{\leq_{\text{T}}}}
+\newcommand{\ATM}{\ensuremath{A_{\textsf{TM}}}}
+\renewcommand{\true}{\textsc{TRUE}}
+\renewcommand{\false}{\textsc{FALSE}}
+\newcommand{\defin}[1]{\textbf{\textit{#1}}}
+\newcommand{\setname}[1]{\textit{#1}}
+\renewcommand{\liminf}{\ensuremath{\lim_{n\to\infty}}}
+
+\renewcommand{\AND}{\ \keyword{and}\ }
+\newcommand{\ENDWHILE}{\untab\addtocounter{programline}{-1}}
+\newcommand{\ENDFOR}{\untab\addtocounter{programline}{-1}}
+\newcommand{\ENDIF}{\untab\untab\addtocounter{programline}{-1}}
+\newcommand{\ACCEPT}{\keyword{accept}\ }
+\newcommand{\REJECT}{\keyword{reject}\ }
+\newcommand{\RETURN}{\keyword{return}\ }
+\renewcommand{\keyword}[1]{\textbf{#1}} 
+\renewcommand{\prognumstyle}{\textrm} 
+\NumberProgramstrue 
+\normalbaroutside 
+
+\renewcommand{\a}{\stepcounter{subexercise}\textbf{\thesubexercise}\ }
+
+\begin{document}
+
+\begin{exercise}
+\begin{subexercise}[\sipser, 7.11]
+Call graphs $G$ and $H$ \defin{isomorphic} if the nodes of $G$ may be
+reordered so that it is identical to $H$.  Let
+$\setname{ISO}=\{\encoding{G,H}|~\text{$G$ and $H$ are isomorphic
+graphs}\}$.  Show that $\setname{ISO}\in$ NP.
+\end{subexercise}
+\begin{answer}
+The certificate is the reordering of the nodes of $G$, which is
+$O(\encoding{G})$ in size and can be verified in $O(\encoding{G})$
+time (with two tapes).\qed
+\end{answer}
+
+\begin{subexercise}[\sipser, 7.16(b)]
+Let $G$ represent an undirected graph and let
+\begin{align*}
+\setname{LPATH} = \{\encoding{G,a,b,k}
+|~&G \text{ contains a simple path of}\\
+&\text{length at least $k$ from $a$ to $b$}\}.
+\end{align*}
+Show that \setname{LPATH} is NP-complete.  You may assume the
+NP-completeness of \setname{UHAMPATH}, the Hamiltonian path problem
+for undirected graphs.
+\end{subexercise}
+\begin{answer}
+\setname{LPATH} is in NP; the certificate is the path.  
+$\encoding{G,a,b}\in\setname{UHAMPATH}$ if and only if
+$\encoding{G,a,b,|G|}\in\setname{LPATH}$; thus
+$\setname{UHAMPATH}\leq_{\text{P}}\setname{LPATH}$, and since
+\setname{UHAMPATH} is NP-complete, so is \setname{LPATH}.\qed
+\end{answer}
+\end{exercise}
+
+\begin{exercise}[\sipser, 7.22]\label{neq}
+Let $\phi$ be a 3cnf-formula.  An \defin{$\not=$-assignment} to the
+variables of $\phi$ is one where each clause contains two literals
+with unequal truth values.  In other words an $\not=$-assignment
+satisfies $\phi$ without assigning three true literals in any clause.
+\begin{subexercise}
+Show that the negation of any $\not=$-assignment to $\phi$ is also an
+$\not=$-assignment.
+\end{subexercise}
+\begin{answer}
+Each clause in an $\not=$-assignment to $\phi$ contains either one or
+two true literals.  Thus each clause in the negation contains
+either one or two false literals, and hence either two or one true
+literals; therefore, the negated $\not=$-assignment is also an
+$\not=$-assignment.\qed
+\end{answer}
+
+\begin{subexercise}
+Let $\not=$\setname{SAT} be the collection of 3cnf-formulas that have
+an $\not=$-assignment.  Show that we obtain a polynomial time
+reduction from \setname{3SAT} to $\not=$\setname{SAT} by replacing
+each clause $c_i$
+\begin{displaymath}
+(y_1\vee y_2\vee y_3)
+\end{displaymath}
+by the two clauses
+\begin{displaymath}
+(y_1\vee y_2\vee z_i)\text{ and }(\overline{z_i}\vee y_3\vee b)
+\end{displaymath}
+where $z_i$ is a new variable for each clause $c_i$ and $b$ is a
+single additional new variable.
+\end{subexercise}
+\begin{answer}
+Let $f$ be the construction above; it is clearly polynomial time
+computable.  We must show that, for every 3cf $\phi$,
+\begin{displaymath}
+\phi\in\setname{3SAT} \iff f(\phi)\in\setname{$\not=$SAT}.
+\end{displaymath}
+
+\pagebreak
+\noindent First the $\implies$ direction:
+\begin{quotation}
+If $\phi\in$ \setname{3SAT}, then there is an assignment $\rho$ that
+satisfies $\phi$; for every clause $c_i$ in $\phi$, $\rho$ makes at
+least one of $y_1$, $y_2$, or $y_3$ true.  We can extend $\rho$ with
+assignments to $b$ and each $z_i$ to construct a new assignment
+$\rho'$: let $b=0$, and assign each $z_i$ according to the following
+table:
+
+\begin{center}
+\begin{tabular}{ccc|c}
+$y_1$	&$y_2$	&$y_3$	&$z_i$ \\
+\hline \hline
+0&0&1	&1 \\
+0&1&0	&0 \\
+0&1&1	&1 \\
+1&0&0	&0 \\
+1&0&1	&1 \\
+1&1&0	&0 \\
+1&1&1	&0 \\
+\end{tabular}
+\end{center}
+
+\noindent We can see that $\rho'$ is an $\not=$-assignment for
+$f(\phi)$: if $y_1=y_2$, then $z_i\not=y_1$, and if $y_3=b=0$, then
+$\overline{z_i}=1$.  Thus $f(\phi)\in$ $\not=$\setname{SAT}.
+\end{quotation}
+
+\noindent Now the $\Longleftarrow$ direction:
+
+\begin{quotation}
+\noindent If $f(\phi)\in$ $\not=$\setname{SAT}, then there is some
+assignment $\rho'$ that is an $\not=$-assignment for $f(\phi)$.
+First, assume that $b=0$ in $\rho'$.  This implies that for each
+clause $c_i$ in $\phi$, either $y_3=1$, or $z_i=0$ and either $y_1=1$
+or $y_2=1$.  In any of these cases, $c_i=1$.  Thus we can let $\rho$
+be $\rho'$ after removing the assignments for $b$ and each $z_i$, and
+it will satisfy $\phi$.  Now, assume that $b=1$ in $\rho'$, and
+consider $\overline{\rho'}$; by part (a), it is also an
+$\not=$-assignment, and $b=0$ in it, so we can again apply the above
+reasoning to construct $\rho$ that satisfies $\phi$ by removing the
+assignments for $b$ and each $z_i$ from $\overline{\rho'}$.
+Therefore, we can always construct an assignment that satisfies
+$\phi$, and so $\phi\in\setname{3SAT}$.
+\end{quotation}
+
+\noindent Thus $f$ is a polynomial time reduction from \setname{3SAT} to
+$\not=$\setname{SAT}.\qed
+\end{answer}
+
+\begin{subexercise}
+Conclude that $\not=$\setname{SAT} is NP-complete.
+\end{subexercise}
+\begin{answer}
+$\not=$\setname{SAT} is in NP; the certificate is the $\not=$-assignment.
+By part (b), $\setname{3SAT}\leq_{\text{P}}\not=$\setname{SAT};
+since \setname{3SAT} is NP-complete, $\not=$\setname{SAT} is thus
+NP-complete as well.\qed
+\end{answer}
+\end{exercise}
+
+\begin{exercise}[\sipser, 7.23]
+A \defin{cut} in an undirected graph is a separation of the vertices
+$V$ into two disjoint subsets $S$ and $T$.  The size of a cut is the
+number of edges that have one endpoint in $S$ and the other in $T$.
+Let
+\begin{displaymath}
+\setname{MAX-CUT} = \{\encoding{G,k}|~G
+\text{ has a cut of size $k$ or more}\}.
+\end{displaymath}
+Show that \setname{MAX-CUT} is NP-complete.  You may assume the result
+of Exercise~\ref{neq}.
+\end{exercise}
+\begin{answer}
+\setname{MAX-CUT} is in NP; the certificate is a cut of size $k$ or
+more.  To show that \setname{MAX-CUT} is NP-complete, we give a
+polynomial-time reduction from \setname{$\not=$SAT} to it.  Let $\phi$
+be a 3cf with $n$ variables and $k$ clauses.  Construct an undirected
+graph $G$ consisting of $n$ variable gadgets and $k$ clause gadgets:
+\begin{itemize}
+\item The gadget for a variable $x$ is a collection of $3k$ nodes
+labeled with $x$ and another $3k$ nodes labeled with $\overline{x}$,
+together with an edge from every $x$ node to every $\overline{x}$
+node.  In other words, the gadget is the complement of two
+$3k$-cliques.
+\item The gadget for a clause $(a \vee b \vee c)$ is a triple of edges
+connecting one triple of nodes labeled $a$, $b$, and $c$.  No two
+clause gadgets have any nodes in common.
+\end{itemize}
+$G$ has $6kn$ nodes and $(3k)^2n + 3k$ edges, and every node has
+either $3k$ or $3k+2$ incident edges.  Now, given an
+$\not=$-assignment for $\phi$, we can construct a cut for $G$: put
+each node into $S$ or $T$ if its label has a value of $0$ or $1$,
+respectively.  Since every node labeled $x$, in one set, is connected
+to $3k$ nodes labeled $\overline{x}$, in the other set, all of the
+variable gadget edges are in the cut; also, since every triangle has
+exactly one node in one set and two in the other, two edges of every
+clause gadget are in the cut.  Thus, the cut is of size $(3k)^2n+2k$.
+In other words, if $\encoding{\phi}\in$ \setname{$\not=$SAT}, then
+$\encoding{G,(3k)^2n+2k}\in$ \setname{MAX-CUT}.  To see that the
+inverse also holds, notice that since a triangle can contribute at
+most two edges to a cut, $(3k)^2n+2k$ is the maximum possible size
+of a cut of $G$; thus, any cut of this size must include all of the
+variable gadget edges and two edges from every clause gadget, and
+therefore must correspond to an $\not=$-assignment for $\phi$.
+Therefore, if $\encoding{G,(3k)^2n+2k}\in$ \setname{MAX-CUT}, then
+$\encoding{\phi}\in$ \setname{$\not=$SAT}.  Hence, we have shown that
+$\not=$\setname{SAT} $\leq_{\text{P}}$ \setname{MAX-CUT}, which means
+that \setname{MAX-CUT} is NP-complete.\qed
+\end{answer}
+
+\begin{exercise}[\sipser, 7.30]
+Let $\setname{MAX-CLIQUE}=\{\encoding{G,k}|~$ the \emph{largest} clique
+of $G$ has $k$ vertices\}.  Whether \setname{MAX-CLIQUE} is in NP is
+unknown.  Show that if P $=$ NP, then \setname{MAX-CLIQUE} is in P,
+and a polynomial time algorithm exists that, for a graph $G$, finds
+one of its largest cliques.
+\end{exercise}
+\begin{answer}
+If P $=$ NP, then \setname{CLIQUE} $\in$ P; thus, we can iterate $k$
+from 1 to $|G|$, and find the largest $k$ for which
+$\encoding{G,k}\in$ \setname{CLIQUE}.  This is a linear repetition of
+a polynomial time algorithm, and thus also polynomial time,
+i.e.~\setname{MAX-CLIQUE} is in P.  To find one of its largest
+cliques: [idea from Lars Hansen]
+
+\begin{programbox}
+|clique| \gets G
+\FOREACH |vertex| \in G
+	|newclique| = |clique| - \{|vertex|\}
+	\IF \encoding{|newclique|,k} \in \setname{MAX-CLIQUE}
+	\THEN	|clique| = |newclique|
+	\ENDIF
+\ENDFOR
+\RETURN |clique|
+\end{programbox}
+
+We test each node in the graph to see if removing it changes the max
+clique size.  If not, then it's not in the max clique, so we can
+discard it.  After examing all the nodes this way, the nodes we have
+not discarded will be exactly the set of nodes in the max clique.  (If
+there are more than one of them, then this algorithm will find the
+``last'' max clique.)  Again, this is a linear repetition of a
+polynomial time algorithm (i.e.~line~4), thus the algorithm is
+polynomial time.\qed
+\end{answer}
+
+\pagebreak
+\begin{exercise}[\sipser, 7.34]\label{3color}
+A \defin{coloring} of a graph is an assignment of colors to its nodes
+so that no two adjacent nodes are assigned the same color.  Let
+\begin{align*}
+\setname{3COLOR} = \{\encoding{G}|~
+&\text{the nodes of $G$ can be colored with three colors such that}\\
+&\text{no two nodes joined by an edge have the same color}\}.
+\end{align*}
+Show that \setname{3COLOR} is NP-complete.
+\end{exercise}
+\begin{answer}
+\setname{3COLOR} is in NP; the certificate is the coloring.
+
+\ldots
+\end{answer}
+
+\begin{exercise}
+Define \setname{2COLOR} analogously to \setname{3COLOR} in
+Exercise~\ref{3color}.  Show that \setname{2COLOR} is in P.
+\end{exercise}
+\begin{answer}
+Since there are only two colors to choose from, every connected node
+in the graph is uniquely constrained as to which color it may be
+(namely, the opposite of its neighbors).  Thus, we can attempt to
+color each connected component of the graph via a simple
+depth-first-traversal (regarding the graph as undirected), alternating
+between two colors for the node marking.  If a traversal ever reaches
+a node which is already colored the same color as the previous node
+visited, then reject.  If all nodes in the graph can be colored this
+way, then accept.  This algorithm is linear-time in the number of
+nodes in the graph, thus \setname{2COLOR} is in P.\qed
+\end{answer}
+\end{document}

@@ -1,0 +1,713 @@
+\documentclass{llncs}
+%\documentclass{article}
+\usepackage{html}
+\usepackage{epsfig}
+
+\newcommand{\defn}[1]{\textbf{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+
+% Reduce margins by 1/2 inch.
+\addtolength{\voffset}{-0.5in}
+\addtolength{\textheight}{1in}
+\addtolength{\hoffset}{-0.5in}
+\addtolength{\textwidth}{1in}
+
+\title{DJ: Dynamic Adaptive Programming in Java}
+\author{Doug Orleans and Karl Lieberherr}
+\institute{Northeastern University, Boston, MA 02115, USA}
+
+\begin{document}
+
+\begin{htmlonly}
+This paper is also available in
+\htmladdnormallink{postscript}{dj.ps} form.
+\end{htmlonly}
+
+\maketitle
+
+\noindent (This paper has been submitted to the Reflection 2001 conference.
+It is also available as Northeastern University Tech Report NU-CCS-2001-02.)
+
+\begin{abstract}
+\noindent
+Following the Law of Demeter, a programming style rule for loose
+coupling between the structure and behavior concerns, can result in a
+large number of small methods scattered throughout the program, which
+can make it hard to understand the high-level picture of what a
+program does.  Adaptive programming with traversal strategies and
+adaptive visitors in DemeterJ avoids this problem while even better
+supporting this loose coupling of concerns.  DJ is a pure-Java package
+for adaptive programming that allows traversal strategies to be
+constructed and interpreted dynamically at run-time.  Traversal
+strategies can be used with adaptive visitors or in a generic
+programming style by adapting them to the Java Collections framework.
+The DJ package makes heavy use of Java reflection and we give the
+highlights of this implementation.
+\end{abstract}
+
+\section{Introduction}
+
+The Law of Demeter~\cite{karl-ian:soft1} is a style rule for OOP whose
+goal is to reduce the behavioral dependencies between classes.  Its
+primary form says that a method $M$ should only call methods (and
+access fields) on objects which are \defn{preferred suppliers}:
+immediate parts on \code{this}, objects passed as arguments to $M$,
+objects which are created directly in $M$, and objects in global
+variables (in Java, \code{public static} fields).  Limiting which
+methods can call which other methods keeps programmers from encoding
+too much information about the object model into a method, thus
+loosening the coupling between the structure concern and the behavior
+concern.
+
+The drawback of following the Law of Demeter is that it can result in
+a large number of small methods scattered throughout the program,
+which can make it hard to understand the high-level picture of what a
+program does.  \cite{wilde-etal:maint-support} studied three
+medium-sized object-oriented systems and found that in all three
+systems, 50\% of the methods were less than 2 C++ statements or 4
+Smalltalk lines long.  The example in the next section also
+demonstrates this effect.  The
+DemeterJ~\cite{cse:preventive}~\cite{DemeterJ:00} software allows the
+programmer to succinctly specify a \defn{traversal
+strategy}~\cite{strategies-tr:LP97} in place of the many methods that
+would be needed to traverse a complex object structure.  These
+traversal methods are automatically generated at compile-time by a
+preprocessor.  A traversal strategy describes a traversal at a high
+level, only referring to the minimal number of classes in the
+program's object model: the root of the traversal, the target classes,
+and waypoints and constraints in between to restrict the traversal to
+follow only the desired set of paths.  If the object model changes,
+often the traversal strategy doesn't need to be changed; the traversal
+methods can simply be re-generated in accordance with the new model,
+and the behavior adapts to the new structure.  Programming with
+traversal strategies is thus known as \defn{adaptive programming}
+\cite{karl:demeter}.
+
+With the addition of reflection to Java~\cite{java-reflection}, it
+became possible to interpret a traversal strategy at runtime.  DJ
+\cite{DJ:99} is a pure-Java package that provides this capability.
+This makes it easier to add traversal strategies to a Java program,
+because there is no need to modify the compilation process to run the
+preprocessor or to convert the source code to the Demeter input
+language syntax.  Instead traversal strategies can simply be expressed
+as Java strings in ordinary Java code, or even constructed dynamically
+from an external source not known at compile time.
+
+\section{Example}
+
+The example domain for this paper will be that of processing XML
+Schema definitions~\cite{XML-schema}.  A simple task that one might
+want to implement is checking a schema for undefined types.  This task
+involves two traversals of the object structure representing the
+schema definition: one to collect all the types defined in the schema,
+and one to check each type reference to see if it's in the set of
+defined types.  Figure~\ref{fig:UML} shows a UML class diagram that
+represents a small subset of the XML Schema definition language;
+figure~\ref{fig:LoD} shows the Java code for these classes, along with
+the methods for these two traversals.  The methods
+\code{getDefinedTypeNames} and \code{getUndefinedTypeNames} on class
+\code{Schema} are the public interfaces to the traversals, and the
+methods \code{addDef} and \code{addUndef} do the actual traversal,
+building up the sets of type names.
+
+\begin{figure}
+\epsfig{file=UML.ps,height=\textwidth,width=4in,angle=270}
+\caption{UML diagram for XML Schemas.}
+\label{fig:UML}
+\end{figure}
+
+\begin{figure}[tbp!]
+\begin{minipage}{3in}
+{\small
+\begin{verbatim}
+import java.util.*;
+
+class Schema {
+  Attribute attrs[];
+  SchemaItem items[];
+  public Set getDefinedTypeNames() {
+    Set def = new HashSet();
+    addDef(def);
+    return def;
+  }
+  public Set getUndefinedTypeNames() {
+    Set undef = new HashSet();
+    Set def = getDefinedTypeNames();
+    addUndef(undef, def);
+    return undef;
+  }
+  void addDef(Set def) {
+    for (int i = 0; i < items.length; i++)
+      items[i].addDef(def);
+  }
+  void addUndef(Set undef, Set def) {
+    for (int i = 0; i < items.length; i++)
+      items[i].addUndef(undef, def);
+  }
+}
+abstract class SchemaItem {
+  void addDef(Set def) { }
+  void addUndef(Set undef, Set def) { }
+}
+abstract class TypeDef extends SchemaItem {
+  Attribute attrs[];
+  void addDef(Set def) {
+    for (int i = 0; i < attrs.length; i++)
+      attrs[i].addDef(def);
+  }
+}
+class Attribute {
+  String name;
+  String value;
+  void addDef(Set def) {
+    if (name.equals("name"))
+      def.add(value);
+  }
+  void addUndef(Set undef, Set def) {
+    if (name.equals("type")
+        && !def.contains(value))
+      undef.add(value);
+  }
+}
+\end{verbatim}
+}
+\end{minipage}
+\begin{minipage}{3in}
+{\small
+\begin{verbatim}
+class SimpleType extends TypeDef { }
+class ComplexType extends TypeDef {
+  SequenceGroup content;
+  AttributeDecl adecls[];
+  void addDef(Set def) {
+    super.addDef(def);
+    content.addDef(def);
+  }
+  void addUndef(Set undef, Set def) {
+    content.addUndef(undef, def);
+    for (int i = 0; i < adecls.length; i++)
+      adecls[i].addUndef(undef, def);
+  }
+}
+class SequenceGroup {
+  Attribute attrs[];
+  ElementDecl edecls[];
+  void addDef(Set def) {
+    for (int i = 0; i < edecls.length; i++)
+      edecls[i].addDef(def);
+  }
+  void addUndef(Set undef, Set def) {
+    for (int i = 0; i < edecls.length; i++)
+      edecls[i].addUndef(undef, def);
+  }
+}
+abstract class Decl extends SchemaItem {
+  Attribute attrs[];
+  void addUndef(Set undef, Set def) {
+    for (int i = 0; i < attrs.length; i++)
+      attrs[i].addUndef(undef, def);
+  }
+}
+class AttributeDecl extends Decl {
+}
+class ElementDecl extends Decl {
+  TypeDef typeDef;
+  void addDef(Set def) {
+    if (typeDef != null)
+      typeDef.addDef(def);
+  }
+  void addUndef(Set undef, Set def) {
+    if (typeDef != null)
+      typeDef.addUndef(undef, def);
+  }
+}
+\end{verbatim}
+}
+\end{minipage}
+\caption{Following the Law of Demeter.}
+\label{fig:LoD}
+\end{figure}
+
+Note that the Law of Demeter is strictly followed: each method only
+refers to fields defined on the same class.  However, the overall
+algorithm is lost in the noise of all the traversal methods.
+The actual functional behavior is split between the \code{Schema} and
+\code{Attribute} classes.  Moreover, even though each method only
+refers to local fields, deciding whether to traverse a field requires
+knowledge of the overall class structure: for example, in
+\code{SequenceGroup}, the \code{addDef} method only needs to
+traverse the \code{edecls} field because an element declaration may
+include a type definition; if the object model were extended so that an
+attribute declaration could also include a type definition, the
+\code{addDef} method in \code{ComplexType} would have to be changed to
+traverse the \code{adecls} field, even though nothing about
+\code{ComplexType} itself changed.
+
+Another way of implementing this example would be to use the Visitor
+design pattern~\cite{gang-of-4}, by creating two classes
+\code{TypeDefVisitor} and \code{DeclVisitor}, moving the traversal
+methods into \code{visit} methods on those classes, and making
+subclasses overriding \code{visit(Attribute)} to perform the behavior
+of checking for defined and undefined types.  While this would
+eliminate the scattering of traversal methods across the class
+structure, the same set of traversal methods would need to be written,
+and they would still need to be modified when the object model
+changes.
+
+\section{DJ}
+
+DJ is a library of classes that make traversals like the previous
+example much easier to define, understand, and maintain.
+Figure~\ref{fig:DJ} shows an alternate implementation of the
+\code{Schema} class that defines the two traversals succinctly
+using the \code{ClassGraph} and \code{Visitor} classes from the
+\code{edu.neu.ccs.demeter.dj} package.
+
+\begin{figure}[bp!]
+\begin{minipage}{\textwidth}
+\begin{verbatim}
+import java.util.*;
+import edu.neu.ccs.demeter.dj.*;
+
+class Schema {
+  Attribute attrs[];
+  SchemaItem items[];
+  static final ClassGraph cg = new ClassGraph();
+  public Set getDefinedTypeNames() {
+    final Set def = new HashSet();
+    cg.traverse(this, "from Schema via ->TypeDef,attrs,* to Attribute",
+                new Visitor() {
+                    void before(Attribute host) {
+                      if (host.name.equals("name"))
+                        def.add(host.value);
+                    }
+                  });
+    return def;
+  }
+  public Set getUndefinedTypeNames() {
+    final Set def = getDefinedTypeNames();
+    final Set undef = new HashSet();
+    cg.traverse(this, "from Schema via ->Decl,attrs,* to Attribute",
+                new Visitor() {
+                    void before(Attribute host) {
+                      if (host.name.equals("type")
+                          && !def.contains(host.value))
+                        undef.add(host.value);
+                    }
+                  });
+    return undef;
+  }
+}
+\end{verbatim}
+\end{minipage}
+\caption{Using \code{traverse} from the DJ library.}\label{fig:DJ}
+\end{figure}
+
+A \code{ClassGraph} object is a simplified representation of a UML
+\cite{rational:UML-LUG} class diagram; its nodes are types (classes and
+primitive types) and its edges are (uni-directional) associations and
+(bi-directional) generalizations.
+%In Demeter terminology, a (uni-directional)
+%association relationship is implemented as a \defn{construction} edge
+%if its multiplicity is 1 (or 0..1) or a \defn{repetition} edge if its
+%multiplicity is *; a generalization relationship is implemented as an
+%\defn{inheritance} edge; and a specialization relationship is
+%implemented as an \defn{alternation} edge.
+The default \code{ClassGraph} constructor builds a graph object using
+reflection from all the classes in the default package; a string
+containing a package name can be provided as a constructor argument to
+build a class graph from another package.  The
+methods \code{addPackage(String~pkgname)} and \code{addClass(Class~cl)}
+can be used to add other packages and classes to a class graph
+object.  A traversal is done by calling the \code{traverse} method on a
+\code{ClassGraph} object.  It takes three arguments: the root of the
+object structure to be traversed; a string specifying the traversal
+strategy to be used; and an \defn{adaptive visitor} object
+describing what to do at points in the traversal.
+
+A traversal strategy specifies the end points of the traversal, using
+the \code{from} keyword for the source and the \code{to}
+keyword for the target(s).  In between, any number of constraints can be
+specified with \code{via} or \code{bypassing}.  The two
+traversals in figure~\ref{fig:DJ} traverse from \code{Schema} to
+\code{Attribute}; in other words, they visit attributes in a schema,
+because type names appear in attribute values for both definitions and
+references.  They differ in their constraints: to find the names of
+types defined by the schema, the first traversal only looks at
+attributes of type definitions (\code{TypeDef} objects); to find the
+names of types referenced by the schema, the second traversal only
+looks at attributes of declarations (\code{Decl} objects).  The
+\code{->TypeDef,attrs,*} syntax is a pattern specifying the set of
+association edges whose source is class \code{TypeDef} and whose
+label (field name) is \code{attrs}; the asterisk means that an edge in
+the set can have any target type.
+
+Traversal strategy interpretation is done as described in
+\cite{strategies-tr:LP97}, with a few modifications whose details will
+be presented in a future paper.  The general idea is that at each
+object in the traversal, those associations (including inherited
+associations) which can possibly lead to a target object (subject to
+any constraints specified in the traversal strategy) are traversed
+sequentially; if an object is encountered which has no possible path
+leading to a target object, the traversal returns to the previous step
+in the traversal.  For example, in our XML Schema example, the
+\code{items} field of \code{Schema} contains an array of
+\code{SchemaItem} objects; this array may contain \code{TypeDef}
+objects, since \code{TypeDef} is a subclass of \code{SchemaItem}, so
+the elements of the array are traversed as part of the
+\code{getDefinedTypes} traversal.  However, some of the elements may
+be \code{AttributeDecl} objects, and there is no possible path to a
+\code{TypeDef} object; if one of these elements is encountered in the
+array, it is simply skipped over.  The \code{adecls} field of
+\code{ComplexType} is never traversed at all, since it can only
+contain an array of \code{AttributeDecl} objects.  Note that if the
+\code{adecls} field were a \code{Vector} instead of an array, it
+could contain objects of any type, and so DJ would have to traverse it
+in case one of its elements were a \code{TypeDef} object or some
+other object that could lead to a \code{TypeDef}.  If parameteric
+polymorphism is added to Java, such as that proposed in~\cite{GJ},
+this problem will be easier to avoid: the type of \code{adecls} could
+be \code{List<AttributeDecl>} and DJ would know it could avoid it.
+
+An adaptive visitor class is a subtype of the \code{Visitor} class in
+the DJ package; it implements the Adaptive Visitor pattern described
+in~\cite[pp.~426-427]{karl:demeter}.  The Adaptive Visitor pattern
+differs from the Visitor pattern as presented in~\cite{gang-of-4}
+in two ways: only a minimal set of methods needs to be defined, namely
+those describing the functional behavior to be performed at points
+along the traversal, rather than one method each for every class in
+the traversal; and no \code{accept} methods need to be defined, nor
+does traversal behavior need to be defined in the visitor methods.
+These two differences result in a unit of behavior that can adapt both
+to changes in the object model and changes in the traversal.
+
+During a traversal with adaptive visitor $V$, when an object $o$ of type $T$ is
+reached in the traversal, if there is a method on $V$ named
+\code{before} whose parameter is type $T$, that method is called with
+$o$ as the argument.  Then, each field on the object is traversed if
+needed.  Finally, before returning to the previous object, if there is
+a method on $V$ named \code{after} whose parameter is type $T$, that
+method is called with $o$ as the argument.  The \code{Visitor}
+subclasses defined inline in figure~\ref{fig:DJ} only define one
+\code{before} method each, which is executed at \code{Attribute}
+objects, the end point of the traversal.
+
+DJ also provides support for generic programming
+\cite{musser-stepanov:GL}: the \code{asList} method on
+\code{ClassGraph} adapts an object structure and a traversal strategy
+into a \code{List}, part of Java's Collections
+framework~\cite{Collections}.  The object structure is viewed as a
+collection of objects whose type is the target of the traversal
+strategy; the collection's iterator performs the traversal
+incrementally with each call to \code{next}.  Figure~\ref{fig:asList}
+shows how to rewrite the previous example using \code{asList}.
+
+\begin{figure}[tbhp!]
+\begin{minipage}{\textwidth}
+\begin{verbatim}
+import java.util.*;
+import edu.neu.ccs.demeter.dj.*;
+
+class Schema {
+  Attribute attrs[];
+  SchemaItem items[];
+  static final ClassGraph cg = new ClassGraph();
+  public Set getDefinedTypeNames() {
+    final Set def = new HashSet();
+    List typeDefAttributes =
+      cg.asList(this, "from Schema via ->TypeDef,attrs,* to Attribute");
+    Iterator it = typeDefAttributes.iterator();
+    while (it.hasNext()) {
+      Attribute attr = (Attribute) it.next();
+      if (attr.name.equals("name"))
+        def.add(attr.value);
+    }
+    return def;
+  }
+  public Set getUndefinedTypeNames() {
+    final Set def = getDefinedTypeNames();
+    final Set undef = new HashSet();
+    List declAttributes = 
+      cg.asList(this, "from Schema via ->Decl,attrs,* to Attribute");
+    Iterator it = declAttributes.iterator();
+    while (it.hasNext()) {
+      Attribute attr = (Attribute) it.next();
+      if (attr.name.equals("type")
+          && !def.contains(attr.value))
+        undef.add(attr.value);
+    }
+    return undef;
+  }
+}
+\end{verbatim}
+\end{minipage}
+\caption{Using the collection adaptor \code{asList}.}
+\label{fig:asList}
+\end{figure}
+
+\section{Implementation Highlights}
+
+In this section we present some highlights of the implementation of DJ
+and some examples of interesting uses.
+
+When the \code{ClassGraph} constructor is called, it creates a graph
+object containing reflective information about all the classes in a
+package.  In Java, however, there is no way to get a list of all
+classes in a package; packages are just namespaces, not containers.
+Moreover, the JVM only knows about classes that have already been
+loaded, and it only loads classes when they are referenced.  Since a
+class graph might be constructed before many of the classes in
+the package have been referenced, the constructor has to discover
+classes some other way: it searches the class path (provided by the
+JVM as \code{System.getProperty("java.class.path")}) for all
+\code{.class} files in subdirectories corresponding to the package
+name.  For each class file that is found, it calls
+\code{Class.forName()} with the class name, which causes the JVM to
+load the class if it hasn't already been loaded.  If there are
+classes that need to be added to a class graph that do not exist
+as \code{.class} files in the class path, for example if they are
+loaded from the network or constructed dynamically, they will need to
+be added explicitly by calling \code{addClass()}.
+
+A class graph may also be created from another class graph $G$ and a
+traversal strategy $S$, forming the subgraph of classes and edges in
+$G$ that would be traversed according to $S$.  This can be used to
+remove unwanted paths from a class graph, such as backlinks, rather
+than having to add \code{bypassing} constraints to every traversal
+strategy.
+
+The \code{traverse} method on \code{ClassGraph} is implemented in a
+two-stage process: first, a \defn{traversal graph} is computed from
+the class graph and the traversal strategy (which itself is converted
+into a \defn{strategy graph}, whose nodes are the classes mentioned in
+the traversal strategy and whose edges each have constraints attached
+to that leg of the traversal); then, the object structure is
+traversed, using information from the traversal graph to decide where
+to go next at each step, and visitor methods are invoked as needed.
+The traversal graph computation takes time proportional to the product
+of the number of edges in the class graph and the number of edges in
+the strategy graph; since the same traversal strategy is often reused
+multiple times with the same class graph, the traversal graph can be
+saved and reused without needing to be recomputed every time.  The
+class \code{TraversalGraph} has a constructor that takes a traversal
+strategy and a \code{ClassGraph} object, as well as methods
+\code{traverse} and \code{asList}.  The traversal computation
+algorithm is also available as a separate package, the AP Library
+\cite{AP-Lib:99}.
+
+At each step in a traversal, the fields and methods of the current
+object, as well as methods on the visitor object, are inspected and
+invoked by reflection.  Some of this reflective overhead could be
+avoided by generating a new class (at run-time) that invokes the
+appropriate fields and methods directly; this is planned for a future
+addition to DJ.  Other applications of partial evaluation to speed up
+the traversal may be possible as well.
+
+The implementation of \code{asList} is somewhat trickier than regular
+traversal: the list iterator must return in the middle of the
+traversal whenever a target object is reached, and then resume where
+it left off when \code{next} is called again.  An earlier version
+created an ad-hoc continuation-like object that was saved and restored
+at each iteration, but this was error-prone and not very efficient;
+the current version uses a separate Java thread as a coroutine,
+suspending and resuming at each iteration.  An additional provided method
+\code{gather} can be used to copy all the target objects into an
+\code{ArrayList}, which is faster still, but the list returned by
+\code{asList} has the advantage that calls to \code{set} on the
+iterator can replace target objects in the original object structure.
+
+Java's reflection system, unlike other meta-object protocols
+\cite{AMOP}, has no mechanism for \defn{intercession}: there is no way
+to make a new subclass of \code{Class} that behaves differently for
+certain meta-operations such as method invocation.  However, DJ's
+\code{Visitor} class does allow a limited form of intercession.  It
+has the method \code{before(Object~obj, Class~cl)} (and corresponding
+\code{after}), which is invoked by the \code{ClassGraph.traverse}
+method at each traversal step; it looks for a method named
+\code{before} with a single parameter whose type is the class
+represented by \code{cl}, and invokes it with \code{obj} as argument.
+This method can be overridden by a subclass to perform more dynamic
+behavior based on the reified class object of the object being
+traversed.  Figure~\ref{fig:intercession} shows a simple
+pretty-printing visitor that uses this technique, along with a method
+on class \code{Schema} that uses it.
+
+\begin{figure}[tbhp!]
+\begin{minipage}{\textwidth}
+\begin{verbatim}
+class XMLPrinter extends Visitor {
+  public XMLPrinter(Map map) { this.map = map; }
+  Map map;
+  String indent = "";
+  public void before(Object obj, Class cl) {
+    String elementName = (String) map.get(cl);
+    if (elementName != null) {
+      System.out.println(indent + "<" + elementName + ">");
+      indent += "  ";
+    }
+  }
+  public void after(Object obj, Class cl) {
+    String elementName = (String) map.get(cl);
+    if (elementName != null) {
+      indent = indent.substring(2);
+      System.out.println(indent + "</" + elementName + ">");
+    }
+  }
+}
+
+class Schema {
+  ...
+  void print() {
+    Map map = new HashMap();
+    map.put(Schema.class, "schema");
+    map.put(SimpleType.class, "simpleType");
+    map.put(ComplexType.class, "complexType");
+    map.put(ComplexTypeContent.class, "complexContent");
+    map.put(SequenceGroup.class, "sequence");
+    map.put(ElementDecl.class, "element");
+    map.put(AttributeDecl.class, "attribute");
+    Visitor v = new XMLPrinter(map);
+    XSD.cg.traverse(this, "from Schema to *", v);
+  }
+}
+\end{verbatim}
+\end{minipage}
+\caption{Using visitor method intercession.}
+\label{fig:intercession}
+\end{figure}
+
+Note that the \code{XMLPrinter} visitor class is generic, in that it
+makes no mention of any of the XML Schema classes but is parameterized
+by a mapping of classes to element names.  
+
+\section{Related Work}
+
+DJ is closely related to DemeterJ~\cite{DemeterJ:00}, a preprocessing
+tool that takes a \defn{class dictionary file} (containing a textual
+representation of a UML class diagram, with syntax directives for
+parsing and printing object structures) and some \defn{behavior files}
+(containing regular Java methods to be attached to the classes in the
+class dictionary, plus traversal method specifications, visitor
+methods, and \defn{adaptive methods} that connect a traversal with a
+visitor class) and generates plain Java code for those classes with
+traversal methods attached (similar to the code in
+Figure~\ref{fig:LoD}) along with a parser and some custom visitors
+such as for printing, copying, or comparing object structures.  DJ
+shares the same traversal strategy language and traversal graph
+algorithms as DemeterJ, but does no code generation and is a pure-Java
+library.
+
+Besides being easier to use with existing Java code, DJ has a few
+other advantages compared to DemeterJ.  One is the ability to traverse
+classes for which the programmer does not have source code, or is not
+able or willing to modify the source code; for example, one might
+traverse parts of Java's Swing library of GUI widgets.  DJ can
+traverse public accessor methods, or may even use private methods and
+fields if the JVM's security manager allows reflective access to
+private parts (which is often the case outside of applets).  Another
+feature of DJ which does not exist in DemeterJ is the ability to work
+with subgraphs of a class graph; in DemeterJ, all traversals are
+computed in the context of the whole class graph defined in the class
+dictionary, but in DJ you can create new class graphs by selecting a
+subgraph with a traversal strategy.  In addition, DJ allows components
+to be more generic, by taking class graphs, traversal strategies, or
+classes to be visited as run-time parameters.  These latter two
+advantages are due to the reification of concepts which only exist at
+compile-time in DemeterJ as first class objects in DJ.
+
+An Adaptive Object-Model~\cite{AOM} is an object model that is
+interpreted at run-time.  If an object model is changed, the system
+changes its behavior.  Java's object model can't be changed at
+run-time (other than dynamic class loading) but DJ interprets the
+object model when doing traversals.
+
+DJ's \code{Visitor} class is similar to the reflective visitor
+described in~\cite{java-tip:reflective-visitor} and the
+\code{Walkabout} class described in~\cite{palsberg:jay}.  However,
+neither of these allows for customized traversals.
+
+Java OQL, is the binding of OQL (Object Query Language) from ODMG 2.0
+\cite{cattell:odmg2.0} to Java, treats query specifications much like
+DJ treats traversal strategy specifications.  An \code{OQLQuery}
+object can be constructed from a string describing a query; the query
+can then be executed by calling the \code{execute()} method on the
+\code{OQLQuery} object.  Queries are either compiled dynamically at
+run-time or interpreted.  An example of a query is:
+\begin{verbatim}
+OQLQuery query = new OQLQuery("select p.getSpouse from p in persons");
+Set spouses = (Set) query.execute();
+\end{verbatim}
+For an adaptive version of OQL, see~\cite{harrison:aql-94}.
+
+DJ has some connections with aspect-oriented programming (AOP)
+\cite{aop:ecoop97}.  An adaptive visitor is a specialized aspect: it
+says what behavior should happen at certain principled points in the
+execution of a traversal.  A traversal strategy can also be considered
+an aspect: it adds crosscutting behavior whose implementation would
+ordinarily require scattering methods across the class structure.
+More details about the aspectual nature of DJ are in
+\cite{aspectual-methods}.
+
+\section{Summary and Future Work}
+
+We have presented DJ, a pure-Java library supporting dynamic adaptive
+programming.  DJ makes it easier to follow the Law of Demeter,
+loosening the coupling between the structure and behavior concerns and
+adapting to changes in the object model.  It is more flexible and
+dynamic than the preprocessing approach taken by DemeterJ, by
+interpreting traversal strategies at run-time and using reflection to
+traverse object structures with adaptive visitors.
+
+The Demeter team is currently working on a number of enhancements to
+DJ.  One is the ability to write visitor methods that get executed
+whenever certain edges in the class graph are executed (currently,
+visitor method execution depends only on the class of the object being
+traversed).  Another is the ability to write \code{around} methods on
+visitors that are executed in place of a traversal step and get passed
+a thunk that can be executed to continue the traversal.  Both of these
+enhancements would allow visitors to have more control over the
+behavior that gets executed during a traversal.
+
+AspectJ \cite{aop:ecoop2001}, an implementation of AOP for Java, makes
+available to advice an object that represents the current join point
+with information such as the current type and the control-flow history
+of past join points.  A similar object could be added to DJ that would
+be passed to visitor methods so that they could access the history of
+objects being traversed, in order to carry information from one point
+of the traversal to others.
+
+There are many optimizations that could be made to traversal
+interpretation.  Currently fields and methods in the object structure
+and methods on visitors are looked up using reflection every time they
+are traversed; this information could be cached after the first
+lookup.  Some of the reflection could be avoided altogether by
+generating a new class at run-time that hard-coded the field accesses
+and method executions involved in a traversal; although generating a
+class would be a one-time performance hit, overall performance would
+be much better if the same visitor and traversal strategy were used
+together multiple times.
+
+There is room for improvement in the capability for manipulating class
+graph objects, such as being able to selectively remove edges or
+recognizing special kinds of accessor methods such as a
+\code{getFoo(int~i)} method that retrieved the \code{i}th member of a
+collection of \code{Foo} objects.  Also, the ability to join, merge,
+or intersect multiple traversal strategies would help make traversal
+strategies more reusable.
+
+\section{Acknowledgements}
+
+Josh Marshall designed and implemented the early versions of DJ.
+Johan Ovlinger designed and implemented the predecessor to DJ, TAO
+(Traversals As Objects), and suggested the run-time generation of a
+class to avoid reflective overhead.  Pengcheng Wu is implementing
+several enhancements to DJ, including \code{around} visitor methods
+and visitor methods on edges.  Thanks to Lars Hansen for
+suggesting the use of threads as coroutines for the \code{asList}
+iterator.  The XML Schema example is a simplified version of an
+XML-Schema-to-Java tool being developed by Adak Prasenjit.
+
+\bibliography{biblio,dj}
+\bibliographystyle{plain}
+
+\end{document}

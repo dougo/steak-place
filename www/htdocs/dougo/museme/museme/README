@@ -1,0 +1,11 @@
+This directory contains the January 1995 version of the MUSEME system,
+updated in August 1997 by Doug Orleans to run in the latest version of
+Scheme-48 (0.46).
+
+MUSEME is a multi-user Scheme system in which users can share Scheme
+objects; it can be used as the basis for a simple MUD.  MUSEME was
+designed by Franklyn Turbak and Dan Winship at MIT and was implemented
+by Dan Winship during the summer of 1994.
+
+MUSEME was implemented in Scheme-48. What little documentation
+there is can be found in the doc directory. 

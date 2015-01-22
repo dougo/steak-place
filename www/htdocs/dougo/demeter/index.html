@@ -1,0 +1,1000 @@
+<html>
+
+  <head>
+    <title>Demeter / Center for Software Sciences</title>
+    <style type="text/css">
+      A.black { text-decoration: none; color: #000000; }
+      A.white { text-decoration: none; color: #ffffff; }
+      P.justified { text-align: justify; }
+    </style>
+    <META NAME="DATE" CONTENT="$Date: 2000/05/24 01:30:26 $">
+    <META NAME="description"
+      CONTENT="How to write more flexible and shorter programs">
+    <META NAME="keywords"
+      CONTENT="demeter, adaptive programming, aspect-oriented programming, 
+      separation of concerns, tangling, elastic objects, 
+      traversal, visitor pattern, strategies, course with viewgraphs, 
+      AP, AOP, aspectual components, component-based software
+      ">
+  </head>
+
+
+  <body bgColor="#ffffff">
+    <table border="0" cellPadding="0" cellSpacing="0" height="12" xwidth="100%">
+      <THEAD>
+	<TBODY> 
+	  <tr> 
+	    <td align="center" bgColor="#336699" vAlign="middle" width="71" height="71">
+	      <img src= "/home/lorenz/center/img/nu-logo.gif" width="55" height="55" alt="logo">
+	    </td> 
+	    <td align="middle" bgColor="#ffffff" vAlign="center" width="2" height="71">&nbsp;
+	    </td> 
+	    <td> 
+	      <table border="0" cellPadding="0" cellSpacing="0"> 
+	  <THEAD> 
+	    <TBODY> 
+	      <tr> 
+		<td align="left" vAlign="middle" colspan="3" bgcolor="#FFFFFF">
+
+		  <strong>
+		    <font color="#336699" size="+2">Demeter
+		    </font>
+		  </strong> 
+		</td>
+
+	      </tr> 
+	      <tr> 
+		<td align="left" vAlign="middle" height="14" width="49%" bgcolor="#336699" > 
+		  <small>
+		    <strong>
+		      <small>
+			<font color="#FFFFFF">&nbsp;&nbsp;
+			  <a href="/home/lorenz/center/" class="white">
+			    <font color="#ffffff">Center for Software
+			      Sciences
+			    </font>
+			  </a>
+			</font>
+		      </small>
+		    </strong>
+		  </small> 
+		</td> 
+		<td align="left" vAlign="middle" height="14" width="2%" bgcolor="#336699" >
+
+		  <small>
+		    <strong>
+		      <small>
+			<font color="#FFFFFF">&nbsp;&nbsp;
+			</font>
+		      </small>
+		    </strong>
+		  </small> 
+		</td> 
+		<td align="right" vAlign="center" height="14" width="490" bgcolor="#336699"> 
+		  <em>
+		    <small>
+		      <strong>
+			<small>
+			  <font color="#FFFFFF">&nbsp;
+			    <a href="/" class="white">
+			      <font color="#ffffff">College of Computer
+				Science
+			      </font>
+			    </a>
+			  </font>
+			</small>
+		      </strong>
+		    </small>
+		  </em> 
+		</td> 
+	      </tr>
+
+	    </TBODY> 
+    </table> 
+  </td> 
+  </tr>
+  </TBODY>
+  </table> 
+    <hr>
+
+
+    <table border="0" cellPadding="0" cellSpacing="0" height="967">
+      <COLGROUP span="1" width="71">
+	<COLGROUP span="1" width="5">
+	  <COLGROUP span="1" >
+	    <TBODY>
+	      <tr>
+		<th align="left"   bgColor="#336699"  height="1249" vAlign="top" width="71">  
+		  <table border="0" cellPadding="2" cellSpacing="0" height="0" size="50%">
+	      <TBODY>	
+		<tr>
+		  <td align="middle" height="8" vAlign="top" width="23%">	
+		    <font size="-2">Links:
+		    </font>
+		  </td>
+		</tr>
+	      </TBODY>
+    </table> 
+    <table border="0" cellPadding="0" cellSpacing="0" height="8" width="71">
+      <TBODY>
+	<tr>
+	  <td align="middle" height="8" vAlign="top" width="23%">
+	    <a href="/home/lorenz/center/index.html"  >
+	      <img alt="Center" border="0" src="/home/lorenz/center/img/bulletbutton.gif" width="8" height="8">
+	    </a>
+	  </td>
+	  <td height="8" width="77%">
+	    <a href="/home/lorenz/center/index.html"  class="white">
+	      <font color="#ffffff" size="-2">
+		<strong>Center
+		</strong>
+	      </font>
+	    </a>
+	  </td>
+	</tr>
+      </TBODY>
+    </table> 
+
+    <table border="0" cellPadding="0" cellSpacing="0" height="8" width="71">
+      <TBODY>
+	<tr>
+	  <td align="middle" height="8" vAlign="top" width="23%">
+	    <a href="/research/demeter"  >
+	      <img alt="Demeter" border="0" src="/home/lorenz/center/img/bulletbutton.gif" width="8" height="8">
+	    </a>
+	  </td>
+	  <td height="8" width="77%">
+	    <font color="#000000" size="-2">
+	      <strong>Demeter
+	      </strong>
+	    </font>
+	  </td>
+	</tr>
+      </TBODY>
+    </table> 
+
+    <table border="0" cellPadding="0" cellSpacing="0" height="8" width="71">
+      <TBODY>
+	<tr>
+	  <td align="middle" height="8" vAlign="top" width="23%">
+	    <a href="/home/lorenz/center/beanpole.html"  >
+	      <img alt="Beanpole" border="0" src="/home/lorenz/center/img/bulletbutton.gif" width="8" height="8">
+	    </a>
+	  </td>
+	  <td height="8" width="77%">
+	    <a href="/home/lorenz/center/beanpole.html"  class="white">
+	      <font color="#ffffff" size="-2">
+		<strong>Beanpole
+		</strong>
+	      </font>
+	    </a>
+	  </td>
+	</tr>
+      </TBODY>
+    </table> 
+
+    <table border="0" cellPadding="0" cellSpacing="0" height="8" width="71">
+      <TBODY>
+	<tr>
+	  <td align="middle" height="8" vAlign="top" width="23%">
+	    <a href="/home/lorenz/center/bcdk/"  >
+	      <img alt="BcDK" border="0" src="/home/lorenz/center/img/bulletbutton.gif" width="8" height="8">
+	    </a>
+	  </td>
+	  <td height="8" width="77%">
+	    <a href="/home/lorenz/center/bcdk/"  class="white">
+	      <font color="#ffffff" size="-2">
+		<strong>BcDK
+		</strong>
+	      </font>
+	    </a>
+	  </td>
+	</tr>
+      </TBODY>
+    </table> 
+
+    <table border="0" cellPadding="0" cellSpacing="0" height="8" width="71">
+      <TBODY>
+	<tr>
+	  <td align="middle" height="8" vAlign="top" width="23%">
+	    <a href="/home/lorenz/center/events.html"  >
+	      <img alt="Events" border="0" src="/home/lorenz/center/img/bulletbutton.gif" width="8" height="8">
+	    </a>
+	  </td>
+	  <td height="8" width="77%">
+	    <a href="/home/lorenz/center/events.html"  class="white">
+	      <font color="#ffffff" size="-2">
+		<strong>Events
+		</strong>
+	      </font>
+	    </a>
+	  </td>
+	</tr>
+      </TBODY>
+    </table> 
+
+    <table border="0" cellPadding="0" cellSpacing="0" height="8" width="71">
+      <TBODY>
+	<tr>
+	  <td align="middle" height="8" vAlign="top" width="23%">
+	    <a href="/home/lorenz/center/about.html"  >
+	      <img alt="About" border="0" src="/home/lorenz/center/img/bulletbutton.gif" width="8" height="8">
+	    </a>
+	  </td>
+	  <td height="8" width="77%">
+	    <a href="/home/lorenz/center/about.html"  class="white">
+	      <font color="#ffffff" size="-2">
+		<strong>About
+		</strong>
+	      </font>
+	    </a>
+	  </td>
+	</tr>
+      </TBODY>
+    </table> 
+
+    <td align="left"   bgColor="#ffffff" height="1249" vAlign="top" width="5pt">&nbsp;
+    </td>
+    <td height="1249" vAlign="top"> 
+
+
+      <META NAME="DATE" CONTENT="1/6/99">
+
+      <META NAME="description"
+	CONTENT="How to write more flexible and shorter programs">
+
+      <META NAME="keywords"
+	CONTENT="demeter, adaptive programming, aspect-oriented programming, 
+	separation of concerns, tangling, elastic objects, 
+	traversal, visitor pattern, strategies, course with viewgraphs, 
+	AP, AOP, aspectual components, component-based software, abstract slicing,
+	Law of Demeter
+	">
+
+
+      <H1>Demeter.  
+      </H1>
+      Learn how you can create software which is easy to maintain and evolve 
+      using Adaptive Programming (AP).
+
+
+      <P>
+	The following Demeter class is offered as a distance learning course during fall 2000:
+
+	<A HREF="http://www.ccs.neu.edu/home/lieber/com3360.html">Televised and Videotaped Course 
+	  (For credit or auditing): Adaptive Object-oriented Software Development (NU COM 3360) 
+	</A>. 
+	Also offered as an 
+
+	<A HREF="
+	  http://www.ntu.edu/
+	  ">NTU class.
+	</A>
+	Search for "Demeter".
+
+
+      <P>
+	Current Software Releases:
+
+	<BR>
+
+	<A HREF="
+	  http://www.ccs.neu.edu/research/demeter/DJ/
+	  ">DJ: A simple tool for Java programmers
+	</A>.
+	Read the 
+	<A HREF="
+	  http://www.ccs.neu.edu/research/demeter/DJ/DJ-product-guide.html
+	  ">DJ Fact Sheet
+	</A> first.
+
+
+	<BR>
+
+	<A HREF="
+	  http://www.ccs.neu.edu/research/demeter/releases/
+	  ">Demeter/Java, now called DemeterJ: A more complex but very powerful tool
+	</A>.
+	Read the 
+	<A HREF="
+	  http://www.ccs.neu.edu/research/demeter/DemeterJava/DemeterJava-product-guide.html
+	  ">DemeterJ Fact Sheet
+	</A> first.
+
+
+	<BR>
+
+	<A HREF="
+	  http://www.ccs.neu.edu/research/demeter/AP-Library/
+	  ">AP Library: A library containing  the core algorithm for AP
+	</A>.
+	Read the 
+	<A HREF="
+	  http://www.ccs.neu.edu/research/demeter/AP-Library/APL-product-guide.html
+	  ">AP Library Fact Sheet
+	</A> first.
+
+
+      <P>
+
+	<A href="http://www.ccs.neu.edu/research/demeter/papers/publications.html">
+	  List of Publications with complete papers.
+	</a> Many papers have a discussion
+	page linking them to a web of related newer work.
+
+
+      <P>
+
+	<IMG ALIGN="center" SRC="/home/lieber/images/new.yellow.gif">
+
+	<A HREF="
+	  http://www.ccs.neu.edu/research/demeter/technology-transfer/in-main-stream.html
+	  ">Demeter and XML and UML and EJB
+	</A>. 
+
+
+      <P>
+	For ideas on how to use Demeter ideas with XML and DOM, see
+
+	<A HREF="http://www.ccs.neu.edu/home/lieber/ap-projects.html">Project Ideas.
+	</A>
+
+
+
+      <P>
+	Adaptive Programming is viewed as a major advance in software technology
+	based on using well-known finite automata and formal language
+	theory to express succinctly and process efficiently
+	path sets in architectural graphs (e.g. UML class diagrams).
+	AP allows you to make
+	your software both simpler and more reusable by exploiting regularities
+	which exist in most object-oriented programs. AP reduces software
+	development and maintenance costs significantly. The more collaborating
+	objects you use in a project, the larger the reduction.
+
+	<A HREF="http://www.ccs.neu.edu/home/lieber/connection-to-aop.html">
+	  Connection to Aspect-Oriented Programming from Xerox PARC
+	</A>
+
+
+      <P>
+	The first 
+
+	<a href="http://www.ccs.neu.edu/research/demeter/biblio/dem-book.html">
+	  book on adaptive programming 
+	</a> is available on-line.
+
+	Title:          Adaptive Object-Oriented Software:
+	The Demeter Method with Propagation Patterns,
+	Author:         Karl Lieberherr,
+	Publisher:      PWS Publishing Company,
+	ISBN:           0-534-94602-X,
+	Year: 1996.
+	A 
+
+	<A href="
+	  http://www.ccs.neu.edu/research/demeter/biblio/strategies.html
+	  ">
+	  recent theoretical paper
+	</A>
+	on traversal strategies improves on the traversal technology described 
+	in the book. Makes adaptive programming much simpler and more powerful.
+	Strategies are implemented in 
+
+	<A HREF="
+	  http://www.ccs.neu.edu/research/demeter/DemeterJava
+	  ">
+	  DemeterJ and AP Studio (DOWNLOAD LINKS ARE HERE) 
+	</A>. AP Studio supports a subset
+	of the UML class diagram
+	notation to "instantiate" adaptive programs.
+	A
+
+	<A href="
+	  http://www.ccs.neu.edu/research/demeter/biblio/components.html
+	  ">
+	  recent design methodology paper (OOPSLA 98)
+	</A>
+	shows how strategies significantly advance component software development.
+
+
+
+      <P>
+	If you are wondering how to apply Adaptive Programming to
+	specific applications, take a look at
+
+	<A HREF="
+	  http://www.ccs.neu.edu/research/demeter/center/DemInAction.html
+	  ">
+	  Demeter in Action
+
+	</A>
+	to get an idea of what others have done.
+	There is a good chance that you will be able to apply many
+	of the ideas in these solutions to your own work.
+
+
+      <P>
+
+	<A HREF="http://www.ccs.neu.edu/home/lieber/suntest.html">
+	  JJTree from Sun Test: A Commercial Java Tool using Demeter Ideas
+	</A>
+
+
+
+
+	<BR> 
+
+	<A HREF="http://www.ccs.neu.edu/home/lieber/Demeter-and-Java.html"> 
+	  DemeterJ (first version of DemeterJ page)
+	</A>
+
+
+	<BR> 
+
+	<A HREF="
+	  http://www.ccs.neu.edu/research/demeter/projects/darpa2/
+	  "> 
+	  DemeterJ (DARPA/EDCS project info)
+	</A>
+
+
+	<BR>
+
+	<A HREF="
+	  http://www.dist-systems.bbn.com/projects/AIRES/
+	  "> 
+	  DemeterJ (DARPA project information at BBN)
+	</A>
+
+
+	<BR>
+
+	<A HREF="
+	  http://www.ccs.neu.edu/research/demeter/aires/
+	  ">
+	  DemeterJ (DARPA project information at Northeastern)
+	</A>
+
+
+
+	<BR> 
+
+	<A HREF="
+	  http://www.ccs.neu.edu/home/lieber/com3360.html">
+	  Home page of NTU class on Adaptive Programming (offered every fall).
+	</A> 
+	Includes hundreds of PowerPoint slides (also in Postscript). See Lecture Notes entry.
+
+
+
+
+	<BR> 
+
+	<a href="
+	  http://www.ccs.neu.edu/research/demeter/adaptive-patterns/AOP">
+	  Five Patterns Summarizing Adaptive Programming 
+	</A>
+
+	<BR> 
+
+	<A HREF="http://www.ccs.neu.edu/home/lieber/benefits.html"> 
+	  Benefits of Adaptive Programming
+	</A>
+
+
+	<BR>
+
+	<A HREF="http://www.ccs.neu.edu/research/demeter/talks/erfurt-keynote/erfurt-talk.ppt">
+	  A PowerPoint Slideshow (keynote address) about Aspect-Oriented and Adaptive Programming (0.5 Megabytes)
+	</A>
+
+      <P>
+
+	<br>
+
+      <p>
+
+	<img align="TOP" src="http://www.ccs.neu.edu/home/lieber/images/demeter-green.gif"> Created by 
+
+	<A HREF="
+	  http://www.ccs.neu.edu/home/rlieberh/
+	  ">
+	  Ruth S. Lieberherr
+	</A>
+
+
+      <p>
+
+
+	<LI> 
+
+	  <A HREF="http://www.ccs.neu.edu/home/lieber/team-members.html">Team Members
+	  </A>
+
+	  <UL> 
+
+	    <LI> 
+	      <A HREF="http://www.ccs.neu.edu/home/lieber/what-is-demeter.html">What is Demeter? 
+	      </A>
+
+	  </ul> 
+
+
+	  <UL> 
+
+	    <LI> 
+	      <A href="ftp://ftp.ccs.neu.edu/pub/people/lieber/reflection-adaptive.ps">
+		A recent paper explaining adaptive programming (Postscript) 
+	      </A>
+
+	  </ul> 
+
+
+
+	  <LI> 
+	    <A href="
+	      http://www.ccs.neu.edu/research/demeter/related-work/related.html
+	      ">
+	      Related projects
+	    </A>
+
+
+	    <LI> 
+	      <A href="
+		http://www.ccs.neu.edu/research/demeter/related-work/
+		">
+		Discussions with related projects
+	      </A>
+
+
+	      <LI> 
+		<A href="ftp://ftp.ccs.neu.edu/pub/people/lieber/Demeter-interest">
+		  Reactions About Adaptive Software
+		</A>
+
+
+		<LI>
+
+		  <A HREF="http://www.ccs.neu.edu/home/lieber/tendril.html">
+		    StructureBuilder from WebGain, Inc.:
+		    A Commercial Java Tool using Demeter Ideas
+		  </A>
+
+
+
+		  <P>
+
+		    <li> Research
+
+		      
+		      <ul>
+
+			
+			<li> 
+			  <a href="http://www.ccs.neu.edu/home/lieber/sponsored.html">Sponsored Projects 
+			  </a>
+			  
+			<li> 
+			  <a href="http://www.ccs.neu.edu/home/lieber/theses-index.html">Completed Theses
+			  </a>
+			  
+			<li> 
+			  <a href="http://www.ccs.neu.edu/home/lieber/research.html">Research (Collaborations, Directions, Annual Reports)
+			  </a>
+
+			<li> 
+			  <A href="http://www.ccs.neu.edu/research/demeter/papers/publications.html">
+			    List of Publications with complete papers 
+			  </a> 
+
+			<li> 
+			  <A href="
+			    http://www.ccs.neu.edu/research/demeter/papers/reading-guide.html
+			    ">
+			    Reading Guide to Demeter Literature
+			  </a> 
+			  
+			<li> 
+			  <a href="http://www.ccs.neu.edu/home/lieber/papers-index.html">Older Papers
+			  </a>
+			  
+			<li> 
+			  <A href="ftp://ftp.ccs.neu.edu/pub/people/lieber/thesis-topics.txt">Ph.D. thesis topics 
+			  </a>
+			  
+			<li> 
+			  <a href="http://www.ccs.neu.edu/home/lieber/open-problems.html">Open Problems
+			  </a> 
+			  
+			<li> 
+			  <A href="http://www.ccs.neu.edu/research/demeter/demeter-method">Demeter Method
+			  </a>
+
+			  
+			<li> 
+			  <a href="http://www.ccs.neu.edu/home/lieber/LoD.html">Law of Demeter
+			  </a> 
+			  
+			<li> 
+			  <A href="http://www.ccs.neu.edu/research/demeter/semantics/center.html">Theory of Adaptive Programming 
+			  </a>
+			  
+		      </ul>
+
+
+		      <li> Books 
+
+			
+			<ul>
+			  
+			  <li> 
+			    <A href="
+			      http://www.ccs.neu.edu/research/demeter/biblio/dem-book.html
+			      "> Adaptive Object-Oriented Software: The Demeter Method 
+			    </a>
+			    
+			</ul>
+
+
+			<li> FTP directories 
+			  
+			  <ul>
+
+			    <li> 
+			      <a href="
+				ftp://ftp.ccs.neu.edu/pub/people/lieber
+				">
+				FTP directory
+			      </a> (newer papers).
+
+			    <li> 
+			      <a href="
+				ftp://www.ccs.neu.edu/pub/research/demeter
+				">
+				FTP directory
+			      </a> (older papers, software, documentation etc).
+			      
+			  </ul>
+
+			  <p>
+
+
+			    <li> Software (available now)
+
+			      
+			      <ul>
+
+				<li> 
+				  <A HREF="http://www.ccs.neu.edu/home/lieber/inside-impl.html">
+				    Implementations of Demeter from Northeastern 
+				  </A>
+
+				<li> 
+				  <A HREF="http://www.ccs.neu.edu/home/lieber/outside-impl.html">
+				    Implementations of Demeter from outside Northeastern 
+				  </A>
+				  
+				<li>
+
+				  <A href="ftp://ftp.ccs.neu.edu/pub/people/lieber/DemeterTools.txt">Source code for Demeter Tools/Java AND Demeter Tools/C++ is free
+				  </a>
+
+				<li> 
+				  <a href="http://www.ccs.neu.edu/research/demeter/evaluation/evaluation-of-adaptive-programming"> Evaluations of Tools 
+				  </a>
+				  
+				<li> 
+				  <A href="ftp://ftp.ccs.neu.edu/pub/people/lieber/faq/Demeter-FAQ">Demeter Frequently Asked Questions 
+				  </a>
+
+				  
+				<li> 
+				  <a href="http://www.ccs.neu.edu/home/lieber/educational.html">Educational support
+				  </a>
+				  
+				<li> 
+				  <a href="http://www.ccs.neu.edu/home/lieber/commercial.html">Commercial support
+				  </a>
+				  
+			      </ul>
+
+
+
+			      <li> Adaptable Systems
+				
+				<ul>
+				  
+				  <li> 
+				    <a href="http://www.ccs.neu.edu/home/lieber/AOP.html">Aspect-Oriented Programming (AOP)
+				    </a>
+				    
+				  <li> 
+				    <a href="
+				      http://home.t-online.de/home/Ulrich.Eisenecker/gpref.htm
+				      ">Generative Programming 
+				    </a>
+				    
+				  <li> 
+				    <a href="
+				      http://www.generative-programming.org/
+				      ">Generative Programming book by (Czarnecki and Eisenecker) 
+				    </a>
+				    
+				  <li> 
+				    <a href="
+				      http://www.research.microsoft.com/ip/
+				      ">Intentional Programming 
+				    </a>
+				    
+				  <li> 
+				    <a href="
+				      http://www.doc.ic.ac.uk/~mcs98/wiki.cgi
+				      ">Separation of Concerns 
+				    </a>
+				    
+				  <li> 
+				    <a href="
+				      http://www.ccs.neu.edu/research/demeter/SOP
+				      ">Subject-Oriented Programming 
+				    </a>
+				    and the newer 
+				    <a href="
+				      http://www.research.ibm.com/hyperspace
+				      ">Hyperspaces: Multi-dimensional separation of concerns
+				    </a>
+				    
+				  <li> 
+				    <a href="http://progwww.vub.ac.be/prog/pools/adaptable/index.html">Adaptable OO Software Systems (Reuse contracts and related work)
+				    </a>
+				    
+				  <li> 
+				    <a href="http://www.ccs.neu.edu/research/demeter/architecture">Software Architecture
+				    </a>
+				    
+				  <li> 
+				    <a href="http://www.ccs.neu.edu/research/demeter/adaptable-systems">OOPSLA '95 workshop 
+				    </a>
+				    
+				  <li> 
+				    <a href="http://wwwtrese.cs.utwente.nl/ecoop96adws/">ECOOP '96 workshop 
+				    </a>
+
+				  <li> 
+				    <A HREF="
+				      http://www.ccs.neu.edu/home/lblando/personalities/
+				      "> Personalities.
+				    </A> A "must-read" for framework developers and users.
+
+				    
+				</ul>
+
+
+				<li> Technology Transfer
+				  
+				  <ul>
+
+				    <LI> 
+				      <A HREF="http://www.ccs.neu.edu/home/lieber/tech-transfer.html">
+					Technologies available
+				      </A>
+				      
+				  </ul>
+
+				  <li> Design Patterns for Adaptable Systems
+				    
+				    <ul>
+				      
+				      <li>
+
+					<A href="
+					  http://www.ccs.neu.edu/research/demeter/adaptive-patterns/personalities/personal
+					  ity-pattern.html
+					  ">
+					  Personality Pattern
+					</a>
+
+					
+				      <li> 
+					<a href="http://www.ccs.neu.edu/research/demeter/adaptive-patterns/index.html">Design Patterns for Adaptive Programming 
+					</a>
+					
+				      <li> 
+					<a href="http://www.ccs.neu.edu/research/demeter/adaptive-patterns/architecture-patterns.txt"> Software Architecture and Design Patterns 
+					</a>
+					
+				      <li> 
+
+					<A HREF="http://st-www.cs.uiuc.edu/users/patterns/patterns.html">
+					  Design patterns home page 
+					</A>
+					
+				    </ul>
+
+
+				    <li> Education in Adaptive Object-Oriented Programming
+				      
+				      <ul>
+
+					<li> 
+					  <a href="http://www.ccs.neu.edu/research/demeter/talks/">Talks 
+					  </a>
+
+					<LI> 
+					  <A HREF="http://www.ccs.neu.edu/gradschool/downloads.html">
+					    Download application materials to study at the College of Computer Science.
+
+					  </A> The program includes a broad range of excellent courses, 
+					  including courses about AP.
+					  My 
+					  <A HREF="http://www.ccs.neu.edu/home/lieber">
+					    home page
+
+					  </A>
+					  contains further  information about AP courses.
+					  Why should you consider 
+
+					  <a href="
+					    http://www.cse.ogi.edu/grad_school/
+					    ">graduate school?
+					  </a>
+					  
+					<li>
+					  
+					  <a href="http://www.ccs.neu.edu/home/lieber/com3360.html">Televised 
+					    Course from Network Northeastern, Covering Adaptive and
+					    Aspect-Oriented Programming and 
+					    Design Patterns
+					  </a>. Lecture Notes available in 
+					  the form of several hundred viewgraphs.
+					  
+					<li> 
+					  <a href="
+					    http://www.ccs.neu.edu/research/demeter/seminar/
+					    ">Northeastern Demeter Seminar 
+					  </a>
+					  
+					<LI>
+
+
+					  <A HREF="
+					    http://www.ccs.neu.edu/research/demeter/tutorials/
+					    ">
+					    Tutorials
+
+					  </A>
+
+				      </UL>
+
+
+				      <P>
+					The Demeter Method addresses the issues of changing requirements in
+					open, evolving systems through adaptive programming.
+					The Method allows you to achieve more by working less:
+					you can make your programs simultaneously shorter (i.e., you
+					have to work less) and at the same time you get several
+					benefits: better 
+					adaptability and even adaptiveness, better understandability, better
+					maintainability.
+
+
+				      <P>
+					This apparent paradox is achieved by writing your object-oriented
+					programs as collaborating views which are loosely glued together.
+					The adaptiveness stems from a simple, but innovative glue,
+					which allows the programming of entire families of open implementations.
+					An implementation is said to be open, if clients can still significantly
+					influence the implementation.
+
+
+				      <ul>
+
+					<li> Many thanks to 
+
+					  <A HREF="
+					    http://www.sei.cmu.edu/community/edcs/
+					    ">DARPA(EDCS)
+					  </A>
+					  and NSF as our major sponsors.
+					  Many thanks to IBM, Mettler Toledo, Xerox PARC, Citibank, SAIC and Mitsubishi
+					  for their support.
+
+					<li> 
+					  <a href="http://www.ccs.neu.edu/home/lieber/server.txt"> Digital Media Copyright 
+					  </a>
+
+					<li> 
+					  <a href="
+					    http://www.ccs.neu.edu/research/demeter/sources/DemeterJava/NUDCopyright.html
+					    ">
+					    DemeterJ Copyright Notice
+
+					  </a>
+
+					<li> 
+					  <a href="http://www.ccs.neu.edu/home/lieber/credible.txt"> Credibility of Web information 
+					  </a>
+
+				      </ul>
+
+				      <P>
+					This page links you to a new world of more flexible software.
+					If you like what you found here, we appreciate your feedback and
+					we would like to hear about your use of the technology.
+					Please tell your software friends about this page.
+
+
+				      <P>
+
+					<A HREF="
+					  http://www.biodynamics.com/
+					  "> 
+					  Demeter certified products are healthy for you.
+					</A>
+					The Demeter Association is an independent agency
+					that certifies Biodynamic farms in the U.S. and abroad.
+
+
+				      <P>
+
+					<IMG ALIGN="center" SRC="/home/lieber/images/new.yellow.gif">
+
+					<A HREF="
+					  http://www.ccs.neu.edu/tools/search/
+					  "> 
+					  Search Engine
+					</A>. Use if to find information with keywords (CCS site).
+
+				      <P>
+
+					<A HREF="http://www.ccs.neu.edu/home/lieber/">
+					  Professor Karl J. Lieberherr
+					</A>
+
+      <ADDRESS>College of Computer Science, Northeastern University
+
+      <ADDRESS>Cullinane Hall, Boston, MA 02115
+
+      <ADDRESS>Internet: demeter@ccs.neu.edu                       
+
+      <ADDRESS>Fax:   (617) 373 5121
+
+
+
+
+
+
+
+
+      </th>
+      </TBODY>
+      </table>  
+      <hr> 
+      <a name="#contact">
+      <table border="0" cellPadding="0" cellSpacing="0" >
+	<TBODY>
+	  <tr>
+	    <td bgColor="#336699"  width="71">&nbsp;&nbsp;&nbsp;&nbsp;
+	    </td>
+	    <td bgColor="#ffffff" width="5">&nbsp;
+	    </td>
+	    <td> If you would like more information about the Demeter project, please contact 
+	      <strong>Prof. Lieberherr
+	      </strong> (
+	      <a href="mailto:lieber@ccs.neu.edu">
+		<em>lieber@ccs.neu.edu
+		</em>
+	      </a>).   
+	      <p>
+		<em>  This page is maintained by Prof. Lieberherr.   Last updated  "Sep 25 2000" 
+		</em>
+	    </td>
+	  </tr>
+	</TBODY>
+      </table> 
+      <img src="http://www.cs.technion.ac.il/cgi-bin/nph-count?width=4&link=www.ccs.neu.edu/home/lorenz/center/demeter.c&show=NO"> 
+
+
+  </body>
+
+</html>

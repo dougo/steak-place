@@ -1,0 +1,177 @@
+\documentclass{article}
+\usepackage{amstex}
+\usepackage{theorem}
+\usepackage{fancyheadings}
+
+\setlength{\parindent}{0pt}	% Don't indent paragraphs.
+
+%\addtolength{\voffset}{-0.25in}
+%\addtolength{\textheight}{0.5in}
+\addtolength{\hoffset}{-0.25in}	% Reduce left and right margins by 1/4 inch.
+\addtolength{\textwidth}{0.5in}
+
+\pagestyle{fancy}
+\setlength{\headrulewidth}{0pt}
+
+\lhead{COM 3350 Assignment 1}
+\rhead{Doug Orleans (\texttt{dougo@@ccs.neu.edu})}
+
+\theorembodyfont{\rmfamily}		% don't use italics
+\theoremstyle{break}			% put a line break after the header
+\newtheorem{exercise}{Exercise}
+\theoremstyle{plain}
+\newtheorem{subexercise}{}[exercise]
+\renewcommand{\thesubexercise}{(\alph{subexercise})}
+
+\newcommand{\sipser}{\textit{Sipser}}
+\newcommand{\encoding}[1]{\ensuremath{\langle#1\rangle}}
+\newcommand{\qed}{~\ensuremath{\square}}
+
+\newenvironment{answer}{\begin{quotation}\noindent}{\end{quotation}}
+
+\begin{document}
+
+\begin{exercise}[\sipser, 6.1]
+Give an example in the spirit of the recursion theorem of a program in
+a real programming language (or a reasonable approximation thereof)
+that prints itself out.
+\end{exercise}
+Here is a straightforward, but verbose, answer in Java:
+\begin{verbatim}
+class Self {
+  static String add_escapes(String str) {
+    String retval = "";
+    char ch;
+    for (int i = 0; i < str.length(); i++) {
+      if ((ch = str.charAt(i)) == '\n') {
+        retval += "\\n\" +\n\"";
+      } else if (ch == '\"') {
+        retval += "\\\"";
+      } else if (ch == '\\') {
+        retval += "\\\\";
+      } else {
+        retval += ch;
+      }
+    }
+    return retval;
+  }
+  public static void main(String[] args) {
+    System.out.println(B + add_escapes(B) + "\";}");
+  }
+  static String B = "class Self {\n" +
+"  static String add_escapes(String str) {\n" +
+"    String retval = \"\";\n" +
+"    char ch;\n" +
+"    for (int i = 0; i < str.length(); i++) {\n" +
+"      if ((ch = str.charAt(i)) == '\\n') {\n" +
+"        retval += \"\\\\n\\\" +\\n\\\"\";\n" +
+"      } else if (ch == '\\\"') {\n" +
+"        retval += \"\\\\\\\"\";\n" +
+"      } else if (ch == '\\\\') {\n" +
+"        retval += \"\\\\\\\\\";\n" +
+"      } else {\n" +
+"        retval += ch;\n" +
+"      }\n" +
+"    }\n" +
+"    return retval;\n" +
+"  }\n" +
+"  public static void main(String[] args) {\n" +
+"    System.out.println(B + add_escapes(B) + \"\\\";}\");\n" +
+"  }\n" +
+"  static String B = \"";}
+\end{verbatim}
+\noindent Here is a less verbose version that avoids the problem of
+converting newlines:
+\begin{verbatim}
+class Self3 {
+  public static void main(String[] args) {
+    int i;
+    for (i = 0; i < s.length; i++)
+      System.out.println(s[i].replace(Character.toUpperCase('x'), '"'));
+    for (i = 0; i < s.length; i++)
+      System.out.println('"' + s[i] + '"' + ',');
+    System.out.println("  };");
+    System.out.println('}');
+  }
+  static String[] s = {
+"class Self3 {",
+"  public static void main(String[] args) {",
+"    int i;",
+"    for (i = 0; i < s.length; i++)",
+"      System.out.println(s[i].replace(Character.toUpperCase('x'), 'X'));",
+"    for (i = 0; i < s.length; i++)",
+"      System.out.println('X' + s[i] + 'X' + ',');",
+"    System.out.println(X  };X);",
+"    System.out.println('}');",
+"  }",
+"  static String[] s = {",
+  };
+}
+\end{verbatim}
+\noindent Here is my first try at a shortest answer (344 chars) [enter
+on a single line]:
+\begin{verbatim}
+class S{static char q='"';static String s=
+"class S{static char q='';static String s=;
+public static void main(String[]a){StringBuffer b=new StringBuffer(s);
+b.insert(41,q+s+q);b.insert(23,q);System.out.println(b);}}";
+public static void main(String[]a){StringBuffer b=new StringBuffer(s);
+b.insert(41,q+s+q);b.insert(23,q);System.out.println(b);}}
+\end{verbatim}
+\noindent Here is the shortest answer I could come up with (331 chars)
+[enter on a single line]:
+\begin{verbatim}
+class S{public static void main(String[]a){new S().p('"',"'",
+"class S{public static void main(String[]a){new S().p('",
+");}void p(char d,String q,String a,String b){
+System.out.println(a+d+q+','+d+q+d+','+d+a+d+','+d+b+d+b);}}"
+);}void p(char d,String q,String a,String b){
+System.out.println(a+d+q+','+d+q+d+','+d+a+d+','+d+b+d+b);}}
+\end{verbatim}
+In contrast, this single line eval in MOO prints itself:
+\begin{verbatim}
+;;s=";player:tell(\";;s=\"+toliteral(s)+s)";player:tell(";;s="+toliteral(s)+s)
+\end{verbatim}
+\par$\square$\pagebreak
+\begin{exercise}[\sipser, 6.5]
+Describe two different Turing machines, $M$ and $N$, where, when
+started on any input, $M$ outputs \encoding N and $N$ outputs
+\encoding M.
+\end{exercise}
+\begin{answer}
+This answer depends on the fact that two ``different'' machines may
+have the same behavior, but differing implementations.  We define a
+single Turing machine behavior $B$.
+
+$B = $ ``On any input:
+\begin{enumerate}
+\item Obtain, via the recursion theorem, own description \encoding B.
+\item If \encoding B has any useless states, construct a new machine
+$B'$, which is $B$ with all useless states eliminated; print
+\encoding{B'}; and halt.
+\item Otherwise, construct a new machine $B''$, which is $B$ with one
+useless state added; print \encoding{B''}; and halt.''
+\end{enumerate}
+(Note that discerning whether a machine has useless states is a simple
+task of comparing the set of states $Q$ with the range of the $\delta$
+function, and is thus a decidable problem.)
+
+We then construct two machines that implement the behavior of $B$:
+$M$, which has no useless states, and $N$, which is the output of $M$
+and has one useless state, and which therefore will output \encoding
+M.\qed
+\end{answer}
+\begin{exercise}[\sipser, 6.6]
+In the fixed-point version of the recursion theorem (Theorem 6.6) let
+the transformation $t$ be a function that interchanges the states
+$q_{\text{accept}}$ and $q_{\text{reject}}$ in Turing machine
+descriptions.  Give an example of a fixed point for $t$.
+\end{exercise}
+\begin{answer}
+Any Turing machine that never halts for any input string will be a
+fixed point for $t$; for example, a machine that moves right on any
+input symbol and never enters $q_{\text{accept}}$ or
+$q_{\text{reject}}$ will recognize the empty language whether or not
+$q_{\text{accept}}$ and $q_{\text{reject}}$ are interchanged.\qed
+\end{answer}
+\end{document}

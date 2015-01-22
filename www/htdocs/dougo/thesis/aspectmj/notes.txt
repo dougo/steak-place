@@ -1,0 +1,84 @@
+AspectMJ - Aspect-Oriented Programming for MultiJava
+
+AspectJ semantics:
+http://aspectj.org/documentation/designNotes/semantics.html
+
+MultiJava description:
+http://www.cs.washington.edu/research/projects/cecil/www/Papers/oopsla00.html
+
+AspectJ extends Java with aspects, classes that extend the behavior of 
+other classes in cross-cutting ways.  MultiJava extends Java with
+multimethods, methods that can be defined outside of any class and that
+specialize on arguments in addition to the receiver.  Two great tastes 
+that taste great together!  Let's extend AspectJ to handle the
+additions of MultiJava.
+
+Aspect instances-- since MultiJava doesn't add multi-fields (fields
+that are shared between multiple objects), there's no need to extend
+the one-aspect-instance-per-object model.  Otherwise we might add "of
+eachtuple(O1,...,On)".
+
+Aspect extension is unaffected.
+
+Aspect privilege-- multimethods don't give privileged access to all
+specialized arguments, only the receiver.
+E.g. Circle.intersect(Shape@Rectangle r) isn't allowed to access
+private Rectangle fields on r.  So aspect privilege still only needs
+to allow access to the receiver class fields.  It might be interesting 
+to add the "privileged" keyword to multimethods, though, to allow them 
+access to all their arguments' private fields... or maybe that's going 
+too far.
+
+Aspect precedence is unaffected.
+
+Field reference & assignment join points don't change, unless
+multi-fields are added.  Handler execution is unaffected.
+
+AspectJ already distinguishes between receptions (generic functions)
+and executions (methods).  Do we need to distinguish between the two
+kinds of super calls?  E.g. x(Foo@Bar z) { super.x(); super.y(); }
+Don't think so-- they're both executions and not receptions.  Might be 
+useful to be able to distinguish between them as two different kinds
+of join points though.  (Find an example?)
+
+"calls" join point is unaffected.
+
+Context exposure is the same, I think.  Can poincuts be overloaded?
+E.g. pointcut foo(Foo x) ... and pointcut foo(Bar x) ...
+Does it make sense to also allow pointcut foo(Foo@Garply x) ... ?
+pointcuts aren't methods, so probably not.
+
+instanceof(T)-- Two possible extensions:
+(1) redefine it to mean "all join points at which the object `this' or any 
+of the parameter objects are (dynamically) instances of T".
+Multimethods are notionally "part of" all of their specializer classes.
+(2) leave it and make a new join point that means (1).
+This is probably better since MultiJava doesn't quite act as if
+multimethods are part of their spec classes-- no privileged access to
+their fields, for example.
+Maybe: specializers(T).  Should this be a superset of instanceof(T)?
+
+hasaspect(A)-- stays the same, assuming no multifields.
+
+cflow(Pointcut)-- unchanged.
+
+within(T)-- should include external methods of T.
+
+Signatures-- foo(X@Z, Y@Q) should match methods that are at least as
+specific as {Z, Q}.  Or maybe only the single method whose
+specializers are {Z, Q}?  It's unclear whether a signature pattern
+matches argument subtypes in current AspectJ-- eg. does foo(X) match
+foo(Y) if Y extends X?  Probably not, and no apparent way to specify
+"all foo methods taking X or a subclass of X"; you can only use X or
+*.  So specializers should probably have to match exactly too.  But
+foo(X, Y) should be equivalent to foo(X@*, Y@*), i.e. match all
+methods of that generic function.
+
+Advice is unchanged.
+
+thisJoinPoint-- add Class[] parameterSpecializers.
+
+introduction-- perhaps implement method introduction as external
+methods; we still need field introduction, as well as "extends" and
+"implements", though.
+

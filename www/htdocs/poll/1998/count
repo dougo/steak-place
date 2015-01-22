@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cut -f 2 votes | words-per-line | paste - votes | sort +0nr -1 +1fd > byvotes
+sort +1fd byvotes > byartist

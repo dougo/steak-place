@@ -1,0 +1,32 @@
+Summer 1994 UROP Evaluation / IAP and Spring 1995 UROP Proposal
+
+This past summer I worked for Franklyn Turbak in the Mathematics and
+Computation group at LCS on a project called MUSEME, a MUD-like
+environment written in Scheme. The project idea was extremely vague at
+the beginning of the summer, so we weren't completely sure what I'd be
+doing at that point.
+
+The first part of the summer was spent mostly trying out different
+ideas with interfaces and protection mechanisms. The main difficulty
+we faced was how to protect users in the system from other malevolent
+users without having to create so many security checks that it become
+unusable. We examined the ideas used by other MUDs, MOOs, and MUSEs,
+but were disappointed because all of them were either (1) obviously
+the wrong thing, or (2) not applicable to our system because of
+fundamental design differences.
+
+We eventually found an idea that we liked, and I spent the rest of the
+summer implementing the MUD system on top of it. At the end of the
+summer, I gave a presentation to the Mathematics and Computation group
+about what we had done so far and where we intended to go from
+there. The other members of the group gave us more ideas to work with
+and pointed out a few problems for us to work on.
+
+
+
+For IAP and spring, I would like to implement the changes that
+Franklyn and I had discussed, and finally create a stable, working
+system. As Franklyn has just left MIT to teach at Wellesley, I will be
+working under Hal Abelson. Once we are satisfied with it, Hal wants
+Franklyn and I to write a paper about it to be published in some
+appropriate place.

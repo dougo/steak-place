@@ -1,0 +1,119 @@
+\begin{thebibliography}{10}
+
+\bibitem{efficient-pd}
+C.~Chambers and W.~Chen.
+\newblock Efficient multiple and predicate dispatching.
+\newblock In {\em Proceedings of OOPSLA '99}, Denver, CO, November 1999.
+
+\bibitem{BeCecil}
+C.~Chambers and G.~Leavens.
+\newblock Bececil, a core object-oriented language with block structure and
+  multimethods: Semantics and typing.
+\newblock In {\em Proceedings of the The Fourth International Workshop on
+  Foundations of Object-Oriented Languages (FOOL 4)}, Paris, France, January
+  1997.
+
+\bibitem{comp-patt}
+S.~Clarke and R.~J. Walker.
+\newblock Separating crosscutting concerns across the lifecycle: From
+  composition patterns to {AspectJ} and {Hyper/J}.
+\newblock Technical Report UBC-CS-2001-05, University of British Columbia,
+  Vancouver, Canada, 2001.
+
+\bibitem{DrScheme}
+J.~Clements, P.~T. Graunke, S.~Krishnamurthi, and M.~Felleisen.
+\newblock Little languages and their programming environments.
+\newblock Monterey Workshop, 2001.
+
+\bibitem{dijkstra-SOC}
+E.~W. Dijsktra.
+\newblock {\em A Discipline of Programming}.
+\newblock Prentice-Hall, 1976.
+
+\bibitem{predicate-dispatch}
+M.~D. Ernst, C.~Kaplan, and C.~Chambers.
+\newblock Predicate dispatching: {A} unified theory of dispatch.
+\newblock In {\em Proceedings of ECOOP '98, the 12th European Conference on
+  Object-Oriented Programming}, pages 186--211, Brussels, Belgium, July 20--24
+  1998.
+
+\bibitem{units-mixins}
+R.~B. Findler and M.~Flatt.
+\newblock Modular object-oriented programming with units and mixins.
+\newblock In {\em Proceedings of ICFP}, 1998.
+
+\bibitem{MzScheme}
+M.~Flatt.
+\newblock {PLT} {MzScheme}: Language manual.
+\newblock Technical Report TR97-280, Rice University, 1997.
+
+\bibitem{units}
+M.~Flatt and M.~Felleisen.
+\newblock Units: Cool modules for {HOT} languages.
+\newblock In {\em Proceedings of the {ACM} {SIGPLAN}~'98 Conference on
+  Programming Language Design and Implementation}, pages 236--248, 1998.
+
+\bibitem{design-patterns}
+E.~Gamma, R.~Helm, R.~Johnson, and J.~Vlissides.
+\newblock {\em Design Patterns: Elements of Reusable Object-Oriented Software}.
+\newblock Addison Wesley, Massachusetts, 1994.
+
+\bibitem{JLS}
+J.~Gosling, B.~Joy, and G.~Steele.
+\newblock {\em The Java Language Specification}.
+\newblock Addison Wesley, 1996.
+
+\bibitem{DemeterJ}
+G.~Hulten, K.~Lieberherr, J.~Marshall, D.~Orleans, and B.~Samuel.
+\newblock {\em {DemeterJ} User Manual}.
+\newblock \texttt{\\http://www.ccs.neu.edu/research/demeter/}.
+
+\bibitem{R5RS}
+R.~Kelsey, W.~Clinger, and J.~Rees.
+\newblock Revised$^5$ report on the algorithmic language scheme, February 1998.
+
+\bibitem{AspectJ}
+G.~Kiczales, E.~Hilsdale, J.~Hugunin, M.~Kersten, J.~Palm, and W.~G. Griswold.
+\newblock An overview of {AspectJ}.
+\newblock In {\em Proceedings of the European Conference on Object-Oriented
+  Programming}, 2001.
+
+\bibitem{AOP}
+G.~Kiczales, J.~Lamping, A.~Mendhekar, C.~Maeda, C.~V. Lopes, J.-M. Loingtier,
+  and J.~Irwin.
+\newblock Aspect-oriented programming.
+\newblock In {\em Proceedings of the European Conference on Object-Oriented
+  Programming (ECOOP)}. Springer-Verlag, June 1997.
+
+\bibitem{ACs}
+K.~Lieberherr, D.~H. Lorenz, and J.~Ovlinger.
+\newblock Aspectual collaborations for collaboration-oriented concerns.
+\newblock Technical Report {NU-CCS-01-08}, College of Computer Science,
+  Northeastern University, Boston, MA 02115, Nov. 2001.
+
+\bibitem{Fred}
+D.~Orleans.
+\newblock Incremental programming with extensible decisions.
+\newblock In {\em Proceedings of the 1st International Conference on
+  Aspect-Oriented Software Development (AOSD)}, Enschede, The Netherlands,
+  April 2002.
+
+\bibitem{acc}
+J.~Ovlinger, K.~Lieberherr, and D.~Lorenz.
+\newblock Aspects and modules combined.
+\newblock Technical Report {NU-CCS-02-03}, College of Computer Science,
+  Northeastern University, Boston, MA, March 2002.
+
+\bibitem{HyperJ}
+P.~Tarr and H.~Ossher.
+\newblock {\em {Hyper/J} User and Installation Manual}.
+\newblock IBM T. J. Watson Research Center, Yorktown Heights, NY, USA, 2000.
+
+\bibitem{ComposeJ}
+J.~Wichman.
+\newblock {ComposeJ}: The development of a preprocessor to facilitate
+  composition filters in the {Java} language.
+\newblock {MSc.} thesis, Dept. of Computer Science, University of Twente,
+  Enschede, the Netherlands, December 1999.
+
+\end{thebibliography}

@@ -1,0 +1,273 @@
+;-*-Scheme-*-
+;	$Id: mmmoo-runtime.dpvml,v 1.13 2000/03/09 17:39:43 gregs Exp gregs $	
+;; mini-mmoo runtime
+;; Written in dpvml (dynamic predicate virtual machine language)
+;; To Do:
+;;  * check that class name not already in scope.
+;;  * in add-method, check that method sig matches generic sig.
+(define <object> <pred>
+  (named-sub-pred (list <top>) "<object>"))
+;; CLASSES  --  class = [class-pred, superclass-list, slotspec-list]
+(define <class> <pred>
+  (named-sub-pred (list <object>) "<class>"))
+(define <class-list> <pred> (elt-pred <class>))
+(define (class-pred class)
+  (-> (list-pred <class>) <pred>)
+  (list-ref class 0))
+(define (class-supers class)
+  (-> (list-pred <class>) <class-list>)
+  (list-ref class 1))
+;; class-slotspecs is defined later, after <slotspec-list>...
+
+;; OBJECTS/INSTANCES  --  instance = [class, slot-list]
+(define (make-instance class slot-vals)
+  (-> (list-pred <class> <list>) <object>)
+  (let loop ((vals slot-vals)
+	     (preds (map slotspec-pred (class-slotspecs class)))
+	     (new-slots (list)))
+    (list-pred <list> <pred-list> <slot-list>)
+    (if (null? vals)
+	(as (class-pred class)
+	    (list class (reverse new-slots)))
+	(loop (cdr vals)
+	      (cdr preds)
+	      (cons (make-slot (car preds) (car vals))
+		    new-slots)))))
+(define (object-class obj)
+  (-> (list-pred <object>) <class>)
+  (list-ref obj 0))
+(define (object-slots obj)
+  (-> (list-pred <object>) <list>)
+  (list-ref obj 1))
+
+;; METHODS  --   method = closure  (which has a signature, remember)
+(define <method> <pred> (named-sub-pred (list <object>) "<method>"))
+(define <method-list> <pred> (elt-pred <method>))
+(define (make-method fun)
+  (-> (list-pred <callable>) <method>)
+  (as <method> fun))
+(define (method-fun-pred m)
+  (-> (list-pred <method>) <fun-pred>)
+  (callable-fun-pred m))
+;; we can assume that all methods have list-preds for their
+;; callable-args-pred. 
+(define (method-arg-preds m)
+  (-> (list-pred <method>) <pred-list>)
+  (list-pred-preds (callable-args-pred m)))
+
+;; GENERICS  --   generic = [fun-pred, methods-cell]
+(define <generic> <pred> (named-sub-pred (list <object>) "<generic>"))
+(define (make-generic fun-pred)
+  (-> (list-pred <fun-pred>) <generic>)
+  (as <generic>
+      (list fun-pred (new-cell <method-list> (list)))))
+(define (generic-fun-pred g)
+  (-> (list-pred <generic>) <pred>)
+  (list-ref g 0))
+(define (generic-methods g)
+  (-> (list-pred <generic>) <method-list>)
+  (deref-cell (list-ref g 1)))
+
+;; SLOTSPEC's -- slotspec = [name, pred, getter-generic, setter-generic]
+(define <slotspec> <pred>
+  (named-sub-pred (list <object>) "<slotspec>"))
+(define <slotspec-list> <pred> (elt-pred <slotspec>))
+(define (make-slotspec name pred getter-gf setter-gf)
+  (-> (list-pred <string> <pred> <generic> <generic>) <slotspec>)
+  (as <slotspec> (list name pred getter-gf setter-gf)))
+(define (slotspec-name slotspec)
+  (-> (list-pred <slotspec>) <string>)
+  (list-ref slotspec 0))
+(define (slotspec-pred slotspec)
+  (-> (list-pred <slotspec>) <pred>)
+  (list-ref slotspec 1))
+(define (slotspec-getter-generic slotspec)
+  (-> (list-pred <slotspec>) <generic>)
+  (list-ref slotspec 2))
+(define (slotspec-setter-generic slotspec)
+  (-> (list-pred <slotspec>) <generic>)
+  (list-ref slotspec 3))
+(define (class-slotspecs class)
+  (-> (list-pred <class>) <slotspec-list>)
+  (list-ref class 2))
+
+;; SLOTS  --   slot = cell
+;; (remember that the cell has a pred)
+(define <slot> <pred> (named-sub-pred (list <object>) "<slot>"))
+(define <slot-list> <pred> (elt-pred <slot>))
+(define (make-slot p init-val)
+  (-> (list-pred <pred> <object>) <slot>)
+  (as <slot> (new-cell p init-val)))
+(define (slot-value s)
+  (-> (list-pred <slot>) <top>)
+  (deref-cell s))
+(define (slot-pred s)
+  (-> (list-pred <slot>) <pred>)
+  (cell-pred s))
+(define (set-slot-value! s v) (-> (list-pred <slot> <object>) <top>)
+  (set-cell! s v))
+
+;; some predefined classes and generics
+(define *object* <class>
+  (as <class> (list <object> (list) (list))))
+(define make <generic>
+  (make-generic (-> (list-pred <class> <list>) <top>)))
+(define describe <generic>
+  (make-generic (-> (list-pred <class>) <top>)))
+
+;; 
+;; name-slotspec = [slot-name-string, class]
+(define (make-class classname superclasses name-slotspecs)
+  (-> (list-pred <string> <class-list> <list>) <class>)
+  (let ((new-class-pred (named-sub-pred (map class-pred superclasses) classname)))
+    (list-pred <pred>)
+    ;; collect slotspecs, including those inherited from supers
+    (let ((slotspecs
+	   (let loop ((in-specs name-slotspecs)
+		      (out-specs (apply append (map class-slotspecs superclasses))))
+	     (list-pred <list> <slotspec-list>)
+	     (if (null? in-specs)
+		 out-specs
+		 (let* ((slot-name (car (car in-specs)))
+			(slot-class (cadr (car in-specs)))
+			(slot-pred (class-pred slot-class))
+			(setter-name (string-append "set-" slot-name))
+			(getter-generic (ensure-generic slot-name))
+			(setter-generic (ensure-generic setter-name)))
+		   (list-pred <string> <class> <pred> <string> <generic> <generic>)
+		   (loop (cdr in-specs)
+			 (cons (make-slotspec slot-name slot-pred
+					      getter-generic setter-generic)
+			       out-specs)))))))
+      (list-pred <slotspec-list>)
+      ;; add accessor methods for slot accessor generics
+      (let loop ((specs slotspecs) (slot-offset 0)) <top>
+	   (if (not (null? specs))
+	       (let* ((slot-pred (slotspec-pred (car specs)))
+		      (getter-generic (slotspec-getter-generic (car specs)))
+		      (setter-generic (slotspec-setter-generic (car specs))))
+		 (list-pred <pred> <generic> <generic>)
+		 (begin
+		  ;; getter : new-class-pred -> slot-pred
+		  (add-method getter-generic 
+			      (as <method>
+				  (lambda (obj)
+				       (-> (list-pred new-class-pred) slot-pred)
+				       (slot-value (list-ref (object-slots obj)
+							     slot-offset)))))
+		  ;; setter : (new-class-pred, slot-pred) -> slot-pred
+		  (add-method setter-generic 
+			      (as <method>
+				  (lambda (obj newval)
+				       (-> (list-pred new-class-pred slot-pred) slot-pred)
+				       (set-slot-value!
+					(list-ref (object-slots obj)
+						  slot-offset)
+					newval))))
+		  (loop (cdr specs) (+ 1 slot-offset))))
+	       ;; here if done adding methods to slot accessors
+	       ;; create new class
+	       (let ((new-class
+		      (as <class>
+			  (list new-class-pred superclasses slotspecs))))
+		 (list-pred <class>)
+		 (begin
+		  ;; add a method to describe
+		  (add-method
+		   describe
+		   (as <method>
+		       (lambda (c)
+			    (-> (list-pred (eq-pred new-class)) <top>)
+			    (map slotspec-name slotspecs))))
+		  ;; return new class
+		  new-class)))))))
+
+(define (add-method generic method)
+  (-> (list-pred <generic> <method>) <method>)
+  (begin
+   (set-cell! (list-ref generic 1)
+	      (cons method (generic-methods generic)))
+   method))
+
+;; Ensures that named generic exists, then adds closure as a method to generic.
+(define (add-method-to-name gf-name closure)
+  (-> (list-pred <string> <closure>) <method>)
+  (let ((generic (ensure-generic gf-name)))
+    (list-pred <generic>)
+    (add-method generic (as <method> closure))))
+
+;; makes sure that generic "name" exists. 
+;; If not, then create it, with top predicate
+(define (ensure-generic name)		; => <generic>
+  (-> (list-pred <string>) <generic>)
+  (if (in-scope? name (current-scope))
+      (deref-var name (current-scope))	; return type will guarantee : <generic>
+      ;; here if not in scope
+      (bind-in-scope (top-scope) name <generic>
+		     (make-generic (-> <top> <top>)))))
+
+(define (apply-generic gf args)
+  (-> (list-pred <generic> <list>) <top>)
+  (let ((applicable-methods
+	 (filter (rcurry applicable? args) (generic-methods gf))))
+    (list-pred <method-list>)
+    (if (null? applicable-methods)
+	(error "No applicable methods for function ~a called with ~a" gf args)
+	(let ((mam (find-mam applicable-methods args)))
+	  (list-pred (or-pred <list> <method>))
+	  (if (list? mam)
+	      (error "Ambiguous most applicable methods for call ~a(~a). Methods = ~a"
+		     gf args mam)
+	      (apply mam args))))))
+
+(define (applicable? method args)
+  (-> (list-pred <method> <list>) <boolean>)
+  (every? check-pred (method-arg-preds method) args))
+
+;; Given a non-empty list of methods known to be applicable to args, 
+;; find the most applicable method or methods and return it/them.
+;; If a list of methods is returned, rather than a single method, then
+;; the application if ambiguous.
+(define (find-mam meths args)
+  (-> (list-pred <method-list> <list>) (or-pred <list> <method>))
+  (let loop ((meths (cdr meths))
+	     (mams (list (car meths))))	; candidates for mam (all elts mutually ambiguous)
+    (list-pred <method-list> <method-list>)
+    (if (null? meths)
+	(if (= (length mams) 1)
+	    (car mams)
+	    mams)
+	(let ((m (car meths))
+	      (m-args-pred (callable-args-pred (car meths))))
+	  (list-pred <method> <pred>)
+	  ;; Cannot have situation where both m is < some method m' in mams
+	  ;; AND m is > some method m'' in mams -- that would imply that
+	  ;; m' and m'' are comparable and therefore not mutually ambiguous. 
+	  (cond
+	   ;; if m > any m' in mams, m is not a mam candidate
+	   ((any? (rcurry pred-implies? m-args-pred)
+		  (map callable-args-pred mams))
+	    (loop (cdr meths) mams))
+	   ;; if m < any m' in mams, replace all such m' with m
+	   ((any? (curry pred-implies? m-args-pred)
+		  (map callable-args-pred mams))
+	    (loop (cdr meths)
+		  (cons m (filter (lambda (m1) (-> (list-pred <method>) <boolean>)
+				       (not (pred-implies? m-args-pred
+							   (callable-args-pred m1))))
+				  mams))))
+	   ;; otherwise, must be incomparable with all elts of mam, so add m
+	   (else
+	    (loop (cdr meths) (cons m mams))))))))
+
+;; predefined methods
+
+;; default method on make:
+(add-method make
+	    (as <method>
+		(lambda (c slotvals)
+		     (-> (list-pred <class> <list>)
+			 <object>)
+		     (make-instance c slotvals))))
+
+;; eof

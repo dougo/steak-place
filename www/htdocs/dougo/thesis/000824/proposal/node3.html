@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 99.2beta8 (1.42)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Evaluation</TITLE>
+<META NAME="description" CONTENT="Evaluation">
+<META NAME="keywords" CONTENT="proposal">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v99.2beta8">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="proposal.css">
+
+<LINK REL="next" HREF="node4.html">
+<LINK REL="previous" HREF="node2.html">
+<LINK REL="up" HREF="proposal.html">
+<LINK REL="next" HREF="node4.html">
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<A NAME="tex2html51"
+  HREF="node4.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.gif"></A> 
+<A NAME="tex2html49"
+  HREF="proposal.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.gif"></A> 
+<A NAME="tex2html43"
+  HREF="node2.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.gif"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html52"
+  HREF="node4.html">BOB: A prototype collaborative</A>
+<B> Up:</B> <A NAME="tex2html50"
+  HREF="proposal.html">Ph.D. Thesis Proposal: A</A>
+<B> Previous:</B> <A NAME="tex2html44"
+  HREF="node2.html">Feature overview</A>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00030000000000000000">
+Evaluation</A>
+</H1>
+Now that I've surveyed a few existing collaborative programming
+languages, I can begin identifying features that I want to keep and
+features that I want to improve upon.  Of course, the general features
+I identified as essential in section <A HREF="node2.html#features">2.1</A> will need to go
+into my language: dynamic behavior modification, type safety, garbage
+collection, multitasking, resource control, persistence, and
+reflection.  I will also need to at least provide a framework in which 
+security capabilities can be implemented.
+
+<P>
+The classless object-oriented model seems to be a successful one, and
+my own personal bias is towards a classless object model as well; as
+Abadi and Cardelli observe in their book <I>A Theory Of Objects</I> [??],
+page&nbsp;36:
+<BLOCKQUOTE>
+The main insight of object-based languages is that class-based notions 
+need not be assumed, but instead can be emulated by more primitive
+notions.  Moreover, these more primitive notions can be combined in
+more flexible ways than in a strict class discipline.
+
+</BLOCKQUOTE>
+
+<P>
+One of the key barriers to this sort of flexible combination in MOO,
+ColdC, and LPC is the lack of garbage collection for objects.  The
+ability to access any object by number (in MOO) or name (in ColdC and
+LPC) leads to this restriction, which in turn has led to ad-hoc
+alternative mechanisms for lightweight objects (namely waifs, frobs,
+and clones) that are clumsy and limited.  A simple name-hiding
+mechanism such as lexical scoping a&nbsp;la Scheme or BeCecil should solve
+this problem.
+
+<P>
+The MOO server handles persistence by periodic checkpoints of the entire
+database; the Genesis and DGD drivers optimize the checkpoint time by
+only keeping a cache of active objects in memory, at the expense of
+the extra time needed to swap inactive objects into the cache when
+they are referenced.  While this tradeoff may be desirable for some
+purposes, I believe that MOO's model is sufficient for most purposes:
+it's the job of the operating system to provide virtual memory and
+take care of swapping to and from disk, and implementing an additional 
+swapping mechanism on top of this seems like diminishing returns.
+More sophisticated persistence mechanisms such as journaling or
+compare-and-commit might be worth investigating, but I don't consider
+it an important enough issue to spend time on it for my thesis.
+The issue of what to persist is another question; I think MOO has the
+right idea, where everything (including tasks) is saved to disk.
+ColdC and LPC allow a user to mark fields that don't need to be saved, 
+but they don't save tasks.
+
+<P>
+[TBD: more...]
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html51"
+  HREF="node4.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.gif"></A> 
+<A NAME="tex2html49"
+  HREF="proposal.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.gif"></A> 
+<A NAME="tex2html43"
+  HREF="node2.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.gif"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html52"
+  HREF="node4.html">BOB: A prototype collaborative</A>
+<B> Up:</B> <A NAME="tex2html50"
+  HREF="proposal.html">Ph.D. Thesis Proposal: A</A>
+<B> Previous:</B> <A NAME="tex2html44"
+  HREF="node2.html">Feature overview</A>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Doug Orleans
+2000-08-12
+</ADDRESS>
+</BODY>
+</HTML>

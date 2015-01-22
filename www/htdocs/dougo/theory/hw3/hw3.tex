@@ -1,0 +1,210 @@
+\documentclass{article}
+\usepackage{amstex}
+\usepackage{theorem}
+\usepackage{fancyheadings}
+\usepackage{program}
+
+\setlength{\parindent}{0pt}	% Don't indent paragraphs.
+
+%\addtolength{\voffset}{-0.25in}
+%\addtolength{\textheight}{0.5in}
+\addtolength{\hoffset}{-0.5in}	% Reduce left and right margins by 1/2 inch.
+\addtolength{\textwidth}{1in}
+
+\pagestyle{fancy}
+\setlength{\headrulewidth}{0pt}
+
+\lhead{COM 3350 Assignment 3}
+\rhead{Doug Orleans (\texttt{dougo@@ccs.neu.edu})}
+
+\theorembodyfont{\rmfamily}		% don't use italics
+\theoremstyle{break}			% put a line break after the header
+\newtheorem{exercise}{Exercise}
+\theoremstyle{plain}
+\newtheorem{subexercise}{}[exercise]
+\renewcommand{\thesubexercise}{\alph{subexercise}.}
+\newenvironment{answer}{\begin{quotation}\noindent}{\end{quotation}}
+
+\newcommand{\sipser}{\textit{Sipser}}
+\newcommand{\encoding}[1]{\ensuremath{\langle#1\rangle}}
+\renewcommand{\qed}{~\ensuremath{\square}}
+\newcommand{\Th}{\ensuremath{\operatorname{Th}}}
+\newcommand{\Nat}{\ensuremath{\mathcal{N}}}
+\newcommand{\tred}{\ensuremath{\leq_{\text{T}}}}
+\newcommand{\ATM}{\ensuremath{A_{\textsf{TM}}}}
+\renewcommand{\true}{\textsc{TRUE}}
+\renewcommand{\false}{\textsc{FALSE}}
+\newcommand{\defin}[1]{\textbf{\textit{#1}}}
+\newcommand{\setname}[1]{\textit{#1}}
+\renewcommand{\liminf}{\ensuremath{\lim_{n\to\infty}}}
+
+\renewcommand{\AND}{\ \keyword{and}\ }
+\newcommand{\ENDWHILE}{\untab\addtocounter{programline}{-1}}
+\newcommand{\ENDIF}{\untab\untab\addtocounter{programline}{-1}}
+\newcommand{\ACCEPT}{\keyword{accept}\ }
+\newcommand{\REJECT}{\keyword{reject}\ }
+\renewcommand{\keyword}[1]{\textbf{#1}} 
+\renewcommand{\prognumstyle}{\textrm} 
+\NumberProgramstrue 
+\normalbaroutside 
+
+\renewcommand{\a}{\stepcounter{subexercise}\textbf{\thesubexercise}\ }
+
+\begin{document}
+
+\begin{exercise}
+Answer each part \true\ or \false.
+
+\begin{tabular}{ll}
+\textbf{(\sipser, 7.1)} \\
+\a $2n=O(n)$. 		& \true.	\\
+\a $n^2=O(n)$.		& \false.	\\
+\a $n^2=O(n\log^2n)$.	& \false.	\\
+\a $n\log n=O(n^2)$.	& \true.	\\
+\a $3^n=2^{O(n)}$.	& \true; $3^n=2^{n\log_23}.$\\
+\a $2^{2^n}=O(2^{2^n})$.& \true.	\\
+\\
+\textbf{(\sipser, 7.2)} \setcounter{subexercise}{0}\\
+\a $n=o(2n)$.		& \false.	\\
+\a $2n=o(n^2)$.		& \true.	\\
+\a $2^n=o(3^n)$.	& \false.	\\
+\a $1=o(n)$.		& \true.	\\
+\a $n=o(\log n)$.	& \false.	\\
+\a $1=o(1/n)$.		& \false.	\\
+\end{tabular}
+\end{exercise}
+
+\begin{exercise}
+Of the five symbols $O, o, \sim, \Theta, \Omega$, which are
+transitive?  For example, if $f(n)=O(g(n))$ and $g(n)=O(h(n))$, does
+$f(n)=O(h(n))$ hold?
+\end{exercise}
+\begin{align*}
+\text{If }   \quad f(n)&\leq c_1g(n)\text{ for all }n>n_1 \\
+\text{and }  \quad g(n)&\leq c_2h(n)\text{ for all }n>n_2,\\
+\text{then } \quad f(n)&\leq c_1g(n)\leq c_1c_2h(n)
+				    \text{ for all }n>\max(n_1,n_2).
+\end{align*}
+\begin{answer}
+Thus $O$ is transitive, and similarly it's clear from the definitions
+of $o$, $\Theta$, and $\Omega$ that they are also transitive.  Also,
+\begin{align*}
+\text{if }   \quad\liminf\frac{f(n)}{g(n)}&=1\\
+\text{and }  \quad\liminf\frac{g(n)}{h(n)}&=1,\\
+\text{then } \quad\liminf\frac{f(n)}{h(n)}
+&=\liminf\frac{f(n)g(n)}{g(n)h(n)} \\
+&=\liminf\frac{f(n)}{g(n)}\liminf\frac{g(n)}{h(n)} \\
+&=1.
+\end{align*}
+Thus $\sim$ is also transitive.\qed
+\end{answer}
+
+\pagebreak
+\begin{exercise}[\sipser, 7.12]\label{modexp}
+Let
+\begin{align*}
+\setname{MODEXP}=\{\encoding{a,b,c,p}|~
+&a,b,c,\text{ and $p$ are binary integers}\\
+&\text{such that }a^b\equiv c\pmod{p}\}.
+\end{align*}
+Show that $\setname{MODEXP}\in$ P.  (Note that the most obvious algorithm
+doesn't run in polynomial time.  Hint: Try it first where $b$ is a
+power of 2.)
+\end{exercise}
+\begin{answer}
+Let $b_i$ represent the $i$th binary digit of $b$.  Then the following
+pseudo-code decides \setname{MODEXP}.
+\begin{program}
+m \gets 1
+i \gets 1
+a' \gets a \pmod{p}
+\WHILE i \leq |length|(b) \AND b_i = 0
+	i \gets i + 1
+\ENDWHILE
+\WHILE i \leq |length|(b)
+	m \gets m * m \pmod{p}
+	\IF b_i = 1
+		\THEN m \gets m * a' \pmod{p}
+	\ENDIF
+\ENDWHILE
+\IF m \equiv c \pmod{p}
+	\THEN \ACCEPT
+	\ELSE \REJECT
+\ENDIF
+\end{program}
+This will involve at most $2|b|$ multiplications; I claim (without
+proof, but it's a well-known algorithm) that two binary strings $x$
+and $y$ can be multiplied in $O(|x||y|)$ time, and since $|m|$ and
+$|a'|$ are at most $|p|$, each multiplication will be $O(|p|^2)$,
+bringing the total time to $O(|b||p|^2)$.  The length of the input
+is $n=O(|a|+|b|+|c|+|p|)$, thus the algorithm runs in $O(n^3)$ time,
+and $\setname{MODEXP}\in$ P.\qed
+\end{answer}
+
+\begin{exercise}[\sipser, 7.13]
+Show that P is closed under the star operation.  (Hint: On input
+$y=y_1\cdots y_n$ for $y_i\in\Sigma$, build a table indicating for
+each $i\leq j$ whether the substring $y_i\cdots y_j\in A^*$ for any
+$A\in$ P.)
+\end{exercise}
+\begin{answer}
+Given a language $A\in$ P, and an input string $y$ of length $n$, construct a
+directed graph $G$ with nodes for every pair in the set
+\begin{displaymath}
+\{(0,0)\} \cup 
+\{(i,j)|~1\leq i\leq j\leq n \text{ and } y_i\cdots y_j\in A\} \cup
+\{(n+1,n+1)\}
+\end{displaymath}
+and edges from $(i,j)$ to $(j+1,k)$ for every $j<k\leq n+1$.
+Constructing this graph requires deciding whether $n^2$ strings of
+length at most $n$ are in $A$, thus the construction is polynomial in
+$n$.  Now, deciding whether $y$ is in $A^*$ is equivalent to deciding
+$\encoding{G,(0,0),(n+1,n+1)}\in\setname{PATH}$, which is polynomial
+in the number of nodes in $G$, which is $O(n^2)$.  Thus $A^*\in$
+P.\qed
+\end{answer}
+
+\begin{exercise}[\sipser, 7.16 (Part a)]
+Let $G$ represent an undirected graph and let
+\begin{align*}
+\setname{SPATH}=\{\encoding{G,a,b,k}|~
+&G\text{ contains a simple path of}\\
+&\text{length at most $k$ from $a$ to $b$}\}.
+\end{align*}
+Show that $\setname{SPATH}\in$ P.
+\end{exercise}
+\begin{answer}
+$G$ can be converted to an equivalent directed graph $G'$ in
+polynomial time, by adding two directed edges for each undirected
+edge.  Then we can run the algorithm for \setname{PATH}, but only loop
+$k$ times.  If $G'$ contains a path from $a$ to $b$ of length at most
+$k$, the modified algorithm will accept, otherwise it will reject.
+The original algorithm runs in polynomial time, thus so does the
+modified one, and thus \setname{SPATH} $\in$ P.\qed
+\end{answer}
+
+\begin{exercise}[\sipser, 7.20]
+A \defin{permutation} on the set $\{1,\ldots,k\}$ is a one-to-one,
+onto function on this set.  When $p$ is a permutation, $p^t$ means the
+composition of $p$ with itself $t$ times.  Let
+\begin{align*}
+\setname{PERM-POWER}=\{\encoding{p,q,t}|~
+&p=q^t \text{ where $p$ and $q$ are permutations}\\
+&\text{on $\{1,\ldots,k\}$ and $t$ is a binary integer}\}.
+\end{align*}
+Show that $\setname{PERM-POWER}\in$ P.  (Note that the most obvious
+algorithm doesn't run in polynomial time.  Hint: First try it where
+$t$ is a power of 2).
+\end{exercise}
+\begin{answer}
+Assume that $p$ and $q$ are sequences of $k$ binary integers between 1
+to $k$; i.e.~$p=\encoding{p(1)p(2)\cdots p(k)}$.  Then
+$|p|=|q|=O(k\lg k)$.  To compute $q^t$, use the algorithm from
+Exercise~\ref{modexp} to compute $a^b$, with multiplication replaced
+by composition. Applying a permutation $q$ takes $O(|q|)$ time: it
+involves copying $k$ elements of length $O(\lg k)$.  Thus the total
+computation takes $O(|q||t|)$ time.  The length of the input is
+$n=O(|p|+|q|+|t|)$, thus this algorithm runs in $O(n^2)$ time, and
+$\setname{PERM-POWER}\in$ P.\qed
+\end{answer}
+\end{document}

@@ -1,0 +1,621 @@
+<HTML> <HEAD>
+<TITLE>Natural Language Processing For Multi-User Virtual Worlds</TITLE>
+<LINK REV="made" HREF="mailto:dougo@ccs.neu.edu">
+</HEAD>
+
+<BODY>
+<H1><HR>Natural Language Processing For Multi-User Virtual Worlds</H1>
+<H4>Doug Orleans, June 14, 1998</H4>
+<H4><a href="http://www.ccs.neu.edu/home/futrelle/teaching/com3411sp98/">COM3411</a>
+Final Project</H4>
+
+[June 18, 2000: This paper and all concepts and code it contains are
+hereby placed in the public domain.  You may use and modify them for
+any reason.  If you find value in this paper,
+<a href="../donate.html">a small donation</a> would be appreciated.]
+
+<H3>1. Background</h3>
+
+Text-based multi-user virtual world systems involve many natural
+language processing issues.  Many of the systems accept commands in a
+somewhat English-like form, and most output English text to describe
+the results of the commands.  Here's a sample transcript of an
+interaction with Waterpoint <a href="#Fox97">[Fox97]</a>, a MOO <a
+href="#Cur97">[Cur97]</a> <a href="#Fox98">[Fox98]</a> running JHCore
+<a href="#Fox98">[Fox98]</a> (user input is prefaced by ">"):
+
+<pre>
+  ><b>look</b>
+  The Gull Point Lighthouse
+  A basic circular room forms the main entrance and the base of the
+    light tower of the lighthouse.  Some supplies are on a shelf.  The
+    door out is closed. Dark stairs spiral down into the basement.  An
+    old narrow ladder leads upward.  A door to the east leads to the
+    house.  It is open.
+  You see a games chest here.
+  Gus is here, off in another world.
+  ><b>look at stairs</b>
+  The stairs lead down into the dark basement.
+  ><b>close house door</b>
+  You close the house door.
+  ><b>look at chest</b>
+  A wooden chest with a hinged door on top.
+  Contents:
+    an Auction game box
+    an Abalone board
+    a Rack-O! game box
+  ><b>get game from chest</b>
+  You haven't specified which "game" you mean.
+  ><b>get abalone from chest</b>
+  You remove an Abalone board from the games chest.
+  ><b>give abalone to gus</b>
+  You give the Abalone board to Gus.
+  ><b>look at gus</b>
+  Clearly, a warrior princess.  Gus wears scuba gear.
+  She is awake, but has been staring off into space for 8 hours.
+  Carrying:
+   an Abalone board                      
+  ><b>go east</b>
+  You open the house door.
+  The Hallway
+  Worn hardwood floor and a dim ceiling light adorns this hallway in
+    the old house attached to the lighthouse.  The door to the
+    lighthouse tower is open.
+</pre>
+
+Some parts of this text are fixed, such as the first two sentences of
+the lighthouse's description or the description of the stairs; other
+parts are generated, either to describe the underlying representation
+of the state of the world, such as the fact that the house door was
+open and that the games chest was in the room, or to describe an event
+that occurred, such as getting the Abalone board from the chest and
+giving it to Gus.  Much of the generated text is done in an ad-hoc
+way, however, usually involving pattern matching and replacement; for
+example, the chest has a "remove" message property of the form:
+
+<pre>
+    "%Nd %n:(removes) %di from %id."
+</pre>
+
+Here, "<code>%Nd</code>" is replaced by the (capitalized) definite name of the
+actor (in this case "You", since the actor is the user);
+"<code>%n:(removes)</code>" is replaced by the form of the verb "removes" that
+agrees with the actor (in this case "remove" to agree with "you");
+"<code>%di</code>" is replaced by the indefinite form of the direct object of the
+action (in this case the Abalone board); and "<code>%id</code>" is replaced by the
+definite form of the indirect object of the action (the chest itself).
+<p></p>
+Note that this message property could actually have been much simpler:
+<code><pre>
+    "You remove %di from the games chest."
+</pre></code>
+
+The reason for using "<code>%id</code>" instead of "the games chest"
+is for reuse: there is a generic container object that has this
+message property, and all container objects inherit the property from
+it (the MOO object system is object-based, rather than class-based).
+So the chest object need only have a name property set on itself, and
+this message (and others like it) will substitute that name into the
+appropriate place.  <p></p>
+
+The reason for using "<code>%Nd %n:(removes)</code>" instead of "You
+remove", however, is more essential: since this is multi-user system,
+different users see different text representations of the same events.
+Thus, the user connected to the Gus character saw
+
+<pre>
+  Ragnar removes an Abalone board from the games chest.
+  Ragnar gives the Abalone board to you.
+  Ragnar opens the house door.
+  Ragnar goes down the hallway to the east.
+</pre>
+The command parsing is done in a similarly ad-hoc pattern-matching
+fashion; all commands must be of one of the following forms:
+<pre>
+    &lt;verb&gt;
+    &lt;verb&gt; &lt;dobj&gt;
+    &lt;verb&gt; &lt;prep&gt;
+    &lt;verb&gt; &lt;prep&gt; &lt;iobj&gt;
+    &lt;verb&gt; &lt;dobj&gt; &lt;prep&gt; &lt;iobj&gt;
+</pre>
+
+where &lt;dobj&gt; and &lt;iobj&gt; must refer to objects in the room
+or otherwise accessible to the user's character, and &lt;prep&gt; must
+be one of 28 prepositions or prepositional phrases (such as "on top
+of"), grouped into 15 synonym sets; for example, "with" and "using"
+are considered synonyms.  Object methods (called "verbs" for obvious
+reasons) may have dobj, prep, and iobj arguments attached to them;
+dobj and iobj arguments may be "this", in which case the command must
+refer to the object in that position; "any", in which case the command
+may refer to any object in that position; or "none", in which case the
+command must not have a phrase in that position.  The prep argument
+may be "any", "none", or one of the 15 preposition synonym sets.  For
+example, the house door object has a method "close this none none";
+the games chest object has a method "get any from this"; the Abalone
+board object has a method "give this to any"; and the lighthouse room
+object has methods "look none none none" and "look none at any".  The
+command parser must decide from the command and the current state of
+the world which method to run with which arguments; as shown above
+with the command "get game from chest", if there is any ambiguity it
+prints an error message and aborts.
+
+<p></p>
+<h3>2. The Task</h3>
+
+As you can see, language processing in this system is rather
+complicated yet still fairly limited.  The parser cannot understand
+commands of the form "give Gus abalone board", let alone more complex
+constructions such as "make Gus give abalone board to me", "put
+abalone board in Auction game box in games chest", or "close games
+chest then get it and give it to Gus".  And while the text generation
+system tries to look nice by allowing you to specify whether a word
+should use a definite or indefinite article, the use of definite
+articles really ought to depend on the discourse situation.  For
+example, "Ragnar gives you the Abalone board" happened to be
+appropriate for Gus in this case, because she had just seen me remove
+it from the chest, but if I had walked into the room carrying it and
+given it to her, she should have seen "Ragnar gives you an Abalone
+board".  Ideally, it would have made use of anaphora, and just said
+"Ragnar removes an Abalone board from the games chest.  He gives it to
+you."
+<p></p>
+Clearly the system needs to be more oriented towards natural language
+processing and knowledge representation in order to implement these
+kinds of improvements.  As I was reading about unification grammars
+in <a href="#Nor92">[Nor92]</a>, I realized that since the Prolog-like
+deduction system was 
+inherently reversible, unification grammars could feasibly handle both
+command parsing and text generation.  So, as a proof of concept, I
+decided to implement a toy system involving a command parser and a
+text generator to describe events to multiple users, using Norvig's
+Common Lisp unification grammar system.  In particular, it should be
+able to take as input:
+<pre>
+    command: give the book to Mary
+    speaker: Fred
+</pre>
+and produce four descriptions of the resulting event:
+<pre>
+    (to Fred): You give the book to Mary.
+    (to Mary): Fred gives the book to you.
+    (to the book): Fred gives you to Mary.
+    (to everyone else watching): Fred gives the book to Mary.
+</pre>
+The description from the book's perspective is perhaps irrelevant, but
+in the general case, any participant is capable of observing the event
+and needs to be notified-- imagine instead Fred carrying Mary and
+giving her to John.  In any case, it's a simple matter for
+descriptions given to inanimate objects to just be ignored.
+
+<h3>3. The Implementation</h3>
+
+My first attempt tried to use the full English grammar of
+ <a href="#Nor92">[Nor92]</a> 
+chapter 21 to parse a command into a semantic data structure and then
+reverse the deduction to generate text.  However, I soon discovered
+that that grammar system was not, in fact, reversible.  In particular,
+the "and*" predicate was implemented with a function that assumed that
+its first argument was bound; also, several rules used the "if"
+predicate, which was not reversible in the "else" case because a
+test involving unbound variables was always considered true, and the cut
+prevented backtracking into the else clause.  The quantifier
+metavariable mechanism also seemed problematic, and not necessary for
+the task at hand.
+<p></p>
+So I moved back a few sections to 20.3, pages 694-5 in particular.
+That simple grammar and lexicon had most of what I needed, and the
+example even showed how it could be used to generate text, so I used
+that as my starting point instead.  Here is my final grammar (to run,
+replace "../paip" with the path to the paip source code directory
+relative to your current directory):
+<code><pre>
+  (unless (boundp 'unifgram-loaded)
+    (load "../paip/auxfns")
+    (requires "unifgram")
+    (setf unifgram-loaded t))
+  (clear-db)
+
+  ;; Declarative statement: Fred gives Mary the book.
+  (rule (Statement ?pred) -->
+	(NP ?agr ?subj)
+	(VP (finite ?agr) ?subj ?pred))
+
+  ;; Imperative command: Give Mary the book.  The missing subject is
+  ;; "I", i.e. the speaker.  This is a little different from commands in
+  ;; ordinary speech, where the subject is "you"; here, the command is
+  ;; given to one's virtual self.
+  (rule (Command ?pred) -->
+	(VP nonfinite speaker ?pred))
+
+  ;; Intransitive verb: [Fred] sleeps.
+  (rule (VP ?infl ?subj ?pred) -->
+	(Verb/intr ?infl (participant ?subj) ?pred))
+
+  ;; Transitive verb: [Fred] kisses Mary.
+  (rule (VP ?infl ?subj ?pred) -->
+	(Verb/tr ?infl (participant ?subj) ?pred (participant ?obj))
+	(NP ?any-agr ?obj))
+
+  ;; Ditransitive verb: [Fred] gives Mary the book.
+  (rule (VP ?infl ?subj ?pred) -->
+	(Verb/ditr ?infl (participant ?subj) ?pred
+		   (participant ?obj) (participant ?goal))
+	(NP ?any-other-agr ?goal)
+	(NP ?any-agr ?obj))
+
+  ;; Transitive verb with "to" complement: [Fred] gives the book to Mary.
+  (rule (VP ?infl ?subj ?pred) -->
+	(Verb/trans2 ?infl (participant ?subj) ?pred
+		     (participant ?obj) (participant ?goal))
+	(NP ?any-agr ?obj)
+	(:word to)
+	(NP ?any-other-agr ?goal))
+
+  ;; The verb "make", in the "compel" sense:
+  ;;   [Fred] makes Mary give the book to the boy.
+  (rule (VP ?infl ?subj ?pred) -->
+	;; Note that the object is a participant of the task, so it
+	;; doesn't need to also be a participant of the "make" event.
+	(Verb/make ?infl (participant ?subj) ?pred ?obj ?task)
+	(NP ?any-agr ?obj)
+	(VP nonfinite ?obj ?task)) 
+
+  (rule (Verb/intr nonfinite ?x (sleep ?x)) --> (:word sleep))
+  (rule (Verb/intr (finite ~3sg) ?x (sleep ?x)) --> (:word sleep))
+  (rule (Verb/intr (finite 3sg) ?x (sleep ?x)) --> (:word sleeps))
+
+  (rule (Verb/tr nonfinite ?x (kiss ?x ?y) ?y) --> (:word kiss))
+  (rule (Verb/tr (finite ~3sg) ?x (kiss ?x ?y) ?y) --> (:word kiss))
+  (rule (Verb/tr (finite 3sg) ?x (kiss ?x ?y) ?y) --> (:word kisses))
+
+  (rule (Verb/ditr nonfinite ?x (give ?x ?y ?z) ?y ?z) --> (:word give))
+  (rule (Verb/ditr (finite ~3sg) ?x (give ?x ?y ?z) ?y ?z) --> (:word give))
+  (rule (Verb/ditr (finite 3sg) ?x (give ?x ?y ?z) ?y ?z) --> (:word gives))
+
+  (rule (Verb/trans2 nonfinite ?x (give2 ?x ?y ?z) ?y ?z) --> (:word give))
+  (rule (Verb/trans2 (finite ~3sg) ?x (give2 ?x ?y ?z) ?y ?z) --> (:word give))
+  (rule (Verb/trans2 (finite 3sg) ?x (give2 ?x ?y ?z) ?y ?z) --> (:word gives))
+
+  (rule (Verb/make nonfinite ?x (make ?x ?y ?z) ?y ?z) --> (:word make))
+  (rule (Verb/make (finite ~3sg) ?x (make ?x ?y ?z) ?y ?z) --> (:word make))
+  (rule (Verb/make (finite 3sg) ?x (make ?x ?y ?z) ?y ?z) --> (:word makes))
+
+  (rule (NP ?agr ?sem) --> (Pron ?agr ?sem))
+  (rule (NP ?agr ?sem) --> (Name ?agr ?sem))
+  (rule (NP ?agr (?det-sem ?noun-sem)) -->
+	(Det ?agr ?det-sem)
+	(Noun ?agr ?noun-sem))
+
+  (rule (Pron ~3sg listener) --> (:word you))
+  (rule (Pron ~3sg speaker) --> (:word me))
+
+  (rule (Name 3sg (person Fred)) --> (:word Fred))
+  (rule (Name 3sg (person Mary))  --> (:word Mary))
+
+  (rule (Det ?any the)  --> (:word the))
+  (rule (Det 3sg a) --> (:word a))
+
+  (rule (Noun 3sg (young male human))           --> (:word boy))
+  (rule (Noun 3sg (young female human))         --> (:word girl))
+  (rule (Noun ~3sg (group (young male human)))   --> (:word boys))
+  (rule (Noun ~3sg (group (young female human))) --> (:word girls))
+
+  (rule (Noun 3sg (object ball))                   --> (:word ball))
+  (rule (Noun ~3sg (group (object ball)))          --> (:word balls))
+  (rule (Noun 3sg (object book))                   --> (:word book))
+  (rule (Noun ~3sg (group (object book)))          --> (:word books))
+</pre></code>
+The main additions I made are the distinction between finite and
+nonfinite verb inflections, as well as adding a VP rules for
+ditransitive, transitive+to, and the "make" form with a VP
+complement.  I also beefed up the semantic representation somewhat to
+account for participants in events; for example, in the event
+<pre>
+    make(Fred, Mary, give(Mary, the(book), the(boy)))
+</pre>
+it's not obvious how to determine which entities are the participants
+in the event-- it's not the leaves of the tree, because we want to
+use "the(book)" rather than just "book" (allowing the definite
+article to have some disambiguation meaning); also, "Mary" should only
+be considered as a participant once, not twice.  Instead this event is
+represented as
+<pre>
+    make(participant(Fred), Mary,
+      give(participant(Mary), participant(the(book)), participant(the(boy))))
+</pre>
+in order to explicitly flag which objects are the participants in the
+event.
+<p></p>
+Here is the code to process a command, given the above grammar:
+<code><pre>
+  ;; Process ?command, given by ?speaker, into ?desc as seen by
+  ;; ?observer.  The first two arguments are inputs, and the last two
+  ;; are outputs (although ?observer may also be input).  One
+  ;; description will be generated for each participant, as well as a
+  ;; generic third-party description.
+  (<- (process-command ?command ?speaker ?observer ?desc)
+      (parse-command ?command ?speaker ?event)
+      (describe-event ?event ?observer ?desc))
+
+  ;; Parse ?command given by ?speaker into a resultant ?event.
+  (<- (parse-command ?command ?speaker ?event)
+      (Command ?sem ?command ())
+      ;; Replace 'speaker with the actual speaker object.
+      (subst ?sem speaker ?speaker ?event))
+
+  ;; Describe ?event to ?observer as ?desc.
+  (<- (describe-event ?event ?observer ?desc)
+      ;; For each participant in the event, recast the event with it as
+      ;; the observer.
+      (or (and (participant ?event ?observer)
+	       ;; Replace the observer with 'listener.
+	       (subst ?event ?observer listener ?subjective-event))
+	  (and (or (not (participant ?event ?observer))
+		   (= ?observer third-party))
+	       ;; Third party description-- keep it neutral.
+	       (= ?event ?subjective-event)))
+      ;; Generate the description(s).
+      (Statement ?subjective-event ?desc ()))
+
+  ;; The participants of an event.  An event is a list of the form
+  ;; (?action . ?rest), where ?rest is a list of either subevents or
+  ;; (participant ?participant) lists.
+  (<- (participant (?action (participant ?participant) . ?rest) ?participant))
+  (<- (participant (?action ?subevent . ?rest) ?participant)
+      (participant ?subevent ?participant))
+  (<- (participant (?action ?other . ?rest) ?participant)
+      (participant (?action . ?rest) ?participant))
+
+  ;; Substitute (recursively) occurrences of ?x with ?y.  The cut is
+  ;; used to ensure that *all* occurrences are replaced, not each one
+  ;; separately.  e.g. (subst (a a) a x ?l) will bind ?l to (x x) once,
+  ;; rather than to (x x), (x a), (a x), and (a a) in turn.
+  (<- (subst ?x ?x ?y ?y))
+  (<- (subst (?car . ?cdr) ?x ?y (?subst-car . ?subst-cdr))
+      (subst ?car ?x ?y ?subst-car)
+      !
+      (subst ?cdr ?x ?y ?subst-cdr))
+  (<- (subst ?z ?x ?y ?z))
+
+  ;; Utility predicates, from PAIP.
+  (<- (member ?x (?x . ?l)))
+  (<- (member ?x (?y . ?l)) (member ?x ?l))
+
+  (<- (or ?a ?b) (call ?a))
+  (<- (or ?a ?b) (call ?b))
+
+  (<- (and ?a ?b) (call ?a) (call ?b))
+
+  ;; The front end.
+  (defparameter speaker '(person Fred))
+  (defmacro try (&rest cmd)
+    `(top-level-prove '((process-command ,cmd ,speaker ?who ?desc))))
+</pre></code>
+Here's the system in action:
+<pre>
+  USER(18): (try sleep)
+  ?WHO = (PERSON FRED)
+  ?DESC = (YOU SLEEP);
+
+  ?WHO = THIRD-PARTY
+  ?DESC = (FRED SLEEPS);
+
+  No.
+</pre>
+The symbol <code>'third-party</code> is meant to represent all observers not
+participating in the event; the observer may also be specified
+explicitly:
+<pre>
+  USER(19): USER(19): (?- (process-command (sleep) (person Fred) (person Mary) ?desc))
+  ?DESC = (FRED SLEEPS);
+  
+  No.
+</pre>
+More complex examples:
+<pre>
+  USER(20): USER(20): (try kiss Mary)
+  ?WHO = (PERSON FRED)
+  ?DESC = (YOU KISS MARY);
+
+  ?WHO = (PERSON MARY)
+  ?DESC = (FRED KISSES YOU);
+
+  ?WHO = THIRD-PARTY
+  ?DESC = (FRED KISSES MARY);
+
+  No.
+  USER(21): USER(21): (try give Mary the book)
+  ?WHO = (PERSON FRED)
+  ?DESC = (YOU GIVE MARY THE BOOK);
+
+  ?WHO = (THE (OBJECT BOOK))
+  ?DESC = (FRED GIVES MARY YOU);
+
+  ?WHO = (PERSON MARY)
+  ?DESC = (FRED GIVES YOU THE BOOK);
+
+  ?WHO = THIRD-PARTY
+  ?DESC = (FRED GIVES MARY THE BOOK);
+
+  No.
+  USER(22): USER(22): (try give the book to Mary)
+  ?WHO = (PERSON FRED)
+  ?DESC = (YOU GIVE THE BOOK TO MARY);
+
+  ?WHO = (THE (OBJECT BOOK))
+  ?DESC = (FRED GIVES YOU TO MARY);
+
+  ?WHO = (PERSON MARY)
+  ?DESC = (FRED GIVES THE BOOK TO YOU);
+
+  ?WHO = THIRD-PARTY
+  ?DESC = (FRED GIVES THE BOOK TO MARY);
+
+  No.
+  USER(23): USER(23): (try make Mary give the book to the boy)
+  ?WHO = (PERSON FRED)
+  ?DESC = (YOU MAKE MARY GIVE THE BOOK TO THE BOY);
+
+  ?WHO = (PERSON MARY)
+  ?DESC = (FRED MAKES YOU GIVE THE BOOK TO THE BOY);
+
+  ?WHO = (THE (OBJECT BOOK))
+  ?DESC = (FRED MAKES MARY GIVE YOU TO THE BOY);
+
+  ?WHO = (THE (YOUNG MALE HUMAN))
+  ?DESC = (FRED MAKES MARY GIVE THE BOOK TO YOU);
+
+  ?WHO = THIRD-PARTY
+  ?DESC = (FRED MAKES MARY GIVE THE BOOK TO THE BOY);
+
+  No.
+</pre>
+<h3>4. Other Work</h3>
+
+The idea of using unification grammars for text generation is not new;
+in fact, one of the most popular text generation systems, FUF/SURGE
+<a href="#Elh97">[Elh97]</a>, is based on previous work in syntactic realization with FUGs
+(functional unification grammars).  FUF is a language for writing
+unification grammars, while SURGE is a large English grammar written
+in FUF.  While the DCG (definite clause grammar) implementation in
+<a href="#Nor92">[Nor92]</a> uses conjunctions of quantified first-order terms as its
+semantic representation, FUF uses unordered sets of features, or
+attribute-value pairs; these sets can be viewed as constraints.  The
+input to the FUF/SURGE system is a set of constraints on what is to be
+said, which is unified with the grammar, to determine how it is to be
+said; this unified feature set is then sent to a linearizer which
+produces the English text.  One of the main emphases of FUF, as
+described in <a href="#Elh93">[Elh93]</a>, is the ability to tailor the output to the
+hearer's knowledge and desire state.  While this is similar to the
+multi-user virtual world situation, where we want to tailor the output
+to the hearer's knowledge state and discourse history, FUF is more
+concerned with resolving lexical choice directed by the speaker's
+argumentative intent, i.e. choosing words that are more likely to
+persuade the hearer.  It does appear to take discourse history into
+account, though, so it is probably a superset of the desired
+functionality.
+<p></p>
+Another approach to text generation system is taken in RealPro
+<a href="#Lav97">[Lav97]</a>.  Unlike FUF, RealPro performs no lexical choice; its input is
+a "Deep Syntactic Structure", or DSyntS, which is a fully lexicalized
+dependency syntax tree, i.e. a tree of words whose arcs indicate
+syntactic roles (like "subject") rather than semantic roles (like
+"agent").  Rather than using unification for linearizing, it performs
+more straightforward tree-structure modification, using a cascading
+series of independent modules.  The system was designed to be small,
+fast, and portable (available in C++ and Java), rather than having the
+broad coverage and complex text planning features of FUF/SURGE;
+however, its features do not at all address our task of tailoring text
+output to the hearer's discourse state, so would only solve a small
+part of our problem.
+<p></p>
+A third approach is taken by PENMAN and NIGEL (summarized in <a href="#Elh93">[Elh93]</a>;
+a successor, KOMET-PENMAN(ML), is briefly described in <a
+href="#Bat94">[Bat94]</a>). 
+PENMAN traverses a systemic grammar (basically an annotated DAG),
+choosing features for each choice point and realizing by side-effect
+the detailed linguistic structure, which is then passed to NIGEL to be
+realized.  The choices made encompass both discourse planning and
+lexical choice, and can be the result of querying a knowledge base or
+interacting with a user who is guiding the text generation manually.
+This system can be thought of as the function-oriented dual to FUF's
+structure-oriented system; traversal of the systemic grammar is done
+procedurally, with input from the choice/query mechanism, while FUF's
+search is implicit in unification and directed by the feature
+structures and the declarative grammar.
+
+<h3>5. Conclusion And Future Directions</h3>
+
+As a toy example, this project was a sucessful proof of concept that
+both command parsing and text generation for a multi-user virtual
+world can be handled using a unification grammar.  However, there are
+a number of improvements to be made, both small scale and large,
+before this type of system could replace what is currently being
+used.
+<p></p>
+One obvious difficulty with the current system is the need to add new
+rules for every verb and object.  A more flexible lexicon system such
+as the one described in sections 20.11 and 20.12 in [Nor92] would come
+in handy, or perhaps a simpler system that used the local
+environment of methods and objects as the lexicon.
+<p></p>
+Another needed feature is pronouns, including reflexives (yourself,
+himself, herself).  Currently, if an event involves the same person as
+subject and direct or indirect object, it looks a little funny:
+<pre>
+  USER(25): USER(25): (try kiss me)
+  ?WHO = (PERSON FRED)
+  ?DESC = (YOU KISS YOU);
+
+  ?WHO = (PERSON FRED)
+  ?DESC = (YOU KISS YOU);
+
+  ?WHO = THIRD-PARTY
+  ?DESC = (FRED KISSES FRED);
+
+  No.
+</pre>
+Pronouns are also needed in sentences like "Fred makes you give Fred
+the book", as well as cross-sentence anaphora in more static
+texts such as room descriptions.  The problem of definite reference
+also needs to be addressed, both in parsing and in generation.
+<p></p>
+On a larger scale, it might be possible to use FUF and SURGE directly,
+in which case you get most of these kinds of things for free.
+However, such a large, general-purpose system might be overkill, and
+performance might become a problem.  If nothing else, it would serve
+as a useful experiment and a source of ideas for how to better
+represent semantic and discourse knowledge in the current system.
+
+<h3>6. Bibliography</h3>
+    <dl>
+<dt><a name="Bat94">[Bat94]</a>
+<dd> Bateman, John A. (1994?), "Using text structure and text
+    planning to guide text summarization"
+    <a href="http://www.fh-hannover.de/ik/Dagstuhl/Abstract/Abstracts/Bateman/Bateman.html">http://www.fh-hannover.de/ik/Dagstuhl/Abstract/Abstracts/Bateman/Bateman.html</a>
+
+<dt><a name="Cur97">[Cur97]</a>
+<dd> Curtis, Pavel, et al (1997) "LambdaMOO Programmer's Manual"
+    <a href="ftp://ftp.placeware.com/pub/MOO/html/ProgrammersManual_toc.html">ftp://ftp.placeware.com/pub/MOO/html/ProgrammersManual_toc.html</a>
+
+<dt><a name="Elh93">[Elh93]</a>
+<dd> Elhadad, Michael (1993) "Using argumentation to control
+    lexical choice: a unification-based implementation", PhD thesis,
+    Columbia University, Dept of Computer Science
+    <a href="ftp://ftp.cs.bgu.ac.il/pub/siggen/elhadad-phd.ps.gz">ftp://ftp.cs.bgu.ac.il/pub/siggen/elhadad-phd.ps.gz</a>
+
+<dt><a name="Elh97">[Elh97]</a>
+<dd> Elhadad, Michael (1997) "FUF and SURGE"
+    <a href="http://www.cs.bgu.ac.il/research/projects/surge/">http://www.cs.bgu.ac.il/research/projects/surge/</a>
+
+<dt><a name="Fox97">[Fox97]</a>
+<dd> Fox, Ken (1997) "Waterpoint", <a href="http://waterpoint.moo.mud.org/">http://waterpoint.moo.mud.org/</a>
+
+<dt><a name="Fox98">[Fox98]</a>
+<dd> Fox, Ken (1998) "JHCore: A core database for the LambdaMOO MUD
+    server", <a href="http://www2.mars.org/~fox/jhcore/">http://www2.mars.org/~fox/jhcore/</a>
+
+<dt><a name="Fox98">[Fox98]</a>
+<dd> Fox, Ken, et al (1998) "MOO-Cows FAQ", <a href="http://www.moo.mud.org/moo-faq/">http://www.moo.mud.org/moo-faq/</a>
+
+<dt><a name="Lav97">[Lav97]</a>
+<dd> Lavoie, Benoit; and Rambow, Owen (1997) "A Fast and Portable
+    Realizer for Text Generation Systems", Proceedings of the Fifth
+    Conference on Applied Natural Language Processing, Washington, DC
+    <a href="http://www.cogentex.com/papers/realpro_anlp97.ps">http://www.cogentex.com/papers/realpro_anlp97.ps</a>
+
+      <dt><a name="Nor92">[Nor92]</a>
+      <dd>Norvig, Peter (1992) <CITE>Paradigms of Artificial Intelligence
+    Programming: Case Studies in Common Lisp</CITE>, Morgan Kaufmann
+    <a href="http://www.norvig.com/paip/">http://www.norvig.com/paip/</a>
+    </dl>
+
+
+<HR>
+<ADDRESS><A HREF="../VitalInformation.html">Doug Orleans</A>
+<A HREF="mailto:dougo@ccs.neu.edu">&lt;dougo@ccs.neu.edu&gt;</A>
+</ADDRESS>
+<!-- hhmts start -->
+Last modified: Sun Jun 18 22:01:22 EDT 2000
+<!-- hhmts end -->
+</BODY> </HTML>

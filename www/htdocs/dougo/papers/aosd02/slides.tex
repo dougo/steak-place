@@ -1,0 +1,279 @@
+\documentclass[landscape]{slides}
+\special{papersize=11in,8.5in}
+\usepackage{amsmath}
+
+\title{Incremental Programming with \\ Extensible Decisions}
+\author{Doug Orleans \\
+College of Computer Science\\
+Northeastern University \\
+\texttt{dougo@ccs.neu.edu}
+}
+\begin{document}
+
+\maketitle
+
+\sloppy % don't try so hard to justify the lines
+
+\newcommand{\defn}[1]{\textbf{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\slidetitle}[1]{\begin{center}\textbf{#1}\end{center}}
+
+\begin{slide}
+  \slidetitle{Incremental Programming}
+
+  ``The construction of new program components by specifying how they
+  differ from existing components.'' [Cook \& Palsberg, OOPSLA 1989]
+
+  A language that supports incremental programming:
+  \begin{itemize}
+    \item allows good separation of concerns
+    \item reduces code duplication
+    \item improves extensibility and reuse
+  \end{itemize}
+\end{slide}
+
+\begin{slide}
+  \slidetitle{Extensible Decisions}
+
+  In OOP, whenever a message is sent, a decision occurs (dynamic
+  dispatch), but the branches of the decision are specified
+  separately: methods that correspond to the message signature.
+
+  Incremental programming is supported because methods can override
+  each other, but only through inheritance.  Different branches of an
+  extensible decision must involve different classes.
+\end{slide}
+
+\begin{slide}
+  \slidetitle{Design Patterns}
+
+  Many behavioral design patterns [Gamma et al, 1994] are essentially
+  workarounds for this constraint of OOP.  For example, the State
+  pattern implements state-based dispatch with one class per state.
+
+  But\ldots
+  \begin{itemize}
+    \item Objects must delegate all state-dependent messages to their
+          state objects: runtime overhead and a coding burden.
+    \item The state objects must be manually kept up to date when the
+          state condition changes: no implicit states.
+  \end{itemize}
+\end{slide}
+
+\begin{slide}
+  \slidetitle{A Different Solution}
+
+  Change the language to make programs easier to express instead of
+  changing your program to fit the constraints of the language.
+
+  Two approaches to allowing incremental programming without requiring
+  inheritance:
+  \begin{itemize}
+    \item Aspect-Oriented Programming (AOP) [Kiczales et al, 1997]
+    \item Predicate Dispatching [Ernst, Kaplan, \& Chambers, ECOOP 1998.]
+  \end{itemize}
+\end{slide}
+
+\begin{slide}
+  \slidetitle{Aspect-Oriented Programming (AspectJ)}
+
+  Incremental programming for crosscutting concerns: an aspect can
+  override behavior in other classes without using inheritance.
+
+  \begin{itemize}
+    \item Each piece of advice has a \defn{pointcut} which specifies
+          when the advice is applicable to a message send.
+    \item Pointcuts can be arbitrary boolean expressions.
+  \end{itemize}
+\end{slide}
+
+\begin{slide}
+  \slidetitle{Predicate Dispatching}
+  
+  A form of dynamic dispatch that unifies and generalizes the dispatch
+  mechanisms found in many programming languages, including OO single
+  and multiple dispatch.
+
+  \begin{itemize}
+    \item Each method implementation has a \defn{predicate} which
+          specifies when the method is applicable to a message send.
+    \item Predicates can be arbitrary boolean expressions.
+  \end{itemize}
+\end{slide}
+
+\begin{slide}
+  \slidetitle{Advantages of AspectJ Over Predicate Dispatching}
+
+  \begin{itemize}
+    \item Pointcuts can access more information about a message send
+          than just the receiver and arguments:
+    \begin{itemize}
+      \item message signature
+      \item control flow history
+      \item location of message send code
+    \end{itemize}
+    \item Method combination: \code{before}/\code{after} advice,
+          \code{proceed()} in \code{around} advice
+  \end{itemize}
+\end{slide}
+
+\begin{slide}
+  \slidetitle{Advantages of Predicate Dispatching Over AspectJ}
+
+  \begin{itemize}
+    \item More elegant model, natural generalization of OO dispatch.
+          Not tacked onto the side of Java.
+    \item Method overriding is based on logical implication:
+    \begin{itemize}    
+      \item A method with predicate $p_1$ overrides a method with
+            predicate $p_2$ if $p_2$ is true in all cases where $p_1$ is 
+            true.
+      \item Example: $\operatorname{is-a}(x,A) \implies
+            \operatorname{is-a}(x,B)$ (where $A$ is a subclass of $B$)
+      \item I.e., subclass methods override superclass methods, just
+            like in OOP.
+    \end{itemize}
+  \end{itemize}
+\end{slide}
+
+\begin{slide}
+  \slidetitle{Fred}
+
+  A new programming language that takes the best from both worlds.
+
+  Fred's dispatch mechanism unifies those of AOP and OOP languages,
+  and provides uniform support for incremental programming whether the
+  concerns implemented by the components are crosscutting or not.
+
+  \begin{itemize}
+    \item Behavior is specified as \defn{branches}, each of which has
+          a condition predicate over \defn{decision points}.
+    \item Decision points capture message signature, message
+          arguments, source branch, previous decision point.
+  \end{itemize}
+\end{slide}
+
+\begin{slide}
+  \slidetitle{Fred (continued)}
+
+  \begin{itemize}
+    \item Overriding is based on logical implication of predicates,
+          but \code{around} branches always override plain branches.
+    \item \code{follow-next-branch} allows method combination.
+    \item Syntactic sugar allows more declarative syntax for common
+          kinds of branches, to look more like multimethods or
+          advice.
+    \item Prototype implementation is embedded in MzScheme.
+  \end{itemize}
+\end{slide}
+
+\begin{slide}
+  \slidetitle{OOP in Fred (1/3)}
+
+  \begin{verbatim}
+(define-class person () (fname lname))
+(define-msg full-name)
+(define-branch
+  ;; condition predicate:
+  (lambda (dp) (and (eq? (dp-msg dp) full-name)
+                    (= (length (dp-args dp)) 1)
+                    (is-a? (car (dp-args dp)) person)))
+  ;; body:
+  (lambda (dp) (let ((this (car (dp-args dp))))
+                 (string-append (get-fname this) " "
+                                (get-lname this)))))\end{verbatim}
+\end{slide}
+
+\begin{slide}
+  \slidetitle{OOP in Fred (2/3)}
+
+With sugar:
+\begin{verbatim}
+(define-branch (&& (call full-name) (args person))
+  (with-args (this)
+    (string-append (get-fname this) " " (get-lname this))))
+\end{verbatim}
+
+More sugar:
+\begin{verbatim}
+(define-method full-name (this) & (is-a? this person)
+    (string-append (get-fname this) " " (get-lname this)))
+\end{verbatim}
+
+Still more sugar:
+\begin{verbatim}
+(define-method full-name ((person this))
+    (string-append (get-fname this) " " (get-lname this)))
+\end{verbatim}
+\end{slide}
+
+\begin{slide}
+  \slidetitle{OOP in Fred (3/3)}
+  \begin{verbatim}
+(define-class knight (person) ())
+(define-method full-name ((knight this))
+  (string-append "Sir " (follow-next-branch)))
+\end{verbatim}
+
+Example output:
+\begin{verbatim}
+> (define gandalf (make knight "Ian" "McKellen"))
+> (full-name gandalf)
+"Sir Ian McKellen"
+\end{verbatim}
+\end{slide}
+
+\begin{slide}
+\slidetitle{AOP in Fred (1/2)}
+\begin{verbatim}
+(define-around
+  (lambda (dp) (is-a? (car (dp-args dp)) person))
+  (with-msg (msg)
+    (printf "Received message ~a.~n" (msg-name msg))
+    (follow-next-branch)))
+\end{verbatim}
+
+With sugar:
+\begin{verbatim}
+(define-before (args person ..)
+  (with-msg (msg)
+    (printf "Received message ~a.~n" (msg-name msg))))
+\end{verbatim}
+\end{slide}
+
+\begin{slide}
+\slidetitle{AOP in Fred (2/2)}
+\begin{verbatim}
+(define-before (&& (args person ..) (! in-full-name-cflow?))
+  (with-msg-and-args (msg this . rest)
+    (printf "~a received message ~a.~n"
+            (full-name this) (msg-name msg))))
+
+(define (in-full-name-cflow? dp)
+  (let ((prev (dp-previous dp)))
+    (and prev (or (eq? (dp-msg prev) full-name)
+                  (in-full-name-cflow? prev)))))
+\end{verbatim}
+With sugar:
+\begin{verbatim}
+(define in-full-name-cflow? (cflowbelow (call full-name)))
+\end{verbatim}
+\end{slide}
+
+\begin{slide}
+  \slidetitle{Future Work}
+
+  \begin{itemize}
+    \item Compare with other AOP models (composition filters, hyperslices,
+          mixin layers, aspectual collaborations, QoS regions)
+    \item Variable binding in predicates (like AspectJ's context
+          exposure in pointcuts)
+    \item Customized branch overriding relationships
+    \item Extensible predicates
+    \item Modularization, using MzScheme's units [Flatt \& Felleisen,
+          PLDI 1998]
+  \end{itemize}
+\end{slide}
+
+\end{document}
+

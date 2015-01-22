@@ -1,0 +1,114 @@
+This is TeX, Version 3.14159 (C version 6.1) (format=latex 96.10.15)  15 AUG 2000 15:09
+**./images.tex
+(images.tex
+LaTeX2e <1996/06/01>
+Hyphenation patterns for english, german, loaded.
+
+(/share/unix/packages/TeX/texmf/tex/latex/base/article.cls
+Document Class: article 1996/05/26 v1.3r Standard LaTeX document class
+(/share/unix/packages/TeX/texmf/tex/latex/base/size10.clo
+File: size10.clo 1996/05/26 v1.3r Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+) (/share/unix/packages/TeX/texmf/tex/latex/base/ifthen.sty
+Package: ifthen 1996/03/22 v1.0l Standard LaTeX ifthen package (DPC)
+) (/share/unix/packages/TeX/lib/inputs/html.sty) (/share/unix/packages/TeX/texm
+f/tex/latex/graphics/color.sty
+Package: color 1999/02/16 v1.0i Standard LaTeX Color (DPC)
+(/share/unix/packages/TeX/texmf/tex/latex/config/color.cfg)
+Package color Info: Driver file: dvips.def on input line 125.
+(/share/unix/packages/TeX/texmf/tex/latex/graphics/dvips.def
+File: dvips.def 1999/02/16 v3.0i Driver-dependant file (DPC,SPQR)
+) (/share/unix/packages/TeX/texmf/tex/latex/graphics/dvipsnam.def
+File: dvipsnam.def 1999/02/16 v3.0i Driver-dependant file (DPC,SPQR)
+)) (/share/unix/packages/TeX/texmf/tex/latex/base/inputenc.sty beta test versio
+n
+Package: inputenc 1996/05/10 v0.9r Input encoding file (test version: liable to
+ change)
+(/share/unix/packages/TeX/texmf/tex/latex/base/latin1.def
+File: latin1.def 1996/05/10 v0.9r Input encoding file (test version: liable to 
+change)
+))
+\sizebox=\box26
+\lthtmlwrite=\write3
+(images.aux)
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 131.
+LaTeX Font Info:    ... okay on input line 131.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 131.
+LaTeX Font Info:    ... okay on input line 131.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 131.
+LaTeX Font Info:    ... okay on input line 131.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 131.
+LaTeX Font Info:    ... okay on input line 131.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 131.
+LaTeX Font Info:    ... okay on input line 131.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 131.
+LaTeX Font Info:    ... okay on input line 131.
+
+latex2htmlLength hsize=349.0pt
+
+latex2htmlLength vsize=705.26999pt
+
+latex2htmlLength hoffset=0.0pt
+
+latex2htmlLength voffset=0.0pt
+
+latex2htmlLength topmargin=0.0pt
+
+latex2htmlLength topskip=0.00003pt
+
+latex2htmlLength headheight=0.0pt
+
+latex2htmlLength headsep=0.0pt
+
+latex2htmlLength parskip=0.0pt plus 1.0pt
+
+latex2htmlLength oddsidemargin=62.0pt
+
+latex2htmlLength evensidemargin=62.0pt
+
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 160.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 160.
+l2hSize :tex2html_wrap_inline538:6.95831pt::6.95831pt::16.05563pt.
+[1
+
+
+
+]
+l2hSize :figure250:202.0pt::0.0pt::305.36032pt.
+[2
+
+
+]
+l2hSize :figure313:70.0pt::0.0pt::157.61096pt.
+[3
+
+
+]
+l2hSize :tex2html_wrap_inline752:6.95831pt::6.95831pt::8.27783pt.
+[4
+
+
+] (images.aux) ) 
+Here is how much of TeX's memory you used:
+ 686 strings out of 10910
+ 8248 string characters out of 72011
+ 52566 words of memory out of 262141
+ 3594 multiletter control sequences out of 9500
+ 3808 words of font info for 15 fonts, out of 150000 for 255
+ 14 hyphenation exceptions out of 607
+ 23i,9n,19p,276b,402s stack positions out of 300i,40n,60p,3000b,4000s
+
+Output written on images.dvi (4 pages, 2688 bytes).

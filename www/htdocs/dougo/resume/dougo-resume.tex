@@ -1,0 +1,200 @@
+% Compile with this shell command:
+% latex dougo-resume && dvipdfm dougo-resume && tex2page dougo-resume
+
+\documentclass{article}
+\usepackage{times}
+\usepackage{tex2page}
+
+\setlength{\textheight}{9in}
+\setlength{\topmargin}{0in}
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0in}
+\setlength{\footskip}{0in}
+
+\setlength{\textwidth}{6.5in}
+\setlength{\oddsidemargin}{0in}
+\setlength{\evensidemargin}{0in}
+
+\pagestyle{empty}
+
+\begin{document}
+
+\def\TZPtitle{Doug Orleans}
+
+\htmlonly
+{\small [This document is also available as \urlh{dougo-resume.pdf}{PDF},
+\urlh{dougo-resume.dvi}{DVI}, and \urlh{dougo-resume.tex}{\LaTeX}.]}
+\endhtmlonly
+
+\begin{center}
+{\urlh{http://steak.place.org/dougo/}{\LARGE \textbf{Doug Orleans}}} \\
+{\large 882 Broadway \#3R \\ Somerville, MA 02144} \\
+dougorleans@gmail.com \\
+(978) 987-5084
+\texonly \small
+\\ http://steak.place.org/dougo/resume/
+\\ http://www.linkedin.com/in/dougo
+\\ http://www.ohloh.net/accounts/dougo
+\endtexonly
+\htmlonly
+\\ \urlh{http://www.linkedin.com/in/dougo}{LinkedIn}
+\urlh{http://www.ohloh.net/accounts/dougo}{Ohloh}
+\endhtmlonly
+\end{center}
+
+\section*{Employment}
+
+\begin{description}
+\item[Dec. 2011--present]
+{\large \urlh{http://mcna.net/}{MCNA Dental}}, Fort Lauderdale, FL \\
+Developed and maintained various features of DentalTrac, a Ruby on
+Rails web application used by the entire company for managing dental
+insurance claims, subscribers, and providers.  Projects worked on:
+\begin{itemize}
+  \item Building a Rails front-end for a Lisp/PostgreSQL-based
+    workflow/business-process management system.
+  \item Building a case management tool for the fraud, waste, and
+    abuse department.
+  \item Complying with state regulations for new dental plans (Texas
+    CHIP and Medicaid).
+  \item Migrating the database from MySQL to PostgreSQL and updating
+    db-specific dependencies in the code.
+  \item Upgrading the app to use Rails 3.1.1 (from 0.12) and modern
+    Rails coding practices.
+  \item Generally improving reliability, usability, and performance.
+\end{itemize}
+
+\item[Jun. 2009--Dec. 2011]
+{\large \urlh{http://appleseed-sc.com/}{Appleseed Software Consulting}},
+Somerville, MA \\
+As an offsite contract consultant, implemented web applications for
+clients using the Catalyst framework in Perl, along with MySQL,
+Template Toolkit, FormFu, and jQuery.
+\begin{itemize}
+\item For \urlh{http://dca.tufts.edu/}{Tufts University Digital
+  Collections \& Archives}, helped design and implement
+  \urlh{https://github.com/dcatufts/sabt}{TAPER}, a web tool for
+  managing XML accession requests, and CIDER, a web tool for managing
+  hierarchical collections.
+\item For \urlh{http://www.mainehistory.org/}{Maine Historical
+  Society}, helped implement various pages on their public-facing
+  website for displaying and managing databases of archival records.
+\item For various other clients, helped implement web-based
+  applications for managing databases.
+\end{itemize}
+
+\item[Jul. 2010--Sep. 2010]
+{\large \urlh{http://aceditions.com/}{Art+Culture Editions}},
+New York, NY \\
+As an offsite contract consultant, helped implement an e-commerce web
+application with Ruby on Rails and Spree.
+
+\item[Jan. 2005--Nov. 2007]
+{\large Gensym Corporation}, Burlington, MA \\
+Member of the \urlh{http://www.gensym.com/?p=what_it_is_g2}{G2}
+Core development team.  Maintained and added features to a
+20-year-old codebase of over one million lines of Common Lisp.
+Designed and implemented client and server libraries for HTTP, SOAP,
+WSDL.  Helped implement the G2 Graphical Language, based on WS-BPEL.
+
+\item[1996--2003] 
+{\large Research assistant, Northeastern University}, Boston, MA \\
+Member of Dr. Karl Lieberherr's
+\urlh{http://www.ccs.neu.edu/research/demeter/}{Demeter} research
+team.  Designed, implemented, and maintained DemeterJ, an extension to
+the Java language for adaptive programming (an early form of
+aspect-oriented programming).  Later, took over development of
+\urlh{../papers/dj/}{DJ} (Demeter in pure Java) and
+\urlh{http://sourceforge.net/projects/daj/}{DAJ} (Demeter for AspectJ)
+from MS student projects.
+
+\item[1992--1995]
+{\large Software developer, Pure Software}, Sunnyvale, CA \\
+Member of the development team for
+\urlh{http://www.ibm.com/software/awdtools/purify/unix/}{Purify}, a
+memory corruption and leak detection tool for C/C++ programs in
+Solaris.  Worked on the reporting back-end, GUI, and common library
+code for Purify, PureLink, and PureCoverage products.
+\end{description}
+
+\section*{Education}
+
+\begin{description}
+\item[1995--2005] 
+{\large Ph.D. Computer Science, Northeastern University}, Boston, MA \\
+Designed and implemented the
+\urlh{http://socrates-lang.sf.net/}{Socrates} programming language
+(embedded in PLT Scheme), which unifies and generalizes
+object-oriented and aspect-oriented programming language mechanisms
+for separation of concerns using predicate dispatching and open
+classes.
+
+\item[1988--1992]
+{\large B.A. Computer Science, University of California}, Berkeley, CA \\
+Member of the
+\urlh{http://www.xcf.berkeley.edu/}{eXperimental Computing Facility (XCF)}.
+Re-implemented the
+\urlh{http://www.cs.berkeley.edu/~bh/}{Berkeley Logo}
+interpreter as an
+\urlh{http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-34.html}{explicit-control evaluator}
+rather than a
+\urlh{http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-26.html}{meta-circular evaluator}.
+\end{description}
+
+%% The ``Skills'' section seems kind of random.  Most of them appear in the
+%% specific descriptions above; the others should maybe be tied to
+%% specific project descriptions?  Also, some distinction could be
+%% made between things I am very comfortable with and things I've used
+%% a few times.
+
+%% \section*{Skills}
+
+%% \begin{description}
+%% \item[Languages] PLT Scheme, Common Lisp, Java, AspectJ, ECMAScript,
+%%   Python, C++/STL, MOO
+%% \item[Development tools] Emacs, Subversion, GNUmake, Ant, tcsh, bash
+%% \item[Operating systems] Ubuntu Linux, Solaris, Windows XP
+%% \item[Technologies] DOM, Google App Engine, Jabber-RPC, Java Swing,
+%%   JHCore, JUnit, MusicBrainz, OpenID, PostgreSQL, Prototype.js, RDF, SOAP,
+%%   SVG, Volity, WS-BPEL, WSDL, XML Schemas, XMPP, XPath
+%% \end{description}
+
+\section*{Other Projects}
+
+\begin{description}
+\item[2011]
+{\large \urlh{http://ifcomp.org/comp11/play.php?id=186}{Last Day of Summer}} \\
+Designed, wrote, and implemented an interactive fiction game for the
+\urlh{http://ifcomp.org/comp11/}{2011 IF Competition} using
+\urlh{http://inform7.com/}{Inform 7}.  It placed 25th out of 38
+entries---not bad for a first-timer competing against many experienced
+IF authors!  It was part of a four-game metapuzzle that won the
+\urlh{http://ifwiki.org/index.php/XYZZY_Awards_2011}{XYZZY Award} for
+Best Individual Puzzle.
+\end{description}
+
+\begin{description}
+\item[2009--2010]
+{\large \urlh{http://chugchanga-poll.appspot.com/}{Chugchanga-L Poll}} \\
+Designed and implemented an Ajax application in Python, hosted on
+\urlh{http://appengine.google.com/}{Google App Engine}, to allow
+members of Chugchanga-L (a music discussion mailing list) to vote for
+their favorite music releases of the year.  It uses the
+\urlh{http://musicbrainz.org}{MusicBrainz} XML web service to
+canonicalize votes by matching them to releases in the MusicBrainz
+database.
+\end{description}
+
+\begin{description}
+\item[2006--2010]
+{\large \urlh{http://volity.net/}{Volity Games Network}} \\
+Helped implement the Volity platform for multi-player online board
+games.  Implemented a Jabber-RPC library in Java, and helped develop
+Gamut, the standalone SVG client Java application.  Implemented a
+server (``parlor'') for a board game of my own design,
+\urlh{http://www.icehousegames.org/wiki/index.php?title=Pylon}{Pylon},
+in Python.  Took over maintenance and development of the Volity web
+client.
+\end{description}
+
+\end{document}

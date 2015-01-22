@@ -1,0 +1,127 @@
+First reviewer:
+> However, I'm not sure that decision points can model any types of AOP
+> systems; There might be AOP systems based on concepts different from
+> ones used by AspectJ.
+> 
+> This paper should present how basic operators of AspectJ (or another
+> AOP system) are represented with decision points. Since the discussion
+> in the paper is shallow, I was not perfectly convinced that the
+> proposed mechanism can be the fundamental of AOP systems.
+
+1a. Need to show the mapping from AspectJ, composition filters, and
+    maybe one other AOP system (HyperJ? ACs? Rondo?) to Fred.
+
+> Is define-around the only mechanism for controlling the order of
+> method combination? Does it cover all realistic needs? I'm interested
+> in higher- order around , with which the users can change the order of
+> method combination on some conditions.
+
+1b. Discuss more general method combination, meta-programming.
+
+Second reviewer says:
+
+> The biggest concern that I have with the paper (when asking myself the
+> question whether or not to recommend accepting it) is that it is indeed
+> *very* close to predicate dispatch. At first sight there are almost no
+> differences except for the mechanism for defining advice (i.e.
+> define-around). This seems like a very small increment.
+> 
+> So, while I like the paper and think it is of interest, I am reluctant to
+> *strongly* recommend it because of the very small increment it makes to
+> previous work.
+
+2a. Emphasize the things that Fred adds: predicates can access the
+    message, the previous decision point, and the enclosing branch
+    (with room for more additions by extending the decision point
+    structure); method combination; lexical scoping?  Perhaps also
+    emphasize future work: modules, better implication detection
+
+> Some punctual (minor) comments:
+> 
+> - it may be better to address related work (specifically predicate
+> dispatch) early in the paper and make it clear where you are coming from.
+
+2b. Need to be more up-front about connection to predicate dispatch,
+    perhaps present it first before talking about Fred.
+
+> - In related work, the paper mentions that Fred also generalizes PD in the
+> sense that decision points include information about calling context. This
+> is interesting (e.g. I can see this is potentially useful for implementing
+> cflow-like functionality). But other than a brief mention in the related
+> work section, there is nothing about this in the paper anywhere.
+
+2c. Show examples of cflow etc.  Jumping aspects problem.
+
+> - on page 3 it is explained how "implication" is used to define what is
+> more specific (for the purpose of dispatch). At this point I couldn't help
+> but wonder about how in practice the system can decide whether or not a
+> certain predicate implies another (this seems undecidable in general).
+> Later in the paper I discovered that this is "solved" by making the
+> programmer explicitly declare redundant "implies" information. It may be
+> worth explaining this issue explicitly. Also, are there issues in declaring
+> such redundant information? (e.g. how to maintain consistency between
+> predicates and actual implies declarations).
+
+2d. Describe implication process in brief (refer to PD paper for details).
+    It gives up when it can't prove implication.
+2e. Get rid of "declare-implies", it should be hidden in the
+    define-struct macro (or something).
+
+Third reviewer:
+> There is no discussion here about how other languages would help
+> programmers achieve the same goals. Although predicate dispatch is indeed
+> powerful, perhaps other languages give different tools that can achieve the
+> same benefits of incrementality?
+
+3a. Show how to program in this style in AspectJ (empty classes,
+    everything is advice).  Show the deficiencies (no implication,
+    need to declare method signatures, inconvenient modularization,
+    too tied to Java).
+
+> There is mention of controlling every control point, which I took to
+> include loops and if statements, etc. I'm guessing that either these are
+> meant to disappear in this model, or "every" was meant in a different sense
+> than I was thinking.
+
+3b. Explain that control structures can be built on top of message send
+    with macros, so only the message send decision needs to be extensible.
+
+> What about crosscutting state? What about abstracting the predicates
+> themselves into reusable, extensible entities?
+
+3c. Simulate fields with methods (a la BeCecil's storage tables).
+3d. Predicate abstractions from the PD paper; compare with pointcuts.
+3e. Extensible predicates: still haven't figured out the best way to
+    do this.  Probably need to separate subtyping from type declaration.
+
+> There is a certain overhead in programming this way (lots of method
+> declarations). What evidence is there that people would program this way,
+> or would a programming environment make this easy?
+
+3f. Higher-level constructs: classifiers from PD paper, modules,
+    higher-order functions that generate branches, macros.
+
+Here are some other things I'd like to add or change:
+
+4a. Add references to the Subdivided Procedures paper (Harrison &
+    Ossher), Theory of Extensibility (Krishnamurthi & Felleisen).
+4b. Replace Mira's quote with something more specific about the
+    connection between extensibility and reusability.
+4c. More than just incremental programming: separation of concerns,
+    refactorization, reduction of code duplication, ...?  [Is it too
+    late to change the paper title now that the program has been sent
+    out?]
+4d. Back off the "new model of programming" hype.
+4e. State pattern example in Fred; maybe other design patterns
+4f. Some discussion of the tractability of general predicates, how it
+    affects program understandability, maintainability, and
+    efficiency.  Restrictions can be added to help these at the price
+    of flexibility.  I think it's good to start with the most general
+    solution and then optimize as needed.
+4g. More transparent syntax: define-branch should not be a macro, but
+    simply a constructor that takes two closures as arguments.  No
+    need for "dp" magic variable.  Leads to slightly more verbose
+    code, but the mechanism should be easier to explain.
+4h. Replace fact example with speaker example (or something else more
+    OO).  But should the first example still show off what PD can do
+    that OO cannot?

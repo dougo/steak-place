@@ -1,0 +1,518 @@
+\documentclass[landscape]{slides}
+\special{papersize=11in,8.5in}
+\usepackage{amsmath}
+
+\title{Ph.D. Thesis Proposal: \\
+Programming Language Support For\\
+Separation Of Concerns}
+\author{Doug Orleans}
+\begin{document}
+
+\maketitle
+
+\sloppy % don't try so hard to justify the lines
+
+\newcommand{\defn}[1]{\textbf{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\parm}[1]{\textrm{\small\textit{#1}}}
+\newcommand{\slidetitle}[1]{\begin{center}\textbf{#1}\end{center}}
+
+\newenvironment{bullets}{
+\begin{itemize}
+\setlength{\itemsep}{0pt}
+\setlength{\topsep}{0pt}
+}{\end{itemize}}
+
+\begin{slide}
+\slidetitle{Separation of Concerns (SOC)}
+``study in depth an aspect of one's subject matter in isolation, for
+the sake of its own consistency, all the time knowing that one is
+occupying oneself with only one of the aspects''
+[Edsger W.~Dijkstra, 1976]
+
+``divide and conquer'' [ancient Roman motto]
+\end{slide}
+
+\begin{slide}
+\slidetitle{Modularization}
+The decomposition of a problem into separate concerns should lead
+directly to the modularization of a program that solves the
+problem.
+
+In other words: there should be a one-to-one mapping from problem
+concerns to program modules.
+\end{slide}
+
+\begin{slide}
+\slidetitle{Programming Language Support for SOC}
+Object-oriented programming languages make it easy to modularize
+data-structure concerns (as classes), but functional concerns can end
+up scattered across multiple classes.
+
+Aspect-oriented programming languages support the modularization of
+crosscutting concerns:
+\begin{bullets}
+\item AspectJ: aspects with pointcuts and advice
+\item HyperJ: hyperslices and hypermodules
+\item ComposeJ: composition filters
+\item DemeterJ: adaptive visitors
+\end{bullets}
+\end{slide}
+
+\begin{slide}
+\slidetitle{Fred}
+Fred is a new programming language that unifies OOP and AOP support
+for SOC.
+
+Fred consists of a simple core language, based on predicate
+dispatching [Ernst, Kaplan, \& Chambers 1998], plus syntactic sugar to
+emulate the higher-level constructs of other languages.
+
+My prototype implementation is embedded into MzScheme.  Using Fred
+with units [Flatt \& Felleisen 1998] allows reusable components of
+crosscutting behavior.
+\end{slide}
+
+\begin{slide}
+\slidetitle{Extensible Decisions}
+In OOP, whenever a message is sent, a decision occurs (dynamic
+dispatch), but the branches of the decision are specified
+separately: methods that correspond to the message signature.
+New branches can be added to a decision by defining methods in a new
+class.
+
+In Fred, the branches are first-class entities, not attached to
+classes like methods are.  The condition governing when a branch
+should be followed can be an arbitrary predicate involving the context
+of the message send.
+\end{slide}
+
+\begin{slide}
+\slidetitle{The Core of Fred (1/3)}
+The behavior of a Fred program is specified as a set of
+\defn{messages} and \defn{branches}:
+\begin{bullets}
+\item \code{(define-msg \parm{name})} makes a message and binds it to
+\parm{name} in the current environment.
+
+\item \code{(define-branch \parm{condition} \parm{body})} makes a plain
+branch and adds it to the global set of branches; \parm{condition} and
+\parm{body} are procedures of one argument, a decision point.
+
+\item \code{(define-around \parm{condition} \parm{body})} makes
+an around branch.
+\end{bullets}
+\end{slide}
+
+\begin{slide}
+\slidetitle{The Core of Fred (2/3)}
+When a message is sent to a list of argument values, a
+\defn{decision point} is created, encapsulating the context of the
+message send; the context can be extracted with these accessors:
+\begin{bullets}
+\item \code{(dp-msg \parm{dp})} returns the message that was sent.
+
+\item \code{(dp-args \parm{dp})} returns the argument values that the
+      message was sent to.
+
+\item \code{(dp-previous \parm{dp})} returns the previous decision
+      point on the stack at the time the message was sent.
+\end{bullets}
+\end{slide}
+
+\begin{slide}
+\slidetitle{The Core of Fred (3/3)}
+After the decision point is created, the most precedent applicable
+branch is selected and its body procedure is invoked.
+\begin{bullets}
+\item A branch with predicate \parm{p} is applicable to a decision
+      point \parm{dp} if \code{(\parm{p} \parm{dp})} is true.
+
+\item A branch with predicate \parm{p}$_1$ precedes a
+      branch with predicate \parm{p}$_2$ if \parm{p}$_1$ implies
+      \parm{p}$_2$.
+
+\item An around branch always precedes a plain branch.
+\end{bullets}
+\code{(follow-next-branch)} will invoke the body procedure of the next 
+most precedent applicable branch.
+\end{slide}
+
+\begin{slide}
+\slidetitle{Computing Implication}
+Logical implication of unrestricted predicates is undecidable in
+general.
+
+Fred analyzes condition predicates only as far as logical connectors
+(\code{and}, \code{or}, \code{not}), type tests (\code{is-a?},
+\code{integer?}), and equality and inequality relations
+(\code{eq?}, \code{=}, \code{<=}).  Other subexpressions are treated
+as incomparable atoms in the logical formula (except for
+structural equivalence, up to alpha renaming).
+
+If two predicates are incomparable, a ``message ambiguous'' error is
+raised.  This can be detected at branch-definition time.
+\end{slide}
+
+\begin{slide}
+\slidetitle{OOP in Fred (1/2)}
+\begin{verbatim}
+(define-class person () (fname lname))
+(define-msg full-name)
+(define-branch
+  (lambda (dp) (and (eq? (dp-msg dp) full-name)
+                    (= (length (dp-args dp)) 1)
+                    (is-a? (car (dp-args dp)) person))
+  (lambda (dp)
+    (let ((this (car (dp-args dp))))
+      (string-append (get-fname this) " "
+                     (get-lname this)))))
+\end{verbatim}
+\end{slide}
+
+\begin{slide}
+\slidetitle{OOP in Fred (2/2)}
+\begin{verbatim}
+(define-class knight (person) ())
+(define-branch
+  (lambda (dp) (and (eq? (dp-msg dp) full-name)
+                    (= (length (dp-args dp)) 1)
+                    (is-a? (car (dp-args dp)) knight)))
+  (lambda (dp)
+    (string-append "Sir " (follow-next-branch))))
+\end{verbatim}
+Sample output:
+\begin{verbatim}
+> (define gandalf (make knight "Ian" "McKellen"))
+> (full-name gandalf)
+"Sir Ian McKellen"
+\end{verbatim}
+\end{slide}
+
+\begin{slide}
+\slidetitle{AOP in Fred: Logging Concern}
+\begin{verbatim}
+(define-around
+  (lambda (dp) (and (is-a? (car (dp-args dp)) person))
+                    (not (in-full-name-cflow? dp)))
+  (lambda (dp)
+    (let ((this (car (dp-args dp)))
+          (msg (dp-msg dp)))
+      (printf "~a received message ~a.~n"
+        (full-name this) (msg-name msg))
+      (follow-next-branch))))
+
+(define (in-full-name-cflow? dp)
+  (let ((prev (dp-previous dp)))
+    (and prev (or (eq? (dp-msg prev) full-name)
+                  (in-full-name-cflow? prev)))))
+\end{verbatim}
+\end{slide}
+
+\begin{slide}
+\slidetitle{Syntactic Sugar}
+\begin{verbatim}
+(define-class person () (fname lname))
+(define-method full-name ((person this))
+  (string-append (get-fname this) " " (get-lname this)))
+
+(define-class knight (person) ())
+(define-method full-name ((knight this))
+  (string-append "Sir " (follow-next-branch)))
+
+(define-before (&& (args person ..)
+                   (! (cflowbelow (call full-name))))
+  (with-msg-and-args (msg this . rest)
+    (printf "~a received message ~a.~n"
+            (full-name this) (msg-name msg))))
+\end{verbatim}
+\end{slide}
+
+\begin{slide}
+\slidetitle{AspectJ Comparison}
+\begin{verbatim}
+class Person {
+  String fname, lname;
+  String fullName() { return fname + " " + lname; }
+}
+class Knight extends Person {
+  String fullName() { return "Sir " + super.fullName(); }
+}
+aspect Logging {
+  before(Person p): call(* *(..)) && target(p) &&
+                    !cflowbelow(call(* fullName(..))) {
+    System.out.println(p.fullName() + " received message " +
+                       thisJoinPoint.getSignature());
+  }
+}
+\end{verbatim}
+\end{slide}
+
+\begin{slide}
+\slidetitle{Reusable Aspect: Caching Concern}
+\small
+\begin{verbatim}
+(define memoize
+  (unit (import memoize? dp-key
+                invalidate? dp-keys)
+        (export)
+
+    (define-field cached-value ?)
+    (define (clear-cache! c)
+      (set-cached-value! c #f))
+
+    (define-around memoize?
+      (lambda (dp)
+        (let ((key (dp-key dp)))
+          (unless (get-cached-value key)
+            (set-cached-value! key (follow-next-branch)))
+          (get-cached-value key))))
+
+    (define-before invalidate?
+      (lambda (dp)
+        (for-each clear-cache! (dp-keys dp))))))
+\end{verbatim}
+\end{slide}
+
+\begin{slide}
+\slidetitle{Adapting the Aspect}
+\begin{verbatim}
+(define memoize?
+  (&& (call check) (args Item)))
+(define (dp-key dp) (car (dp-args dp)))
+
+(define invalidate?
+  (&& (call add-item!) (args Container Item))
+(define (dp-keys dp)
+  (let loop ((node (car (dp-args dp))))
+    (if (not node)
+        '()
+        (cons node (loop (get-parent node))))))
+
+(invoke-unit memoize memoize? dp-key invalidate? dp-keys)
+\end{verbatim}
+\end{slide}
+
+\begin{slide}
+\slidetitle{AspectJ Comparison}
+\small
+\begin{verbatim}
+abstract aspect Memoize {
+  abstract pointcut memoize(Object key);
+  abstract pointcut invalidate(List keys);
+
+  Object Object.cachedValue;
+  static void clearCache(Object c) { c.cachedValue = null; }
+
+  Object around(Object key) : memoize(key) {
+    if (key.cachedValue == null)
+      key.cachedValue = proceed(key);
+    return key.cachedValue;
+  }
+
+  void before(List keys) : invalidate(keys) {
+    Iterator i = keys.iterator();
+    while (i.hasNext()) clearCache(i.next());
+  }
+}
+\end{verbatim}
+\end{slide}
+
+\begin{slide}
+\slidetitle{Related Work: Aspect SandBox}
+The Aspect SandBox (ASB) project [Kiczales, Dutchyn, et.al.]
+``provides a framework for building simple interpreters for AOP
+languages''.  It consists of a Scheme interpreter for BASE, a simple
+OO language, and several extensions modeling different AOP styles,
+including AJD, the dynamic join point model of AspectJ.
+
+Fred, on the contrary, unifies both OOP and AOP into a single
+mechanism: branches plus a precedence relation.
+
+Also, ASB (so far) has no notion of reusable aspects; since ASB is
+intended to model AspectJ fairly closely, it will probably only have
+the same ``abstract aspect'' model as AspectJ.  Fred with units
+provides a more flexible model of reuse.
+\end{slide}
+
+\begin{slide}
+\slidetitle{Research Plan}
+The main goal is to show that Fred's support for SOC is an improvement
+on existing languages.
+\begin{bullets}
+\item add syntactic sugar to Fred to emulate the constructs of the
+      major AOP languages (2 months)
+\item write some medium-sized programs in Fred and other languages (4 months)
+\item formal semantics and relative expressiveness (1 month)
+\item efficient implementation (1 month)
+\item tool support (1 month)
+\item write dissertation (6 months): September 2003
+\end{bullets}
+\end{slide}
+
+\begin{slide}
+\slidetitle{Syntactic Sugar}
+Fred already has syntax emulating CLOS (\code{define-class},
+\code{define-method}) and AspectJ (\code{call}, \code{args},
+\code{cflow}).
+
+\begin{bullets}
+\item HyperJ: \code{define-hyperslice}
+\item ComposeJ: \code{define-filter}
+\item DemeterJ: \code{define-traversal}, \code{define-visitor}
+\item Aspectual collaborations, mixin layers, logic metaprogramming, etc.
+\end{bullets}
+\end{slide}
+
+\begin{slide}
+\slidetitle{Example-based Comparison}
+\begin{bullets}
+\item caching ``challenge problem'' [Ovlinger et.al.]
+\item cords library with optimizations [AOSD 02]
+\item GUI solitaire puzzle: model/view/controller
+\item multi-user programming environment: synchronization, security,
+      resource control, persistence
+\item other example programs from papers about AOP languages
+\end{bullets}
+\end{slide}
+
+\begin{slide}
+\slidetitle{Semantics and Expressiveness}
+[Felleisen 1990] defined a formal notion of relative expressiveness of
+programming languages, given formal definitions of the semantics of
+the languages, based on structure-preserving transformations and
+behavioral equivalence.  This is finer-grained than the hierarchy of
+computability: it distinguishes between Turing-complete languages.
+This could be used to prove (or provide proof sketches for):
+\begin{bullets}
+\item AspectJ is more expressive than Java
+\item Fred is more expressive than Scheme and CLOS
+\item Fred is at least as expressive as AspectJ [HyperJ, ComposeJ, etc]
+\end{bullets}
+\end{slide}
+
+\begin{slide}
+\slidetitle{Efficient Implementation}
+[Chambers and Chen 1999] describe implementation techniques for
+efficient predicate dispatching, by computing a dispatch tree from a
+set of predicates.  This can eliminate redundant tests and order the
+tests for minimum tree depth.  These techniques should apply to Fred
+just as well, although the tree would have to be recomputed whenever a
+new branch is defined.
+
+Restricting the language of condition predicates may lead to
+optimizations, but at the risk of reduced expressiveness.  The
+medium-sized programs may show that the full expressiveness of Fred
+isn't needed in practice.
+\end{slide}
+
+\begin{slide}
+\slidetitle{Tool Support}
+Understanding aspect-oriented programs can be difficult, because the
+code for one concern may be affected by the code at some other
+concern, and the links between modules are not always evident from
+reading the code.
+
+A smart code browser tool can display these links directly, providing
+more structure than the flat text of the source code.  There are some
+IDE plugins for browsing AspectJ code; a similar tool could be
+developed as an extension to DrScheme.
+\end{slide}
+
+\begin{slide}
+\slidetitle{Other Research Questions}
+\begin{bullets}
+\item Does static typing affect SOC?  Fred is dynamically typed; most
+      AOP languages are based on Java, which is statically typed.
+\item Abstraction enforcement: how to protect code from being
+      ``interrupted'' by other branches?  Restrict the scope of
+      condition predicates?
+\item Is it okay to have a single global table of branches, or do they
+      need to be scoped?
+\item How should branch precedence be customized?  How much does it
+      need to be?
+\end{bullets}
+\end{slide}
+
+\begin{slide}
+\slidetitle{Conclusion}
+Fred is a programming language that supports separation of concerns by
+allowing program modules (units of branches) to correspond to problem
+concerns.
+
+Fred is simple to understand, implement, and prove things about,
+yet general enough to support SOC better than many other
+OOP and AOP languages.
+\end{slide}
+
+\begin{slide}
+\center{(auxiliary slides follow)}
+\end{slide}
+
+\begin{slide}
+\slidetitle{Predicate Analysis}
+All predicates are converted to disjunctive normal form.  Then the
+following rules are applied:
+\begin{bullets}
+\item $(X_1 \vee X_2 \vee \ldots \implies Y_1 \vee Y_2 \vee \ldots)
+\iff (\forall i. \exists j. X_i \implies Y_j)$
+\item $(X_1 \wedge X_2 \wedge \ldots \implies Y_1 \wedge Y_2 \wedge \ldots)
+\iff (\forall j. \exists i. X_i \implies Y_j)$
+\item $(\neg X \implies \neg Y) \iff (Y \implies X)$
+\item (\code{(is-a?\ $X$ $C_1$)}$\implies$\code{(is-a?\ $X$ $C_2$)})
+$\iff$ \code{(subclass?\ $C_1$ $C_2$)}
+\item (\code{(eq?\ $X$ $Y$)} $\implies$ \code{(}$\ldots X \ldots$\code{)})
+$\Longleftarrow$ \code{(}$\ldots Y \ldots$\code{)}
+\end{bullets}
+\end{slide}
+
+\begin{slide}
+\slidetitle{Reimplementing Fred}
+In order to be clear on the semantics of Fred, it may help to
+reimplement Fred as something other than a Scheme library.
+\begin{bullets}
+\item ML library: easier to compare to a typed AOP language.
+\item implement a parser and interpreter: similar to ASB
+\item use a MOP: CLOS or tiny-clos
+\item extend MultiJava or GUD
+\end{bullets}
+\end{slide}
+
+\begin{slide}
+\slidetitle{Compound Units (1/2)}
+\begin{verbatim}
+(define backlink
+  (unit (import child-add? dp-parent dp-child)
+        (export get-parent)
+
+    (define-field parent ?)
+
+    (define-after child-add?
+      (lambda (dp)
+        (set-parent! (dp-child dp) (dp-parent dp))))))
+\end{verbatim}
+\end{slide}
+
+\begin{slide}
+\slidetitle{Compound Units (2/2)}
+\small
+\begin{verbatim}
+(define memoize-tree
+  (compound-unit
+    (import memoize? dp-node
+            child-add? dp-parent dp-child)
+    (link [B (backlink child-add? dp-parent dp-child)]
+          [UB ((unit (import dp-parent get-parent)
+                     (export dp-ancestors)
+                 (define (dp-ancestors dp)
+                   (let loop ((node (dp-parent dp)))
+                     (if (not node)
+                         '()
+                         (cons node (loop (get-parent node))))))
+                 ) dp-parent (B get-parent))]
+          [M (memoize memoize? dp-node
+                      child-add? (UB dp-ancestors))])
+    (export)))
+\end{verbatim}
+\end{slide}
+\end{document}

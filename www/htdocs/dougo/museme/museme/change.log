@@ -1,0 +1,67 @@
+CHANGE.LOG
+
+-------------------------------------------------------------------------------
+11/18/94 (lyn)
+
+NAMESERVER.SCM
++ Modified NEW-ENV so that creates a person named ME.
+
+OBJECT.SCM ;; New file implemented encapsulated Scheme objects.
+           ;; This was before I realized that TRANSLATE does the same thing!
+
+PACKAGES.SCM
+ + Export WHO from SERVER
+ + Import WHO into MUSEME-SCHEME
+
+SERVER.SCM
+ + Added WHO, which is described in documentation, but not implemented.
+ + Added *USER-TICKS* to abstract over amount of time user has.
+ + Added USER-SESSION to abstract over a session.
+ + Added MUSEME-HERALD, *SERVER-VERSION*, *SERVER-DATE* to abstract 
+   over herald.
+ + Added USER-EVAL to abstract over evaluation of user expressions.
+ + Added HANDLE-ENGINE to abstract over handling engine resumptions.
+ + Added USER-INITIALIZE, which by default connects the user to
+   his/her default player.
+
+TRANSLATE.SCM
+ + Updated MUD-OBJECT to take a key.
+
+USER-ENV.SCM
+ + Fixed SEND to unquote variable UN
+ + Change UNSHARE to be analagous to FORGET (i.e., now returns #t or #f).
+
+-------------------------------------------------------------------------------
+11/21/94 (lyn)
+
+TRANSLATE.SCM
++ VALUE message now returns thunk, so that procedures can 
+  be returned as values rather than be applied.
+
+-------------------------------------------------------------------------------
+11/22/94 (lyn)
+
+TRANSLATE.SCM
++ Massive overhaul of this file. Interface is now (scheme->mud key scheme-obj)
+  and (mud->scheme mud-widget).
+
+WIDGET.SCM
++ Fixed a bug in SET-NAME!
+
+-------------------------------------------------------------------------------
+
+11/23/94 
+
+MUSEME-COMMANDS.SCM 
++ (lyn) Updated TAKE and DROP to deal handle scheme objects in a reasonable
+  way. Convenient, but not sure this is the right thing.
+  (because it is outside of the usual mud model).
++ (bjr) Fixed but in DROP: if dropping a scheme object, must convert to
+  mud widget first, take it, and then drop.  But don't take objects
+  that are not automatically generated or get messages about self
+  is trying to take object from self.
+
+* (bjr) Developed a single-user mode, implemented by the files SINGLE-USER.SCM
+  and SU-PACKAGES.SCM. Modified MAKEFILE to include a single-user entry.
+
+* (bjr) Implemented an eval server in CPU.MUD

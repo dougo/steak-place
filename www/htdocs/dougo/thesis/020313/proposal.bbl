@@ -1,0 +1,82 @@
+\begin{thebibliography}{10}
+
+\bibitem{dijkstra-SOC}
+E.~W. Dijsktra.
+\newblock {\em A Discipline of Programming}.
+\newblock Prentice-Hall, 1976.
+
+\bibitem{predicate-dispatch}
+M.~D. Ernst, C.~Kaplan, and C.~Chambers.
+\newblock Predicate dispatching: {A} unified theory of dispatch.
+\newblock In {\em Proceedings of ECOOP '98, the 12th European Conference on
+  Object-Oriented Programming}, pages 186--211, Brussels, Belgium, July 20--24
+  1998.
+
+\bibitem{expressive-power}
+M.~Felleisen.
+\newblock On the expressive power of programming languages.
+\newblock In N.~Jones, editor, {\em {ESOP} '90 3rd European Symposium on
+  Programming, Copenhagen, Denmark}, volume 432, pages 134--151.
+  Springer-Verlag, New York, NY, 1990.
+
+\bibitem{MzScheme}
+M.~Flatt.
+\newblock {PLT} {MzScheme}: Language manual.
+\newblock Technical Report TR97-280, Rice University, 1997.
+
+\bibitem{JLS}
+J.~Gosling, B.~Joy, and G.~Steele.
+\newblock {\em The Java Language Specification}.
+\newblock Addison Wesley, 1996.
+
+\bibitem{DemeterJ}
+G.~Hulten, K.~Lieberherr, J.~Marshall, D.~Orleans, and B.~Samuel.
+\newblock {\em {DemeterJ} User Manual}.
+\newblock \texttt{\\http://www.ccs.neu.edu/research/demeter/}.
+
+\bibitem{FJ}
+A.~Igarashi, B.~Pierce, and P.~Wadler.
+\newblock {Featherweight Java}: {A} minimal core calculus for {Java} and {GJ}.
+\newblock In L.~Meissner, editor, {\em Proceedings of the 1999 {ACM} {SIGPLAN}
+  Conference on Object-Oriented Programming, Systems, Languages {\&}
+  Applications ({OOPSLA}`99)}, volume 34(10), pages 132--146, N. Y., 1999.
+
+\bibitem{AspectJ}
+G.~Kiczales, E.~Hilsdale, J.~Hugunin, M.~Kersten, J.~Palm, and W.~G. Griswold.
+\newblock An overview of {AspectJ}.
+\newblock In {\em Proceedings of the European Conference on Object-Oriented
+  Programming}, 2001.
+
+\bibitem{AOP}
+G.~Kiczales, J.~Lamping, A.~Mendhekar, C.~Maeda, C.~V. Lopes, J.-M. Loingtier,
+  and J.~Irwin.
+\newblock Aspect-oriented programming.
+\newblock In {\em Proceedings of the European Conference on Object-Oriented
+  Programming (ECOOP)}. Springer-Verlag, June 1997.
+
+\bibitem{ACs}
+K.~Lieberherr, D.~H. Lorenz, and J.~Ovlinger.
+\newblock Aspectual collaborations for collaboration-oriented concerns.
+\newblock Technical Report {NU-CCS-01-08}, College of Computer Science,
+  Northeastern University, Boston, MA 02115, Nov. 2001.
+
+\bibitem{Fred}
+D.~Orleans.
+\newblock Incremental programming with extensible decisions.
+\newblock In {\em Proceedings of the 1st International Conference on
+  Aspect-Oriented Software Development (AOSD)}, Enschede, The Netherlands,
+  April 2002.
+
+\bibitem{HyperJ}
+P.~Tarr and H.~Ossher.
+\newblock {\em {Hyper/J} User and Installation Manual}.
+\newblock IBM T. J. Watson Research Center, Yorktown Heights, NY, USA, 2000.
+
+\bibitem{ComposeJ}
+J.~Wichman.
+\newblock {ComposeJ}: The development of a preprocessor to facilitate
+  composition filters in the {Java} language.
+\newblock {MSc.} thesis, Dept. of Computer Science, University of Twente,
+  Enschede, the Netherlands, December 1999.
+
+\end{thebibliography}

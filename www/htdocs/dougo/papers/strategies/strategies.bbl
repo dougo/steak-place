@@ -1,0 +1,343 @@
+\begin{thebibliography}{10}
+
+\bibitem{dragon-nfa-sim}
+Alfred~V. Aho, Ravi Sethi, and Jeff~D. Ullman.
+\newblock {\em Compilers---Principles, Techniques, and Tools}, pages 126--127.
+\newblock Addison-Wesley, 1986.
+\newblock (Algorithm 3.4).
+
+\bibitem{bartoli:SPE}
+A.~Bartoli.
+\newblock A novel approach to marshalling.
+\newblock {\em Software--Practice and Experience}, 27(1):63--85, January 1997.
+
+\bibitem{blando:97-02}
+Luis Blando.
+\newblock {Mission Critical Verizon Project Using DemeterJ}.
+\newblock Technical report, Verizon, 2002.
+\newblock http://www.ccs.neu.edu/research/demeter/evaluation/gte-labs/.
+
+\bibitem{aosd-2002-blando}
+Luis Blando and Nosherwan Minwalla.
+\newblock {Commercial AOSD Deployment in Action: Five Years and Counting}.
+\newblock In Gregor Kiczales, editor, {\em First International Conference on
+  Aspect-Oriented Software Development}, Enschede, The Netherlands, 2002.
+
+\bibitem{rational:UML-LUG}
+Grady Booch, James Rumbaugh, and Ivar Jacobson.
+\newblock {\em The Unified Modeling Language User Guide}.
+\newblock Object Technology Series. Addison Wesley, 1999.
+\newblock ISBN 0-201-57168-4.
+
+\bibitem{bravenboer01guiding}
+M.~Bravenboer and E.~Visser.
+\newblock Guiding visitors: Separating navigation from computation.
+\newblock Technical report, Institute of Information and Computing Sciences,
+  Utrecht University, 2001.
+
+\bibitem{XML}
+Tim Bray, Jean Paoli, and C.~M. Sperberg-McQueen (eds.).
+\newblock {Extensible Markup Language}.
+\newblock {http://www.w3.org/TR/REC-XML}, February 1998.
+
+\bibitem{cameron-ito:gramps}
+Robert~D. Cameron and M.~Robert Ito.
+\newblock Grammar-based definition of metaprogramming systems.
+\newblock {\em ACM Transactions on Programming Languages and Systems},
+  6(1):20--54, January 1984.
+
+\bibitem{XPath}
+James Clark and Steve~DeRose (eds.).
+\newblock {XML} {Path Language} ({XPath}), version 1.0.
+\newblock {http://www.w3.org/TR/XPath}, November 1999.
+
+\bibitem{URL:XMLschema}
+W3~Consortium.
+\newblock {XML schema home page}.
+\newblock {http://www.w3.org/XML/Schema/}.
+\newblock Continuously updated.
+
+\bibitem{cacm-2001}
+Tzilla Elrad, Robert Filman, and Atef Bader.
+\newblock {Aspect-Oriented Programming}.
+\newblock {\em Communications of the ACM}, 44(10):28--97, 2001.
+
+\bibitem{eppstein92parallel}
+David Eppstein.
+\newblock Parallel recognition of series-parallel graphs.
+\newblock {\em Information and Computation}, 98(1):41--55, 1992.
+
+\bibitem{composable-attribute-gr:popl92}
+R.~Farrow, T.J. Marlow, and D.M. Yellin.
+\newblock {Composable Attribute Grammars: Support for modularity in translator
+  design and implementation}.
+\newblock In {\em ACM Symposium on Principles of Programming Languages}, pages
+  223--234. ACM Press, 1992.
+
+\bibitem{galperin:wigderson}
+H.~Galperin and A.~Wigderson.
+\newblock Succinct representation of graphs.
+\newblock {\em Information and Control}, 56(3):183--198, March 1984.
+
+\bibitem{gang-of-4}
+Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides.
+\newblock {\em Design Patterns: Elements of Reusable Object-Oriented Software}.
+\newblock Addison-Wesley, 1995.
+
+\bibitem{ELI}
+R.~W. Gray, V.~P. Heuring, S.~P. Levi, A.~M. Sloane, and W.~M. Waite.
+\newblock Eli: A complete, flexible compiler construction system.
+\newblock {\em Communications of the ACM}, 35:121--131, February 1992.
+
+\bibitem{hoschka:marshalling}
+Philipp Hoschka and Christian Huitema.
+\newblock Automatic generation of optimized code for marshalling routines.
+\newblock In Nathaniel~Borenstein Manuel~Medina, editor, {\em IFIP TC6/WG6.5
+  International Working Conference on Upper Layer Protocols, Architectures and
+  Applications}, pages 131--146, Barcelona, 19. North-Holland.
+
+\bibitem{hunt-thomas:TPP}
+Andrew Hunt and David Thomas.
+\newblock {\em The Pragmatic Programmer}.
+\newblock Addison-Wesley, 2000.
+
+\bibitem{ioannidis:path-expr}
+Yannis~E. Ioannidis and Yezdi Lashkari.
+\newblock Incomplete path expressions and their disambiguation.
+\newblock In {\em Proceedings of ACM/SIGMOD Annual Conference on Management of
+  Data}, pages 138--149. ACM Press, 1994.
+
+\bibitem{palsberg:jay}
+Barry Jay and Jens Palsberg.
+\newblock The essence of the visitor pattern.
+\newblock In {\em COMPSAC'98, 22nd Annual International Computer Software and
+  Applications Conference}, pages 9--15, Vienna, 1998.
+
+\bibitem{kastens:waite}
+U.~Kastens and W.~M. Waite.
+\newblock Modularity and reusability in attribute grammars.
+\newblock {\em Acta Informatica}, 31:601--627, 1994.
+
+\bibitem{aop:ecoop2001}
+Gregor Kiczales, Erik Hilsdale, Jim Hugunin, Mik Kersten, Jeffrey Palm, and
+  William Griswold.
+\newblock {An Overview of AspectJ}.
+\newblock In Jorgen Knudsen, editor, {\em European Conference on
+  Object-Oriented Programming}, Budapest, 2001. Springer Verlag.
+
+\bibitem{querying-oodb:kim92}
+Michael Kifer, Won Kim, and Yehoshua Sagiv.
+\newblock Querying object-oriented databases.
+\newblock In Michael Stonebraker, editor, {\em Proceedings of ACM/SIGMOD Annual
+  Conference on Management of Data}, pages 393--402, San Diego, CA, 1992. ACM
+  Press.
+
+\bibitem{LVV:strategic-programming}
+Ralf L{\"a}mmel, Eelco Visser, and Joost Visser.
+\newblock Strategic programming meets adaptive programming.
+\newblock In {\em {Proc.\ of AOSD'03}}. ACM Press, 2003.
+
+\bibitem{URL:hp-praise}
+Karl Lieberherr.
+\newblock Communication with {Hewlett-Packard}.
+\newblock \\
+  http://www.ccs.neu.edu/research/demeter/evaluation/conventional-env/hp.html.
+
+\bibitem{URL:demeter}
+Karl Lieberherr.
+\newblock {Demeter home page}.
+\newblock {http://www.ccs.neu.edu/research/demeter/}.
+\newblock Continuously updated.
+
+\bibitem{adaptive-methods-cacm-2001}
+Karl Lieberherr, Doug Orleans, and Johan Ovlinger.
+\newblock {Aspect-Oriented Programming with Adaptive Methods}.
+\newblock {\em Communications of the ACM}, 44(10):39--41, 2001.
+
+\bibitem{mitch:karl-2000}
+Karl Lieberherr and Mitchell Wand.
+\newblock Traversal semantics in object graphs.
+\newblock Technical Report {NU-CCS-2001-05}, Northeastern University, May 2001.
+
+\bibitem{karl:comp-enh}
+Karl~J. Lieberherr.
+\newblock Component enhancement: An adaptive reusability mechanism for groups
+  of collaborating classes.
+\newblock In J.~van Leeuwen, editor, {\em Information Processing '92, 12th
+  World Computer Congress}, pages 179--185, Madrid, Spain, 1992. Elsevier.
+
+\bibitem{karl:demeter}
+Karl~J. Lieberherr.
+\newblock {\em Adaptive Object-Oriented Software: The Demeter Method with
+  Propagation Patterns}.
+\newblock PWS Publishing Company, Boston, 1996.
+\newblock 616 pages, ISBN 0-534-94602-X, entire book at
+  www.ccs.neu.edu/research/demeter.
+
+\bibitem{karl-ian:soft1}
+Karl~J. Lieberherr and Ian Holland.
+\newblock Assuring good style for object-oriented programs.
+\newblock {\em IEEE Software}, pages 38--48, September 1989.
+
+\bibitem{cse:preventive}
+Karl~J. Lieberherr and Doug Orleans.
+\newblock Preventive program maintenance in {Demeter/Java} (research
+  demonstration).
+\newblock In {\em International Conference on Software Engineering}, pages
+  604--605, Boston, MA, 1997. ACM Press.
+
+\bibitem{lieber-nacho-cun:pp-cacm}
+Karl~J. Lieberherr, Ignacio {Silva-Lepe}, and Cun Xiao.
+\newblock Adaptive object-oriented programming using graph-based customization.
+\newblock {\em Communications of the ACM}, 37(5):94--101, May 1994.
+
+\bibitem{Lopes96a}
+Cristina~Videira Lopes.
+\newblock Adaptive parameter passing.
+\newblock In {\em 2nd International Symposium on Object Technologies for
+  Advanced Software}, pages 118--136, Kanazawa, Japan, March 1996.
+  Springer-Verlag.
+
+\bibitem{MarSho:abbrev-query-int93}
+Victor~M. Markowitz and Arie Shoshani.
+\newblock Object queries over relational databases: Language, implementation,
+  and application.
+\newblock In {\em 9th International Conference on Data Engineering}, pages
+  71--80. IEEE Press, 1993.
+
+\bibitem{XPath-traversals}
+Bob McWhirter and James Strachan.
+\newblock {Extensible Markup Language}.
+\newblock {http://jaxen.org/}, 2001.
+
+\bibitem{ns:vldb88}
+Erich~J. Neuhold and Michael Schrefl.
+\newblock Dynamic derivation of personalized views.
+\newblock In {\em Proceedings of the 14th VLDB Conference}, pages 183--194,
+  1988.
+
+\bibitem{URL:DAJ}
+Doug Orleans.
+\newblock {DAJ home page}.
+\newblock {http://daj.sf.net/}.
+\newblock Continuously updated.
+
+\bibitem{DemeterJstats}
+Doug Orleans.
+\newblock {DemeterJ Strategy Statistics}.
+\newblock \\
+  http://www.ccs.neu.edu/research/demeter/DemeterJ/strategy-usage-in-DemeterJ.%
+txt.
+
+\bibitem{OrleansLieberherrReflection01}
+Doug Orleans and Karl Lieberherr.
+\newblock {DJ: Dynamic Adaptive Programming in Java}.
+\newblock In {\em {Reflection 2001: Meta-level Architectures and Separation of
+  Crosscutting Concerns }}, Kyoto, Japan, September 2001. Springer Verlag.
+\newblock 8 pages.
+
+\bibitem{gener-comp-j:jens-boaz-karl}
+Jens Palsberg, Boaz {Patt-Shamir}, and Karl Lieberherr.
+\newblock A new approach to compiling adaptive programs.
+\newblock {\em Science of Computer Programming}, 29(3):303--326, 1997.
+
+\bibitem{lieber-palsberg-xiao94}
+Jens Palsberg, Cun Xiao, and Karl Lieberherr.
+\newblock Efficient implementation of adaptive software.
+\newblock {\em ACM Transactions on Programming Languages and Systems},
+  17(2):264--292, March 1995.
+
+\bibitem{phillipsen:CPE}
+M.~Phillipsen, B.~Haumacher, and C.~Nester.
+\newblock {More Efficient Serialization and RMI for Java}.
+\newblock {\em Concurrency: Practice and Experience}, 12(7):495--518, May 2000.
+
+\bibitem{polya:solve-it}
+George Polya.
+\newblock {\em How To Solve It}.
+\newblock Princeton University Press, 1949.
+
+\bibitem{spl:context-conf}
+Linda~M. Seiter, Jens Palsberg, and Karl~J. Lieberherr.
+\newblock {Evolution of Object Behavior using Context Relations}.
+\newblock In David Garlan, editor, {\em Symposium on Foundations of Software
+  Engineering, SIGSOFT}, pages 46--57, San Francisco, 1996. ACM Press
+  (SIGSOFT).
+
+\bibitem{seiter:ieee-se-98}
+Linda~M. Seiter, Jens Palsberg, and Karl~J. Lieberherr.
+\newblock {Evolution of Object Behavior using Context Relations}.
+\newblock {\em IEEE Transactions on Software Engineering}, 24(1):79--92,
+  January 1998.
+
+\bibitem{Smaragdakis}
+Yannis Smaragdakis.
+\newblock {Personal communication}.
+\newblock 1997.
+
+\bibitem{stirewalt01generation}
+Kurt Stirewalt and Laura~K. Dillon.
+\newblock Generation of visitor components that implement program
+  transformations.
+\newblock In {\em {ACM} {SIGSOFT} Symposium on Software Reusability}, pages
+  86--94, 2001.
+
+\bibitem{sung:DAJ-02}
+John Sung.
+\newblock {Aspectual Concepts}.
+\newblock Technical Report NU-CCS-02-06, Northeastern University, June 2002.
+\newblock Master's Thesis,
+  http://www.ccs.neu.edu/home/lieber/theses-index.html.
+
+\bibitem{bv:navigation}
+Jan Van~den Bussche and Gottfried Vossen.
+\newblock An extension of path expressions to simplify navigation in
+  object-oriented queries.
+\newblock In Stefano Ceri, Katsumi Tanaka, and Shalom Tsur, editors, {\em
+  Deductive and Object-Oriented Databases}, pages 267--282, Phoenix, Arizona,
+  1993. Springer Verlag, Lecture Notes in CS, No. 760.
+
+\bibitem{vanderperren:composition-adapters}
+Wim Vanderperren.
+\newblock Applying aspect-oriented programming ideas in a component based
+  context: Composition adapters.
+\newblock In {\em GCSE}, Erfurt, Germany, 2001.
+
+\bibitem{Vlissides:visitor}
+John Vlissides.
+\newblock {Visiting rights}.
+\newblock {\em C++ Report}, September 1995.
+
+\bibitem{Vlissides:observer}
+John Vlissides.
+\newblock {The Trouble with Observer}.
+\newblock {\em C++ Report}, September 1996.
+
+\bibitem{WaiteGoos84}
+William Waite and Gerhard Goos.
+\newblock {\em Compiler Construction}.
+\newblock Springer Verlag, 1984.
+
+\bibitem{PengchengStats}
+Mitch Wand and Pengcheng Wu.
+\newblock {Part of the Statistics of Traversing Methods Generated For DemeterJ
+  Source Code}.
+\newblock http://www.ccs.neu.edu/home/wupc/statistics/statistics.htm.
+
+\bibitem{null-object}
+Bobby Woolf.
+\newblock The {Null} {Object} pattern.
+\newblock In {\em Pattern Languages of Program Design}, 1996.
+
+\bibitem{bart:thesis02}
+Bart Wydaeghe.
+\newblock {\em {PACOSUITE: Component Composition Based on Composition Patterns
+  and Usage Scenarios}}.
+\newblock PhD thesis, Free University of Brussels, 2002.
+
+\bibitem{bart-wim:strategies-ref}
+Bart Wydaeghe and Wim Vanderperren.
+\newblock Towards a new component composition process.
+\newblock In {\em ECBS}, Washington, April 2001.
+
+\end{thebibliography}

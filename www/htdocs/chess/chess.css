@@ -1,0 +1,13 @@
+.board { font: 300% sans-serif; }
+.border, .black-square, .white-square {
+    display: table-cell;
+    height: 60px; width: 60px;
+    text-align: center;
+    vertical-align: middle;
+}
+.black-square { background-color: teal; }
+.white-square { background-color: silver; }
+.white { color: white; }
+.black { color: black; }
+.cursor { outline: solid 2px red; }
+a.white, a.black { text-decoration: none; }

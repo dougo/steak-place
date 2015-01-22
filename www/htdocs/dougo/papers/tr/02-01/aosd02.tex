@@ -1,0 +1,491 @@
+\documentclass{article}
+%\usepackage{tex2page}
+\usepackage{amsmath}
+
+\newcommand{\defn}[1]{\textbf{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\parm}[1]{\textit{#1}}
+
+\title{Incremental Programming with Extensible Decisions}
+\author{Doug Orleans \\
+College of Computer Science\\
+Northeastern University \\
+\texttt{dougo@ccs.neu.edu}
+}
+
+
+% Reduce margins by 1/4 inch.
+\addtolength{\voffset}{-0.25in}
+\addtolength{\textheight}{0.5in}
+\addtolength{\hoffset}{-0.5in}
+\addtolength{\textwidth}{1.0in}
+
+\begin{document}
+
+%\begin{htmlonly}
+%This document is also available in
+%\htmladdnormallink{postscript}{../proposal.ps} form.
+%\end{htmlonly}
+
+\maketitle
+
+%\tableofchildlinks
+
+\begin{abstract}
+This paper proposes a new model of programming, in which the behavior
+of a program can be defined as separate decision point branches.  
+Allowing more precise expression of the condition
+determining when a branch should be chosen at a decision point leads
+to better support for incremental programming.  
+This model can be viewed as a fundamental
+mechanism underlying both OOP and AOP, which can serve as lower-level
+building blocks that can be put together into the higher-level
+constructs present in many AOP systems.
+\end{abstract}
+
+\section{Introduction}
+
+One of the chief benefits of object-oriented programming is the
+support for \defn{incremental programming}, that is, the construction
+of new program components by specifying how they differ from existing
+components~\cite{cook89denotational}: a subclass can extend or
+override the behavior of methods that exist in the superclass.
+Incremental programming allows for clean separation of concerns,
+because the differences of the new component can be specified
+separately from the existing component; this can lead to better
+understanding of programs, easier maintenance, and re-use.
+
+When a subclass method extends or overrides a superclass method,
+essentially a new branch is added to a decision point in the program
+execution: if a message matching the methods' signature is sent to
+an instance of the subclass, then execute the subclass method instead
+of the superclass.  However, the subclass-specific branch is defined
+separately from the superclass-specific branch, rather than tangled
+together into an explicit decision construct.  As Mezini asserts in
+her thesis~\cite{mezini-thesis}[page 79], these extensible decisions
+are crucial:
+
+\begin{quote}
+Avoiding the ``case''-like style of procedural programming with
+respect to dispatching kind-specific behavior is an essential factor
+for the qualitative progress in reusability attributed to the
+object-oriented paradigm.
+\end{quote}
+
+This idea can be extended to all of the decision points in a program,
+not just those that distinguish different kinds of objects.  This
+paper proposes a new model of programming, in which the behavior of a
+program can be defined as separate decision point branches.
+Just as the behavioral atoms of procedural programming were split into
+the subatomic particles of methods in object-oriented programming,
+methods can be split into still smaller quantum units of behavior.
+This is achieved by allowing more precise expression of the condition
+determining when a branch should be chosen at a decision point.  A method
+is a branch whose condition involves the run-time type of the receiver
+object of the message.  Branch conditions should be able to involve
+other data as well: the state of the receiver object and the other
+message arguments; the message itself; the enclosing branch from which
+the message was sent; and global or thread-local properties of the
+system at the time of the message send.
+
+Many behavioral design patterns \cite{gamma94design} make these
+sorts of conditions expressible as extensible decisions by
+converting the decision into a dispatch based on receiver-type,
+because that's the only kind of dispatch that most object-oriented
+languages provide.  The State pattern, for example, involves making a
+class for each different state that an object can be in, and sending a
+message to a state object to decide what behavior to execute based on
+the state object's class.  However, it would be much more natural to
+express the state-based dispatch directly as a set of branches with
+the desired state conditions, without the conceptual and practical
+overhead of creating new classes and maintaining state objects.
+
+Ideally the condition governing the applicability of a branch should
+be allowed to be any arbitrary computation involving any element of
+the program state at the decision point, although practical
+considerations such as tractability and efficiency limit this
+somewhat.  Still, this goal can be approached by reifying decision
+points as program entities, and specifying branch conditions as
+logical combinations of predicate expressions over these decision
+point entities.
+
+The next section describes a prototype language involving
+separately-specified branches with conditions that are predicate
+expressions over decision point entities.  Following that is a
+discussion of related work, including connections to aspect-oriented
+programming.  The paper concludes with a brief discussion of future
+research directions.
+
+\section{Fred: A Prototype Language of Extensible Decisions}
+\label{section:fred}
+
+In order to experiment with the idea of expressing behavior as
+extensible decisions, I have developed a small prototype language
+called Fred, implemented as a set of procedures and macros in MzScheme
+\cite{flatt97plt}.  I rely on a number of features of MzScheme to avoid
+having to reproduce them in the language design of Fred, such as
+first-class procedures, lexical scoping, and a structure mechanism.
+
+There are three basic kinds of entities in Fred: \defn{messages},
+\defn{branches}, and \defn{decision points}.  The programmer never
+creates decision points by hand, only messages and branches.  Messages 
+and branches are defined with the special forms \code{define-msg} and
+\code{define-branch}; decision points can be inspected in the code of a
+branch through the special variable \code{dp} with accessor functions
+such as \code{dp-msg} and \code{dp-args}.  A simple example will serve 
+to illustrate how these pieces can be put together:
+
+\begin{verbatim}
+(define-msg fact)
+(define-branch (and (eq? (dp-msg dp) fact)
+                    (= (car (dp-args dp)) 1))
+  1)
+(define-branch (eq? (dp-msg dp) fact)
+  (let ((x (car (dp-args dp))))
+    (* x (fact (- x 1)))))
+\end{verbatim}
+
+The first expression creates a new unique message entity and binds it
+to the name \code{fact} in the current environment.  Messages are
+implemented as procedures so that a message can be sent to a list of
+arguments simply by applying the message to the arguments.
+
+The second expression creates a new branch to handle the base case of
+the factorial function and adds it to the global table of branches.
+The first subexpression of the \code{define-branch} special form is a
+condition predicate that is evaluated at every decision point; if it
+evaluates to true, then the remaining subexpressions in the form are
+evaluated.  In this example, if the message of the decision point is
+equal to \code{fact} and the first element of the argument list is
+equal to 1, then the value 1 is returned as the value of the decision
+point.  In other words, sending the message \code{fact} to the value 1
+evaluates to 1.
+
+The third expression creates a new branch to handle the alternative
+case; if the message \code{fact} is sent to any argument \code{x},
+then \code{fact} is sent to \code{x-1} and the result is multiplied by
+\code{x}.  Note that the predicates of both branches evaluate to true
+when the message \code{fact} is sent to 1; when two or more branches
+apply to a given decision point, the branch whose predicate is most
+specific has higher precedence.  Specificity is determined by logical
+implication: if a predicate $P_1$ implies another predicate $P_2$,
+i.e. $P_2$ is always true when $P_1$ is true, then $P_1$ is more
+specific than $P_1$.  In this example, the first branch is more
+specific than the second, because \code{(and X Y)} always implies
+\code{X}.
+
+Explicitly applying accessors to the decision point can be tedious,
+so there is some syntactic sugar available to make branch definition a 
+bit more concise:
+
+\begin{verbatim}
+(define-method fact (x) & (= x 1)
+  1)
+(define-method fact (x)
+  (* x (fact (- x 1))))
+\end{verbatim}
+
+The \code{define-method} special form creates a branch whose predicate
+compares the message of a decision point to the given message, as well
+as providing names for the arguments to be bound to.  It also defines
+the message if it is not already defined.  Further syntactic sugar
+allows up to one test per parameter to be moved into the formals
+specifier, as long as the formal argument is named as the first
+operand of the test expression:
+
+\begin{verbatim}
+(define-method fact ((= x 1))
+  1)
+\end{verbatim}
+
+For a longer example, consider a library to implement \defn{cords}, a
+data structure for strings that optimizes the concatenation operation
+by storing a tree of fragments rather than copying arrays of
+characters into a single array for every
+concatenation~\cite{cords}~\cite{cords-in-AspectJ}.  I will start with
+the basic structure and behavior and show how features can be added to
+the library incrementally without modifying any code.
+
+First, we define three data types, \code{cord}, \code{flat-cord}, 
+and \code{concat-cord}, using MzScheme's \code{define-struct} form.  
+\code{flat-cord} is just a wrapper around Scheme strings, while
+\code{concat-cord} has cords as left and right children; they both
+inherit from the abstract base class \code{cord}:
+
+\begin{verbatim}
+(define-struct cord ())
+(define-struct (flat-cord struct:cord)
+  (string))
+(define-struct (concat-cord struct:cord)
+  (left right))
+\end{verbatim}
+
+The \code{define-struct} form generates procedures for creating
+structure instances and accessing the fields, as well as a predicate
+procedure for testing whether an entity is an instance of the
+structure type; the name of the predicate is formed by appending a
+question mark to the type name.  A type predicate also returns true
+for all instances of subtypes; this must be declared to Fred's
+implication system so that it can figure out when one predicate
+implies another:
+
+\begin{verbatim}
+(declare-implies 'flat-cord? 'cord?)
+(declare-implies 'concat-cord? 'cord?)
+\end{verbatim}
+
+Now we can start defining behavior over these types.  First, the
+concatenation operation, which can handle both cords and strings for
+either argument, and produces a cord:
+
+\begin{verbatim}
+(define-method concat ((string? l) r)
+  (concat (make-flat-cord l) r))
+(define-method concat ((cord? l) (string? r))
+  (concat l (make-flat-cord r))
+(define-method concat ((cord? l) (cord? r))
+  (make-concat-cord l r))
+\end{verbatim}
+
+Then we can define a length operator for the two kinds of cords:
+
+\begin{verbatim}
+(define-method len ((flat-cord? x))
+  (string-length (flat-cord-string x)))
+(define-method len ((concat-cord? x))
+  (+ (len (concat-cord-left x)) (len (concat-cord-right x))))
+\end{verbatim}
+
+as well as an indexed reference operator:
+
+\begin{verbatim}
+(define-method ref ((flat-cord? x) (integer? i))
+  (ref (flat-cord-string x) i))
+(define-method ref ((concat-cord? x) (integer? i))
+  (ref (concat-cord-left x) i))
+(define-method ref ((concat-cord? x) (integer? i))
+  & (>= i (len (concat-cord-left x)))
+  (ref (concat-cord-right x) (- i (len (concat-cord-left x)))))
+\end{verbatim}
+
+Note that the \code{ref} operator is split into two branches, one for
+each branch of the tree.  The predicate of the second branch is more
+specific than that of the first branch, so it has precedence when they 
+are both applicable.
+
+We can add new subtypes to \code{cord} just as easily as in a
+traditional object-oriented language.  For example, to optimize the
+substring operation, we can add a \code{substring-cord} type with
+new branches for the existing operations:
+
+\begin{verbatim}
+(define-struct (substring-cord struct:cord)
+  (base offset length))
+(declare-implies 'substring-cord? 'cord?)
+
+(define-method len ((substring-cord? x))
+  (substring-cord-length x))
+(define-method ref ((substring-cord? x) (integer? i))
+  (ref (substring-cord-base x) (+ i (substring-cord-offset x))))
+\end{verbatim}
+
+We can also add new subtypes that aren't implemented as structure
+types; for example, we can optimize the case of concatenating an empty
+cord to another cord, by defining an \code{empty-cord} predicate:
+
+\begin{verbatim}
+(define (empty-cord? x)
+  (and (cord? x) (= (len x) 0)))
+(declare-implies 'empty-cord? 'cord?)
+
+(define-method concat ((empty-cord? l) (cord? r))
+  r)
+(define-method concat ((cord? l) (empty-cord? r))
+  & (not (empty-cord? l))
+  l)
+\end{verbatim}
+
+Note that the extra condition in the predicate of the second branch is
+required to ensure the two branches don't overlap (when concatenating
+two empty cords); neither branch is more specific than the other, so
+this would result in a ``message ambiguous'' error.  Another way to
+avoid this would be to add a third branch to handle the overlap case
+explicitly:
+
+\begin{verbatim}
+(define-method concat ((empty-cord? l) (empty-cord? r))
+  l)
+\end{verbatim}
+
+Now suppose we want to optimize the cords library by keeping the tree
+structure balanced, so that the \code{ref} operator doesn't degenerate 
+to linear search.  This involves two things: keeping track of the
+depth of the tree, and re-balancing the tree after a concatenation if
+the depth is too big.  We could modify the existing code to add these
+changes, but to achieve better separation of concerns, we should use
+the principle of incremental programming and implement the
+modification by expressing the new behavior as additions to the
+existing behavior.  First, instead of modifying the data structures to 
+add a \code{depth} field, we can create a new table and provide
+accessors that acts the same as field accessors would:
+
+\begin{verbatim}
+(define *depth-table* (make-hash-table 'weak))
+
+(define (compound-cord? x)
+  (or (concat-cord? x) (substring-cord? x)))
+(declare-implies 'concat-cord? 'compound-cord?)
+(declare-implies 'substring-cord? 'compound-cord?)
+
+(define-method set-depth! ((compound-cord? x) (integer? d))
+  (hash-table-put *depth-table* x d))
+(define-method depth ((compound-cord? x))
+  (hash-table-get *depth-table* x))
+(define-method depth ((flat-cord? x))
+  0)
+\end{verbatim}
+
+In order to add the \code{depth} field to multiple types at once, we
+make a new predicate that acts like a union type-- again, without
+actually needing to implement a data structure for the type.
+%[How can this type be extended, though?  If we need to add another new type?]
+
+Now we need to extend the behavior of \code{concat} to update the
+depth field and balance the tree if needed:
+
+\begin{verbatim}
+(define-around (eq? (dp-msg dp) concat)
+  (let ((c (invoke-next-branch)))
+    (set-depth! c (max (depth (concat-cord-left c))
+		       (depth (concat-cord-right c))))
+    (ensure-balanced c)))
+(define-method ensure-balanced ((concat-cord? x))
+  & (> (depth x) *max-depth*)
+  (balance x))
+(define-method ensure-balanced ((concat-cord? x))
+  x)
+\end{verbatim}
+
+The \code{invoke-next-branch} procedure invokes the branch that has
+the next highest precedence after the current branch.  However, this
+branch is an \defn{around} branch, a special kind of branch that has
+higher precedence than all non-around branches.  Otherwise, because
+its condition is more general than the other branches that are
+applicable to \code{concat} message sends, it would have the lowest
+precedence.  
+
+%[Jumping Aspect problem; dp-previous, dp-within]
+
+
+\section{Related Work}
+\label{section:related-work}
+
+The branch model described in this paper is directly inspired by Ernst
+et al's predicate dispatching~\cite{predicate-dispatch}.  In that
+system, each method has a predicate expression over the argument
+values, where the predicate expression language allows logical
+combinations of ``is-a'' tests or arbitrary test expressions in the
+base language.  Method precedence is based on logical implication,
+where ``is-a'' atoms are compared based on the subtype relation.  My
+branch conditions generalize method predicates by being expressions
+over decision points, which include the argument values but also the
+message value and calling context.  Also, there is no method
+combination (a la \code{around} branches) in their system; there is no
+way to customize the method precedence relation.  Predicate
+dispatching can be implemented efficiently~\cite{efficient-pd}, and
+the techniques for that can also be used to make decision point
+branches efficient.
+
+More precise branch condition expression allows for finer granularity
+between behavioral units in a program, which in turn allows concerns
+to be more easily separated.  In particular, concerns that would need
+to be tangled together with other concerns using traditional
+object-oriented design can be modularized well.  This is also the goal
+of aspect-oriented programming~\cite{kiczales97aspectoriented}.  I
+view my model of branches and decision points as a fundamental
+mechanism underlying both OOP and AOP, which can serve as lower-level
+building blocks that can be put together into the higher-level
+constructs present in many AOP systems.  The next few paragraphs
+discuss some particular AOP systems.
+
+Aspects in AspectJ~\cite{kiczales01overview} are units of crosscutting
+behavior; the behavior is specified as advice, which extend the
+behavior of classes which the aspect crosscuts.  Message sends are
+reified as join point objects, which are roughly the same as decision
+points in Fred.  Advice is defined in terms of pointcut designators,
+which specify sets of join points that the advice applies to; a
+pointcut designator is analagous to a branch condition expression, but
+the pointcut designator language is more declarative in flavor.  It is
+also less general than predicate expressions: pointcuts cannot
+distinguish between different argument values, it can only make
+decisions based on run-time types (in addition to context information
+such as control flow).
+
+Mezini's Rondo language~\cite{mezini-thesis} was designed to address
+context-dependent variations while supporting incremental programming.
+A Rondo program consists of a set of \defn{adjustments}, which
+encapsulate sets of classes that extend other classes (in a
+generalized sense, without subtyping) when certain conditions hold.
+Adjustments are essentially sets of branches whose conditions share a
+common sub-condition.
+
+Aksit's composition filters~\cite{comp-filt} extend message
+send decisions by attaching to a class filters that act on messages.
+All messages sent to instances of that class are first handled by the
+filters, which may perform some action (such as delegating the message
+to some other code) based on predicate expressions being satisfied.
+Filters are essentially sets of branches whose conditions all refer to
+a particular class (or set of classes, with the superimposition
+mechanism), which can be parameterized.
+
+\section{Conclusion and Future Work}
+\label{section:conclusion}
+
+In this paper I have identified the fundamental mechanism of OOP that
+allows incremental programming, namely extensible message-send
+decisions.  I have also shown how this mechanism can be made more
+flexible and that this leads to advanced separation of concerns
+mechanisms, thus prodiving a basic model of behavioral units that
+unifies OOP and AOP.  More research is needed, however, to better
+understand this model, to extend it, and to build higher-level
+mechanisms on top of it to better support real-world programming.
+
+In order to show that this model is basic enough to emulate other AOP
+systems, I plan to develop larger examples that compare directly to
+examples in those other systems, and perhaps develop translations from
+those systems into my model.  For example, it should be possible to
+express all the examples from the AspectJ Programming
+Guide~\cite{AspectJ-prog-guide} in Fred, and either implement a
+translator from AspectJ to Fred or implement a set of macros that
+correspond to AspectJ syntax.  This will probably involve extensions
+to the model, for example to emulate the \code{execution} primitive
+pointcut designator.
+
+A modularity mechanism is needed to organize branches into larger
+components, just as methods are organized into classes and advice is
+organized into aspects.  I have started to design something called
+\defn{bundles} for this purpose, which are inspired by Flatt and
+Felleisen's units~\cite{flatt98units}.  Units are reusable modules,
+parameterized by sets of import bindings and producing sets of export
+bindings.  Units are linked together statically into compound units by
+connecting the imports and exports of other units together.  Bundles
+generalize units by expanding the imports and exports to environments
+that include sets of branches in addition to variable bindings.
+Building parameterization directly into the module mechanism will lead
+to more flexible component composition than the abstract pointcut
+mechanism of AspectJ, which is too tied up with Java's inheritance
+model.
+
+In order for this model to improve the way programs are written, there
+needs to be a language that is as high-level as current OOP and AOP
+languages, as well as being comparably efficient.  My prototype
+language is neither of these yet, but Scheme macros can help with the
+former, while predicate dispatch implementation techniques will
+improve the latter.  A language that is not embedded and that has more
+structured support for branch conditions may better address both of
+these issues.
+
+\bibliography{aosd02}
+\bibliographystyle{alpha}
+
+\end{document}

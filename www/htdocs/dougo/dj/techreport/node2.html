@@ -1,0 +1,262 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 99.2beta8 (1.42)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Example</TITLE>
+<META NAME="description" CONTENT="Example">
+<META NAME="keywords" CONTENT="dj">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v99.2beta8">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="dj.css">
+
+<LINK REL="next" HREF="node3.html">
+<LINK REL="previous" HREF="node1.html">
+<LINK REL="up" HREF="dj.html">
+<LINK REL="next" HREF="node3.html">
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<A NAME="tex2html36"
+  HREF="node3.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.gif"></A> 
+<A NAME="tex2html34"
+  HREF="dj.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.gif"></A> 
+<A NAME="tex2html28"
+  HREF="node1.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.gif"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html37"
+  HREF="node3.html">DJ</A>
+<B> Up:</B> <A NAME="tex2html35"
+  HREF="dj.html">DJ: Dynamic Adaptive Programming</A>
+<B> Previous:</B> <A NAME="tex2html29"
+  HREF="node1.html">Introduction</A>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00020000000000000000">
+Example</A>
+</H1>
+
+<P>
+The example domain for this paper will be that of processing XML
+Schema definitions&nbsp;[<A
+ HREF="node9.html#XML-schema">4</A>].  A simple task that one might
+want to implement is checking a schema for undefined types.  This task
+involves two traversals of the object structure representing
+the schema definition: one to collect all the types defined in the
+schema, and one to check each type reference to see if it's in the
+set of defined types.  Figure&nbsp;<A HREF="node2.html#fig:LoD">1</A> shows a set of Java
+classes that represent a small subset of the XML Schema definition
+language, along with the methods for these two traversals.
+Figure&nbsp;<A HREF="node2.html#fig:UML">2</A> shows the corresponding UML diagram.  The
+methods <TT>getDefinedTypeNames</TT> and <TT>getUndefinedTypeNames</TT> on
+class <TT>Schema</TT> are the public interfaces to the traversals, and
+the methods <TT>addDef</TT> and <TT>addUndef</TT> do the actual traversal,
+building up the sets of type names.
+
+<P>
+
+<P></P>
+<DIV ALIGN="CENTER"><A NAME="fig:LoD"></A><A NAME="51"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figure 1:</STRONG>
+Following the Law of Demeter.</CAPTION>
+<TR><TD><TABLE  WIDTH="346">
+<TR><TD>
+<PRE>
+import java.util.*;
+
+class Schema {
+  Attribute attrs[];
+  SchemaItem items[];
+  public Set getDefinedTypeNames() {
+    Set def = new HashSet();
+    addDef(def);
+    return def;
+  }
+  public Set getUndefinedTypeNames() {
+    Set undef = new HashSet();
+    Set def = getDefinedTypeNames();
+    addUndef(undef, def);
+    return undef;
+  }
+  void addDef(Set def) {
+    for (int i = 0; i &lt; items.length; i++)
+      items[i].addDef(def);
+  }
+  void addUndef(Set undef, Set def) {
+    for (int i = 0; i &lt; items.length; i++)
+      items[i].addUndef(undef, def);
+  }
+}
+abstract class SchemaItem {
+  void addDef(Set def) { }
+  void addUndef(Set undef, Set def) { }
+}
+abstract class TypeDef extends SchemaItem {
+  Attribute attrs[];
+  void addDef(Set def) {
+    for (int i = 0; i &lt; attrs.length; i++)
+      attrs[i].addDef(def);
+  }
+}
+class Attribute {
+  String name;
+  String value;
+  void addDef(Set def) {
+    if (name.equals("name"))
+      def.add(value);
+  }
+  void addUndef(Set undef, Set def) {
+    if (name.equals("type")
+        &amp;&amp; !def.contains(value))
+      undef.add(value);
+  }
+}
+</PRE>
+</TD></TR>
+</TABLE>
+<TABLE  WIDTH="346">
+<TR><TD>
+<PRE>
+class SimpleType extends TypeDef { }
+class ComplexType extends TypeDef {
+  SequenceGroup content;
+  AttributeDecl adecls[];
+  void addDef(Set def) {
+    super.addDef(def);
+    content.addDef(def);
+  }
+  void addUndef(Set undef, Set def) {
+    content.addUndef(undef, def);
+    for (int i = 0; i &lt; adecls.length; i++)
+      adecls[i].addUndef(undef, def);
+  }
+}
+class SequenceGroup {
+  Attribute attrs[];
+  ElementDecl edecls[];
+  void addDef(Set def) {
+    for (int i = 0; i &lt; edecls.length; i++)
+      edecls[i].addDef(def);
+  }
+  void addUndef(Set undef, Set def) {
+    for (int i = 0; i &lt; edecls.length; i++)
+      edecls[i].addUndef(undef, def);
+  }
+}
+abstract class Decl extends SchemaItem {
+  Attribute attrs[];
+  void addUndef(Set undef, Set def) {
+    for (int i = 0; i &lt; attrs.length; i++)
+      attrs[i].addUndef(undef, def);
+  }
+}
+class AttributeDecl extends Decl {
+}
+class ElementDecl extends Decl {
+  TypeDef typeDef;
+  void addDef(Set def) {
+    if (typeDef != null)
+      typeDef.addDef(def);
+  }
+  void addUndef(Set undef, Set def) {
+    if (typeDef != null)
+      typeDef.addUndef(undef, def);
+  }
+}
+</PRE>
+</TD></TR>
+</TABLE></TD></TR>
+</TABLE>
+</DIV><P></P>
+
+<P>
+
+<P></P>
+<DIV ALIGN="CENTER"><A NAME="fig:UML"></A><A NAME="56"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figure 2:</STRONG>
+UML diagram for XML Schemas.</CAPTION>
+<TR><TD><IMG
+ WIDTH="706" HEIGHT="473" BORDER="0"
+ SRC="img2.gif"
+ ALT="\begin{figure}\epsfig{file=UML.ps,height=6in,width=4in,angle=270}\end{figure}"></TD></TR>
+</TABLE>
+</DIV><P></P>
+
+<P>
+Note that the Law of Demeter is strictly followed: each method only
+refers to fields defined on the same class.  However, the overall
+algorithm is lost in the noise of all the traversal methods.
+The actual functional behavior is split between the <TT>Schema</TT> and
+<TT>Attribute</TT> classes.  Moreover, even though each method only
+refers to local fields, deciding whether to traverse a field requires
+knowledge of the overall class structure: for example, in
+<TT>SequenceGroup</TT>, the <TT>addDef</TT> method only needs to
+traverse the <TT>edecls</TT> field because an element declaration may
+include a type definition; if the object model were extended so that an
+attribute declaration could also include a type definition, the
+<TT>addDef</TT> method in <TT>ComplexType</TT> would have to be changed to
+traverse the <TT>adecls</TT> field, even though nothing about
+<TT>ComplexType</TT> itself changed.
+
+<P>
+Another way of implementing this example would be to use the Visitor
+design pattern&nbsp;[<A
+ HREF="node9.html#gang-of-4">5</A>], by creating two classes
+<TT>TypeDefVisitor</TT> and <TT>DeclVisitor</TT>, moving the traversal
+methods into <TT>visit</TT> methods on those classes, and making
+subclasses overriding <TT>visit(Attribute)</TT> to perform the behavior
+of checking for defined and undefined types.  While this would
+eliminate the scattering of traversal methods across the class
+structure, the same set of traversal methods would need to be written,
+and they would still need to be modified when the object model
+changes.
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html36"
+  HREF="node3.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/local/lib/latex2html/icons/next.gif"></A> 
+<A NAME="tex2html34"
+  HREF="dj.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/local/lib/latex2html/icons/up.gif"></A> 
+<A NAME="tex2html28"
+  HREF="node1.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/local/lib/latex2html/icons/prev.gif"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html37"
+  HREF="node3.html">DJ</A>
+<B> Up:</B> <A NAME="tex2html35"
+  HREF="dj.html">DJ: Dynamic Adaptive Programming</A>
+<B> Previous:</B> <A NAME="tex2html29"
+  HREF="node1.html">Introduction</A>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Doug Orleans
+2001-03-12
+</ADDRESS>
+</BODY>
+</HTML>

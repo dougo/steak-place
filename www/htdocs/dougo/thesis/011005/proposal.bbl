@@ -1,0 +1,24 @@
+\newcommand{\etalchar}[1]{$^{#1}$}
+\begin{thebibliography}{KLM{\etalchar{+}}97}
+
+\bibitem[EKC98]{predicate-dispatch}
+Michael~D. Ernst, Craig Kaplan, and Craig Chambers.
+\newblock Predicate dispatching: {A} unified theory of dispatch.
+\newblock In {\em Proceedings of ECOOP '98, the 12th European Conference on
+  Object-Oriented Programming}, pages 186--211, Brussels, Belgium, July 20--24
+  1998.
+
+\bibitem[K{\etalchar{+}}]{AspectJ}
+Gregor Kiczales et~al.
+\newblock Aspectj.
+\newblock Project web page.
+\newblock \texttt{\\ http://aspectj.org}.
+
+\bibitem[KLM{\etalchar{+}}97]{AOP}
+Gregor Kiczales, John Lamping, Anurag Mendhekar, Chris Maeda, Cristina~Videira
+  Lopes, Jean-Marc Loingtier, and John Irwin.
+\newblock Aspect-oriented programming.
+\newblock In {\em Proceedings of the European Conference on Object-Oriented
+  Programming (ECOOP)}. Springer-Verlag, June 1997.
+
+\end{thebibliography}

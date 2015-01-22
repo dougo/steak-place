@@ -1,0 +1,35 @@
+In order to separate behavioral concerns, programming languages allow
+behavioral units (such as procedures or methods) to be defined such
+that dispatching between units is handled implicitly: the definition
+of the behavioral unit includes a specification of when that behavior
+should be executed, and the language arranges for the right unit to be
+executed when the corresponding condition occurs.  For example, a
+method definition in a typical object-oriented language specifies that
+it should be run whenever a message matching the method name is sent
+to an instance of the class it is attached to.  Predicate dispatching
+\cite{pd} generalizes this notion so that a method can specify that it
+should be executed whenever an arbitrary predicate expression over the
+message arguments is true.  By making the "when to execute" part of a
+behavioral unit definition more flexible, we can better separate
+behavioral concerns that would otherwise need to be tangled together
+in an explicit dispatch expression.
+
+We are developing an extension to predicate dispatching that can lead
+to separation of cross-cutting behavioral concerns, by allowing
+methods to specify that they modify other methods, as well as by
+allowing their predicates to take into account other parts of a
+message send context such as the control flow history.  These
+extensions build a bridge between method dispatch research and
+aspect-oriented programming research, by unifying the mechanisms
+underlying both.
+
+
+
+In order to better understand and precisely specify the mechanisms for
+modularizing cross-cutting concerns, we are building up a set of
+formal semantics for aspect-oriented programming.  We have started
+with a denotational semantics for the basic building blocks of dynamic
+join points and advice as embodied by AspectJ, using a variant of
+store-passing monads to model computations at join points and modeling
+advice as procedure transformers.  Our goal is to develop a theory of
+AOP that accounts for other models such as Demeter and Hyper/J.

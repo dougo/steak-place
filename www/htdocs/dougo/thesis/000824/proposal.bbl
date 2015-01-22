@@ -1,0 +1,248 @@
+\newcommand{\etalchar}[1]{$^{#1}$}
+\begin{thebibliography}{HCC{\etalchar{+}}98}
+
+\bibitem[AC96]{theory-of-objects}
+Mart{\'\i}n Abadi and Luca Cardelli.
+\newblock {\em \htmladdnormallink{A Theory of
+  Objects}{http://www.luca.demon.co.uk/TheoryOfObjects.html}}.
+\newblock Springer, 1996.
+\newblock \texttt{\\ http://www.luca.demon.co.uk/TheoryOfObjects.html}.
+
+\bibitem[AIW99]{FJ}
+Benjamin~Pierce Atsushi~Igarashi and Philip Wadler.
+\newblock \htmladdnormallink{Featherweight Java: A Minimal Core Calculus for
+  Java and
+  GJ}{http://www.graco.c.u-tokyo.ac.jp/~igarashi/papers/oopsla99.html}.
+\newblock In {\em Proceedings of ACM Conference on Object-Oriented Programing,
+  Systems, Languages, and Applications (OOPSLA)}, volume~34, pages 132--146.
+  ACM SIGPLAN Notices, October 1999.
+\newblock \texttt{\\
+  http://www.graco.c.u-tokyo.ac.jp/\~{}igarashi/papers/oopsla99.html}.
+
+\bibitem[BCLZ93]{SchMUSE}
+Michael~R. Blair, Natalya Cohen, David~M. LaMacchia, and Brian~K. Zuzga.
+\newblock \htmladdnormallink{MIT SchMUSE: Class-Based Remote Delegation in a
+  Capricious Distributed
+  Environment}{ftp://publications.ai.mit.edu/ai-publications/1500-1999/AIM-154%
+7.ps.Z}.
+\newblock AI Memo 1547, MIT, February 1993.
+\newblock \texttt{\\
+  ftp://ftp.swiss.ai.mit.edu/pub/users/ziggy/Papers/Projects/SchMUSE/}.
+
+\bibitem[Blo]{FMPL}
+Jon Blow.
+\newblock
+  \htmladdnormallink{FMPL}{ftp://ftp.xcf.berkeley.edu/pub/src/local/fmpl/}.
+\newblock FTP directory.
+\newblock \texttt{\\ ftp://ftp.xcf.berkeley.edu/pub/src/local/fmpl/}.
+
+\bibitem[C{\etalchar{+}}]{Cecil}
+Craig Chambers et~al.
+\newblock \htmladdnormallink{Cecil
+  language}{http://www.cs.washington.edu/research/projects/cecil/www/cecil.htm%
+l}.
+\newblock Project web page.
+\newblock \texttt{\\
+  http://www.cs.washington.edu/research/projects/cecil/www/cecil.html}.
+
+\bibitem[CL97]{BeCecil}
+Craig Chambers and Gary Leavens.
+\newblock \htmladdnormallink{BeCecil, a Core Object-Oriented Language with
+  Block Structure and Multimethods: Semantics and Typing}{}.
+\newblock In {\em Proceedings of the The Fourth International Workshop on
+  Foundations of Object-Oriented Languages (FOOL 4)}, Paris, France, January
+  1997.
+\newblock \texttt{\\
+  http://www.cs.washington.edu/research/projects/cecil/www/Papers/BeCecil.html%
+}.
+
+\bibitem[Cow99]{MUD}
+Andrew Cowan.
+\newblock \htmladdnormallink{MUD FAQ}{http://www.mudconnect.com/mudfaq/}.
+\newblock Web page, August 1999.
+\newblock \texttt{\\ http://www.mudconnect.com/mudfaq/}.
+
+\bibitem[Cur97]{MOO}
+Pavel Curtis.
+\newblock {\em \htmladdnormallink{LambdaMOO Programmer's Manual for version
+  1.8.0p6}{ftp://ftp.research.att.com/dist/eostrom/MOO/html/ProgrammersManual_%
+toc.html}}, March 1997.
+\newblock \texttt{\\ http://www.moo.mud.org/}.
+
+\bibitem[CvE98]{JRes}
+Grzegorz Czajkowski and Thorsten von Eicken.
+\newblock \htmladdnormallink{JRes: A Resource Accounting Interface for
+  Java}{http://www.cs.cornell.edu/slk/papers/tr98-1715.pdf}.
+\newblock In {\em Proceedings of 1998 ACM OOPSLA Conference}, Vancouver, BC,
+  October 1998.
+\newblock \texttt{\\ http://www.cs.cornell.edu/slk/papers.html}.
+
+\bibitem[ES90]{ARM}
+Margaret~A. Ellis and Bjarne Stroustrup.
+\newblock {\em \htmladdnormallink{The Annotated C++ Reference
+  Manual}{http://www.research.att.com/~bs/arm.html}}.
+\newblock Addison Wesley, May 1990.
+\newblock \texttt{\\ http://www.research.att.com/\~{}bs/arm.html}.
+
+\bibitem[Gil]{ColdC}
+Brandon Gillespie.
+\newblock {\em \htmladdnormallink{ColdC 1.1 Reference
+  Manual}{http://ice.cold.org/bin/help?node=help_coldc}}.
+\newblock \texttt{\\ http://www.cold.org/}.
+
+\bibitem[GJS96]{JLS}
+James Gosling, Bill Joy, and Guy Steele.
+\newblock {\em \htmladdnormallink{The Java Language
+  Specification}{http://java.sun.com/docs/books/jls/}}.
+\newblock Addison Wesley, 1996.
+\newblock \texttt{\\ http://java.sun.com/docs/books/jls/}.
+
+\bibitem[HCC{\etalchar{+}}98]{J-Kernel}
+Chris Hawblitzel, Chi-Chao Chang, Grzegorz Czajkowski, Deyu Hu, and Thorsten
+  von Eicken.
+\newblock \htmladdnormallink{Implementing Multiple Protection Domains in
+  Java}{http://www.cs.cornell.edu/slk/papers/usenix98-final.pdf}.
+\newblock In {\em Proceedings of the 1998 USENIX Annual Technical Conference},
+  New Orleans, LA, June 1998.
+\newblock \texttt{\\ http://www.cs.cornell.edu/slk/papers.html}.
+
+\bibitem[K{\etalchar{+}}]{AspectJ}
+Gregor Kiczales et~al.
+\newblock \htmladdnormallink{AspectJ}{http://aspectj.org}.
+\newblock Project web page.
+\newblock \texttt{\\ http://aspectj.org}.
+
+\bibitem[KdRB91]{AMOP}
+Gregor Kiczales, Jim des Rivi{\`e}res, and Daniel~G. Bobrow.
+\newblock {\em \htmladdnormallink{The Art of the Metaobject
+  Protocol}{http://www.parc.xerox.com/csl/groups/sda/publications/papers/Kicza%
+les-AMOP/}}.
+\newblock The MIT Press, 1991.
+\newblock \texttt{\\
+  http://www.parc.xerox.com/csl/groups/sda/publications/papers/Kiczales-AMOP/}.
+
+\bibitem[L{\etalchar{+}}]{DemeterJava}
+Karl Lieberherr et~al.
+\newblock
+  \htmladdnormallink{Demeter}{http://www.ccs.neu.edu/research/demeter/}.
+\newblock Project web page.
+\newblock \texttt{\\ http://www.ccs.neu.edu/research/demeter/}.
+
+\bibitem[Lesa]{DGD}
+Rob Leslie.
+\newblock \htmladdnormallink{DGD: Dworkin's Generic
+  Driver}{http://www.mars.org/home/rob/dgd.html}.
+\newblock Project web page.
+\newblock \texttt{\\ http://www.mars.org/home/rob/dgd.html}.
+
+\bibitem[Lesb]{LPMOO}
+Rob Leslie.
+\newblock \htmladdnormallink{LPMOO: Simulating MOO with
+  DGD}{http://www.mars.org/home/rob/proj/lpmoo/}.
+\newblock Project web page.
+\newblock \texttt{\\ http://www.mars.org/home/rob/proj/lpmoo/}.
+
+\bibitem[LO97]{DemeterJavaRD}
+Karl~J. Lieberherr and Doug Orleans.
+\newblock \htmladdnormallink{Preventive Program Maintenance in {Demeter/Java}
+  (Research
+  Demonstration)}{http://www.ccs.neu.edu/research/demeter/biblio/demjava.html}.
+\newblock In {\em International Conference on Software Engineering}, pages
+  604--605, Boston, MA, 1997. ACM Press.
+\newblock \texttt{\\
+  http://www.ccs.neu.edu/research/demeter/biblio/demjava.html}.
+
+\bibitem[Lou]{Smalltalk}
+Peter~William Lount.
+\newblock \htmladdnormallink{Smalltalk.org}{http://www.smalltalk.org/}.
+\newblock Web page.
+\newblock \texttt{\\ http://www.smalltalk.org/}.
+
+\bibitem[Mal94]{CL-HTTP}
+John~C. Mallery.
+\newblock \htmladdnormallink{A Common LISP Hypermedia
+  Server}{http://www.ai.mit.edu/projects/iiip/doc/cl-http/server-abstract.html%
+}.
+\newblock In {\em Proceedings of The First International Conference on The
+  World-Wide Web}, Geneva, May 25 1994. CERN.
+\newblock \texttt{\\
+  http://www.ai.mit.edu/projects/iiip/doc/cl-http/server-abstract.html}.
+
+\bibitem[MS]{E}
+Mark~S. Miller and Jonathan Shapiro.
+\newblock \htmladdnormallink{ELib and the E Language}{http://erights.org/}.
+\newblock Project web page.
+\newblock \texttt{\\ http://erights.org/}.
+
+\bibitem[MUS]{MUSH}
+\htmladdnormallink{TinyMUSH 3.0}{http://www.godlike.com/3.0/}.
+\newblock Web page.
+\newblock \texttt{\\ http://www.godlike.com/3.0/}.
+
+\bibitem[Obj]{CORBA}
+Object Management Group (OMG).
+\newblock {\em \htmladdnormallink{Corba for
+  beginners}{http://cgi.omg.org/corba/beginners.html}}.
+\newblock \texttt{\\ http://cgi.omg.org/corba/beginners.html}.
+
+\bibitem[Pro]{Muq}
+Jeff Prothero.
+\newblock \htmladdnormallink{Muq}{http://www.muq.org/~cynbe/muq/}.
+\newblock Project web page.
+\newblock \texttt{\\ http://www.muq.org/\~{}cynbe/muq/}.
+
+\bibitem[Ree93a]{LPC-interm}
+George Reese.
+\newblock {\em \htmladdnormallink{Intermediate
+  LPC}{http://www.mars.org/home/rob/docs/IntermediateLPC/Contents.html}},
+  November 1993.
+\newblock \texttt{\\ http://www.mars.org/home/rob/docs/descartes-index.html}.
+
+\bibitem[Ree93b]{LPC-basic}
+George Reese.
+\newblock {\em \htmladdnormallink{LPC
+  Basics}{http://www.mars.org/home/rob/docs/BasicLPC/Contents.html}}, April
+  1993.
+\newblock \texttt{\\ http://www.mars.org/home/rob/docs/descartes-index.html}.
+
+\bibitem[Ree96]{W7}
+Jonathan~A. Rees.
+\newblock \htmladdnormallink{A Security Kernel Based on the
+  Lambda-Calculus}{http://mumble.net/jar/pubs/secureos/}.
+\newblock AI Memo 1564, MIT, 1996.
+\newblock \texttt{\\ http://mumble.net/jar/pubs/secureos/}.
+
+\bibitem[Ste90]{Lisp}
+Guy~L. Steele.
+\newblock {\em \htmladdnormallink{Common Lisp The
+  Language}{http://www.cs.cmu.edu/Groups/AI/html/cltl/cltl2.html}}.
+\newblock Digital Press, 2nd edition, 1990.
+\newblock \texttt{\\ http://www.cs.cmu.edu/Groups/AI/html/cltl/cltl2.html}.
+
+\bibitem[Str]{POO}
+Joe Strout.
+\newblock {\em \htmladdnormallink{POO Programmer's
+  Reference}{http://www.strout.net/python/poo/pooref.html}}.
+\newblock \texttt{\\ http://www.strout.net/python/poo/}.
+
+\bibitem[vE]{SLK}
+Thorsten von Eicken.
+\newblock \htmladdnormallink{SLK: The Safe Language Kernel
+  Project}{http://www.cs.cornell.edu/slk/}.
+\newblock Project web page.
+\newblock \texttt{\\ http://www.cs.cornell.edu/slk/}.
+
+\bibitem[Whi]{coolmud}
+Stephen White.
+\newblock
+  \htmladdnormallink{coolmud}{http://www.csclub.uwaterloo.ca/u/sfwhite/}.
+\newblock Personal web page.
+\newblock \texttt{\\ http://www.csclub.uwaterloo.ca/u/sfwhite/}.
+
+\bibitem[Win94]{MUSEME}
+Dan Winship.
+\newblock {\em \htmladdnormallink{MUSEME User's
+  Manual}{http://www.ccs.neu.edu/home/dougo/museme/manual.txt}}, August 1994.
+\newblock \texttt{\\ http://www.ccs.neu.edu/home/dougo/museme/}.
+
+\end{thebibliography}
