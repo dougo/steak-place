@@ -15,7 +15,7 @@
 ;;; TODO: parent directory, column sorting
 
 
-(define *htdocs* "..")
+(define *htdocs* "../../../public")
 
 (define (access-allowed? root path)
   (and (path? path)

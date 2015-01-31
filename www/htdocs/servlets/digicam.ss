@@ -11,7 +11,7 @@
 (require (only-in (lib "struct.ss") copy-struct))
 (require (only-in (lib "1.ss" "srfi") filter filter-map))
 
-(define *web-root* (build-path (this-expression-source-directory) 'up))
+(define *web-root* (build-path (this-expression-source-directory) 'up 'up "public"))
 (define *htdocs* (build-path *web-root* "htdocs"))
 (define *digicam-root*
   (build-path *web-root* "digicam")
