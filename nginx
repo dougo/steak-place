@@ -16,7 +16,7 @@ server {
     try_files $uri $uri/ =404;
   }
 
-  location ~ \.(rkt|ss|scm)$ {
+  location ~ \.(rkt|ss|scm)(\;.*)?$ {
     try_files $uri $uri/ @racket;
   }
 
