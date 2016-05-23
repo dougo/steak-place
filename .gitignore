@@ -16,3 +16,7 @@
 !/log/.keep
 /tmp
 /www/log
+
+# Ignore sensitive data that should not be on github.
+/www/data/email
+/www/data/names
