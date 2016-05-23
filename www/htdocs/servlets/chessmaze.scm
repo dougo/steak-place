@@ -151,6 +151,7 @@
         (p "by Mark J. P. Wolf (" (tt "mark.wolf") " at " (tt "cuw.edu") ")."
            "  Originally appeared at "
            (a ((href "http://mathpuzzle.com")) "Mathpuzzle.com") ".")
+        ;; TODO: link to new versions
         (p "Starting with the White Queen at a8, capture your way to the White King at h1.  Pieces capture as they do in chess (except pawns, which can capture one square diagonally in any direction), and pieces can only capture pieces of the opposite color.  However, once a capture is made your piece becomes the type of piece that was just captured (and moves accordingly on the next move) and all moves must end in a capture.  Pieces that are captured are removed from the board, so the number of pieces on the board gradually decreases.  (For an easy warm-up, try capturing the black queen in five moves, or the black pawn at a1 in nine moves).")
         (p "Note that this servlet does not (yet) enforce the movement rules, just the color capture rule.")
         (table ((cellspacing "0"))

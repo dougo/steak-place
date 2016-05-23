@@ -50,7 +50,7 @@ END
          (body
           (h1 (hr) "Chess Maze")
           (p "by "
-             (a ((href "http://www.cuw.edu/fs/markwolf")) "Mark J. P. Wolf")
+             (a ((href "http://www.cuw.edu/fs/markjwolf")) "Mark J. P. Wolf")
              ".  Originally appeared at "
              (a ((href "http://mathpuzzle.com")) "Mathpuzzle.com")
              " on "
