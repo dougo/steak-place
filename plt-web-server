@@ -1,0 +1,64 @@
+#! /usr/bin/python
+
+# Symlink to this file from /etc/init.d/plt-web-server and install it with: sudo update-rc.d plt-web-server defaults
+
+### BEGIN INIT INFO
+# Provides:          plt-web-server
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start Racket web server at boot time
+# Description:       Serve Racket servlets at port 8080.
+### END INIT INFO
+
+user = 'dougo'
+service = 'plt-web-server'
+path = '/usr/bin/'
+import pwd
+pw = pwd.getpwnam(user)
+home = pw.pw_dir
+root = home + '/steak-place'
+args = ['-f', root + '/www/configuration-table']
+env = {'PLTCOLLECTS': root + '/www/collects/:'}
+
+import subprocess, sys, time, os
+
+call = ['start-stop-daemon', '--pidfile', '/var/run/' + service + '.pid']
+
+def start():
+    # Forward port 80 to port 8080.
+# Use this if you're not running nginx or apache.
+#    subprocess.call(['/sbin/iptables', '-t', 'nat', '-A', 'PREROUTING',
+#                     '-i', 'eth0', '-p', 'tcp', '--dport', '80',
+#                     '-j', 'REDIRECT', '--to-port', '8080'])
+    newenv = os.environ.copy()
+    newenv.update(env)
+    subprocess.call(call + ['--start',
+                            '--startas', path + service,
+                            '--background', '--make-pidfile',
+                            '--chuid', user,
+                            '--'] + args,
+                    env=newenv)
+
+def stop():
+    subprocess.call(call + ['--stop'])
+    # Delete the port forwarding rule.
+#    subprocess.call(['/sbin/iptables', '-t', 'nat', '-D', 'PREROUTING',
+#                     '-i', 'eth0', '-p', 'tcp', '--dport', '80',
+#                     '-j', 'REDIRECT', '--to-port', '8080'])
+
+def restart():
+    stop()
+    time.sleep(1)
+    start()
+
+def reload():
+    pass
+
+switch = {'start': start, 'stop': stop, 'restart': restart,
+          'reload': reload, 'force-reload': restart}
+if len(sys.argv) > 1 and sys.argv[1] in switch:
+    switch[sys.argv[1]]()
+else:
+    print 'Usage: /etc/init.d/' + service + ' {start|stop|reload|force-reload|restart}'
