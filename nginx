@@ -12,11 +12,18 @@ server {
   # Make site accessible from http://localhost/
   server_name localhost;
 
-  passenger_enabled on;
-  passenger_ruby /home/dougo/.rbenv/shims/ruby;
+  # Handle 'dougo' if the 'dougo/' directory exists, otherwise forward to passenger.
+  location / {
+    try_files $uri $uri/ @passenger;
+  }
 
-  # /bin is needed for bash; /usr/bin is needed so that execjs can find node
-  passenger_env_var PATH /home/dougo/.rbenv/shims:/bin:/usr/bin;
+  location @passenger {
+    passenger_enabled on;
+    passenger_ruby /home/dougo/.rbenv/shims/ruby;
+
+    # /bin is needed for bash; /usr/bin is needed so that execjs can find node
+    passenger_env_var PATH /home/dougo/.rbenv/shims:/bin:/usr/bin;
+  }
 
   location ~ \.(rkt|ss|scm)(\;.*)?$ {
     try_files $uri $uri/ @racket;
