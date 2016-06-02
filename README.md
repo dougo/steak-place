@@ -5,7 +5,7 @@ but in the process of being converted to Ruby on Rails.
 Steps to install on a new server (from this directory):
 
 1. You may need to edit some config files if this directory is not in /home/dougo/steak-place.
-2. sudo apt-get install libssl-dev libreadline-dev racket
+2. sudo apt-get install libssl-dev libreadline-dev libsqlite3-dev nodejs racket
 3. Install rbenv and rbenv-install: https://github.com/rbenv/rbenv#installation
 4. rbenv install 2.3.0 (or something later)
 5. Install rbenv-vars: git clone https://github.com/rbenv/rbenv-vars.git ~/.rbenv/plugins/rbenv-vars
