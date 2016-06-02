@@ -20,3 +20,7 @@
 # Ignore sensitive data that should not be on github.
 /www/data/email
 /www/data/names
+.rbenv-vars
+
+# Ignore precompiled assets.
+public/assets/

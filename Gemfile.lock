@@ -1,5 +1,6 @@
-PATH
-  remote: /home/dougo/pathpuz
+GIT
+  remote: git://github.com/dougo/pathpuz.git
+  revision: 054c1c9a0b61d428704876cb5ad6e1ebcd667774
   specs:
     pathpuz (0.0.1)
       haml-rails
@@ -133,6 +134,9 @@ GEM
       opal (>= 0.5.0, < 1.0.0)
       opal-activesupport
       opal-jquery
+    passenger (5.0.28)
+      rack
+      rake (>= 0.8.1)
     rack (1.6.4)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -209,6 +213,7 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   jbuilder (~> 2.0)
   jquery-rails
+  passenger (>= 5.0.25)
   pathpuz!
   rails (= 4.2.6)
   sass-rails (~> 5.0)
