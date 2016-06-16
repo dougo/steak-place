@@ -1,0 +1,3 @@
+[submodule "pathpuz"]
+	path = pathpuz
+	url = git@github.com:dougo/pathpuz.git

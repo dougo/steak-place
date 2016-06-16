@@ -1,6 +1,5 @@
-GIT
-  remote: git://github.com/dougo/pathpuz.git
-  revision: b56201f291d06c58cc179409aa521170de9e87f8
+PATH
+  remote: pathpuz
   specs:
     pathpuz (0.0.1)
       haml-rails

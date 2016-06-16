@@ -33,7 +33,7 @@ gem "passenger", ">= 5.0.25", require: "phusion_passenger/rack_handler"
 # gem 'capistrano-rails', group: :development
 
 # Use the Pathpuz mountable engine
-gem 'pathpuz', github: "dougo/pathpuz"
+gem 'pathpuz', path: 'pathpuz'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
