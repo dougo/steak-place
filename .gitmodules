@@ -1,3 +1,12 @@
 [submodule "pathpuz"]
 	path = pathpuz
 	url = git@github.com:dougo/pathpuz.git
+[submodule "public/puzzle-tools"]
+	path = public/puzzle-tools
+	url = git@github.com:dougo/puzzle-tools.git
+[submodule "public/games/equinox"]
+	path = public/games/equinox
+	url = git@github.com:dougo/equinox.git
+[submodule "public/games/wordsearch"]
+	path = public/games/wordsearch
+	url = git@github.com:dougo/wordsearch.git
