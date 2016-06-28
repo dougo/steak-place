@@ -22,6 +22,7 @@ Steps to install on a new server (from this directory):
 
 Steps to deploy a new release:
 1. git pull
-2. bundle
-3. rake assets:precompile
-4. passenger-config restart-app $PWD
+2. git submodule update --remote
+3. bundle
+4. rake assets:precompile
+5. passenger-config restart-app .
