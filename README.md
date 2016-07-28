@@ -24,5 +24,5 @@ Steps to deploy a new release:
 1. git pull
 2. git submodule update --remote
 3. bundle
-4. rake assets:precompile
+4. RAILS_ENV=production rails assets:precompile
 5. passenger-config restart-app .
