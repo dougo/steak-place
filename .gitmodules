@@ -10,3 +10,6 @@
 [submodule "public/games/wordsearch"]
 	path = public/games/wordsearch
 	url = git@github.com:dougo/wordsearch.git
+[submodule "public/randomwalk"]
+	path = public/randomwalk
+	url = git@github.com:dougo/randomwalk.git
