@@ -140,7 +140,7 @@ GEM
     passenger (5.1.2)
       rack
       rake (>= 0.8.1)
-    rack (2.2.3)
+    rack (2.2.6.3)
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (5.0.2)
