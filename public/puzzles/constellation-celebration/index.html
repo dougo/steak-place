@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html land="en">
+  <head>
+    <title>Constellation Celebration</title>
+    <style>
+      body { text-align: center }
+      rect { fill: #3c3b6e }
+      path { fill: #fff }
+      text { font-size: 0.4px; fill: #fff }
+    </style>
+  </head>
+  <body>
+    <h1>Constellation Celebration</h1>
+
+    <p style="font-style: italic">
+      In honor of <a href="https://suberic.net/~dmm/puzzles/50th/birthday_puzzles.html">this celebration</a>,
+      13 new constellations have been identified!
+      <br />
+      Assign their names and assemble them into a starfield to find out what we're celebrating.
+      <br />
+      <small>
+        (This puzzle is also available
+        <a href="constellation-celebration.pdf">as a PDF file</a>.
+        But if you print it, it will use a lot of blue ink. Sorry about that!)
+      </small>
+    </p>
+
+    <div style="width: 925px; margin: 40px auto">
+      <div style="font: 16px sans-serif; font-weight: bold; text-align: center;
+                  margin: 20px; position: absolute">
+        <div>CNTV</div>
+        <div>CONJOINED</div>
+        <div>GALACTIC</div>
+        <div>INDEMNIFY</div>
+        <div>KAVA KAVA</div>
+        <div>MAMMOTH MTN.</div>
+        <div>MUNTZ </div>
+        <div>SHINY DIAMOND</div>
+        <div>SMIRK</div>
+        <div>SPARKS, NV</div>
+        <div>WARMTH</div>
+        <div>WAX CANDLE</div>
+        <div>WILLOWY</div>
+      </div>
+
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+           width="925" height="2000" viewBox="0 0 23 50">
+        <defs>
+          <svg id=s width=1 height=1 viewBox="0 0 51 48"> <!-- TOOD: make this 50x50? -->
+            <path d="m25,1 6,17 h18 l-14,11 5,17 -15,-10 -15,10 5,-17 -14,-11 h18 z" />
+          </svg>
+          <svg id=l width=1 height=1 viewBox="0 0 51 48">
+            <path d="m25,1 -6,17 h-18 l14,11 -5,17 15,-10 z" />
+          </svg>
+          <svg id=r width=1 height=1 viewBox="0 0 51 48">
+            <path d="m25,1 6,17 h18 l-14,11 5,17 -15,-10 z" />
+          </svg>
+        </defs>
+
+        <svg x=5>
+          <rect width=4 height=7 />
+          <use xlink:href=#r x=3 y=0 /> <text x=3 y=1>&gamma;7</text>
+          <use xlink:href=#l x=1 y=2 /> <text x=1 y=2>&delta;3</text>
+          <use xlink:href=#r x=0 y=5 /> <text x=1 y=5>&beta;9</text>
+          <use xlink:href=#s x=2 y=5 /> <text x=3 y=5>&epsilon;4</text>
+          <use xlink:href=#s x=1 y=6 /> <text x=2 y=6.8>&alpha;5</text>
+          <text style="fill: #000" y=7.5>Total brightness: 7</text>
+        </svg>
+        <svg x=10>
+          <rect width=5 height=8 />
+          <use xlink:href=#s x=3 y=0 /> <text x=2.5 y=1>&alpha;7</text>
+          <use xlink:href=#s x=4 y=1 /> <text x=3.5 y=2>&beta;5</text>
+          <use xlink:href=#s x=0 y=3 /> <text x=1 y=3>&epsilon;6</text>
+          <use xlink:href=#r x=1 y=4 /> <text x=2 y=4>&zeta;4</text>
+          <use xlink:href=#l x=2 y=5 /> <text x=2.8 y=5>&delta;7</text>
+          <use xlink:href=#l x=2 y=7 /> <text x=2 y=7>&gamma;7</text>
+          <text style="fill: #000" y=8.5>Total brightness: 9</text>
+        </svg>
+        <svg x=16>
+          <rect width=7 height=9 />
+          <use xlink:href=#l x=6 y=0 /> <text x=6 y=1.5>&gamma;2</text>
+          <use xlink:href=#l x=0 y=2 /> <text x=0.7 y=2>&alpha;4</text>
+          <use xlink:href=#r x=2 y=2 /> <text x=2.7 y=2>&delta;7</text>
+          <use xlink:href=#l x=1 y=7 /> <text x=1 y=7>&beta;4</text>
+          <use xlink:href=#r x=4 y=8 /> <text x=4 y=8>&epsilon;2</text>
+          <text style="fill: #000" y=9.5>Total brightness: 5</text>
+        </svg>
+
+        <svg y=9>
+          <rect width=8 height=8 />
+          <use xlink:href=#s x=7 y=0 /> <text x=6.5 y=1>&delta;4</text>
+          <use xlink:href=#r x=5 y=2 /> <text x=5 y=2>&gamma;4</text>
+          <use xlink:href=#l x=5 y=6 /> <text x=5 y=6>&epsilon;9</text>
+          <use xlink:href=#s x=0 y=7 /> <text x=0.1 y=7>&zeta;3</text>
+          <use xlink:href=#l x=2 y=7 /> <text x=2 y=7>&alpha;4</text>
+          <use xlink:href=#l x=4 y=7 /> <text x=4 y=7>&beta;2</text>
+          <text style="fill: #000" y=8.5>Total brightness: 8</text>
+        </svg>
+        <svg x=9 y=10>
+          <rect width=8 height=7 />
+          <use xlink:href=#l x=6 y=0 /> <text x=6.6 y=1>&gamma;3</text>
+          <use xlink:href=#l x=0 y=2 /> <text x=0.6 y=2>&delta;7</text>
+          <use xlink:href=#l x=7 y=3 /> <text x=7 y=3>&beta;2</text>
+          <use xlink:href=#r x=4 y=6 /> <text x=4 y=6>&alpha;1</text>
+          <text style="fill: #000" y=7.5>Total brightness: 4</text>
+        </svg>
+        <svg x=18 y=10>
+          <rect width=5 height=7 />
+          <use xlink:href=#s x=0 y=0 /> <text x=0.1 y=1.3>&beta;8</text>
+          <use xlink:href=#r x=1 y=1 /> <text x=2 y=1>&gamma;1</text>
+          <use xlink:href=#r x=4 y=4 /> <text x=4 y=4>&delta;3</text>
+          <use xlink:href=#l x=4 y=6 /> <text x=4 y=6>&alpha;1</text>
+          <text style="fill: #000" y=7.5>Total brightness: 5</text>
+        </svg>
+
+        <svg y=18>
+          <rect width=9 height=7 />
+          <use xlink:href=#r x=8 y=0 /> <text x=8 y=1>&beta;3</text>
+          <use xlink:href=#r x=0 y=2 /> <text x=1 y=2>&zeta;4</text>
+          <use xlink:href=#s x=4 y=2 /> <text x=4 y=2>&delta;2</text>
+          <use xlink:href=#s x=6 y=2 /> <text x=6 y=2>&gamma;1</text>
+          <use xlink:href=#r x=3 y=5 /> <text x=3 y=5>&epsilon;7</text>
+          <use xlink:href=#s x=8 y=6 /> <text x=8 y=6>&alpha;4</text>
+          <text style="fill: #000" y=7.5>Total brightness: 9</text>
+        </svg>
+        <svg x=10 y=18>
+          <rect width=11 height=5 />
+          <use xlink:href=#r x=10 y=0 /><text x=10 y=1>&alpha;9</text>
+          <use xlink:href=#s x=4 y=2 /> <text x=4 y=2>&delta;2</text>
+          <use xlink:href=#s x=8 y=2 /> <text x=8 y=2>&beta;5</text>
+          <use xlink:href=#l x=10 y=2 /><text x=10 y=2>&gamma;1</text>
+          <use xlink:href=#s x=0 y=4 /> <text x=0.6 y=4>&epsilon;2</text>
+          <text style="fill: #000" y=5.5>Total brightness: 8</text>
+        </svg>
+
+        <svg y=26>
+          <rect width=11 height=7 />
+          <use xlink:href=#s x=10 y=0 /><text x=9.5 y=0.5>&epsilon;1</text>
+          <use xlink:href=#s x=1 y=1 /> <text x=1 y=1>&gamma;1</text>
+          <use xlink:href=#r x=9 y=1 /> <text x=9 y=2>&delta;7</text>
+          <use xlink:href=#s x=0 y=4 /> <text x=0.6 y=4>&beta;5</text>
+          <use xlink:href=#l x=2 y=4 /> <text x=2 y=4>&alpha;4</text>
+          <use xlink:href=#l x=5 y=5 /> <text x=5 y=5>&eta;1</text>
+          <use xlink:href=#s x=7 y=5 /> <text x=7 y=5>&zeta;2</text>
+          <use xlink:href=#r x=4 y=6 /> <text x=4 y=6>&theta;2</text>
+          <text style="fill: #000" y=7.5>Total brightness: 12</text>
+        </svg>
+        <svg x=12 y=26>
+          <rect width=9 height=3 />
+          <use xlink:href=#l x=4 y=0 /> <text x=4.7 y=0.5>&alpha;4</text>
+          <use xlink:href=#s x=0 y=2 /> <text x=0.6 y=2>&beta;5</text>
+          <use xlink:href=#r x=4 y=2 /> <text x=4 y=2.9>&delta;1</text>
+          <use xlink:href=#s x=8 y=2 /> <text x=8 y=2>&gamma;5</text>
+          <text style="fill: #000" y=3.5>Total brightness: 6</text>
+        </svg>
+        <svg x=12 y=30>
+          <rect width=9 height=4 />
+          <use xlink:href=#s x=5 y=0 /> <text x=4.6 y=1>&gamma;1</text>
+          <use xlink:href=#r x=7 y=0 /> <text x=7 y=0.5>&epsilon;2</text>
+          <use xlink:href=#r x=8 y=1 /> <text x=8 y=1.6>&delta;1</text>
+          <use xlink:href=#s x=0 y=3 /> <text x=0.6 y=3>&alpha;7</text>
+          <use xlink:href=#s x=8 y=3 /> <text x=7.5 y=3.5>&beta;2</text>
+          <text style="fill: #000" y=4.5>Total brightness: 8</text>
+        </svg>
+
+        <svg y=35>
+          <rect width=9 height=9 />
+          <use xlink:href=#s x=0 y=0 /> <text x=1 y=1>&alpha;1</text>
+          <use xlink:href=#l x=8 y=2 /> <text x=8 y=2>&epsilon;7</text>
+          <use xlink:href=#s x=3 y=3 /> <text x=3 y=3>&gamma;2</text>
+          <use xlink:href=#l x=4 y=6 /> <text x=4 y=6>&delta;2</text>
+          <use xlink:href=#r x=2 y=8 /> <text x=2 y=8>&zeta;4</text>
+          <use xlink:href=#s x=8 y=8 /> <text x=8 y=8>&beta;5</text>
+          <text style="fill: #000" y=9.5>Total brightness: 9</text>
+        </svg>
+        <svg x=10 y=35>
+          <rect width=10 height=9 />
+          <use xlink:href=#r x=5 y=0 /> <text x=5 y=1>&gamma;2</text>
+          <use xlink:href=#l x=2 y=1 /> <text x=2 y=1>&delta;1</text>
+          <use xlink:href=#l x=8 y=1 /> <text x=8 y=1>&beta;7</text>
+          <use xlink:href=#l x=9 y=2 /> <text x=9 y=2>&eta;9</text>
+          <use xlink:href=#r x=0 y=7 /> <text x=0.3 y=8.2>&epsilon;4</text>
+          <use xlink:href=#r x=2 y=7 /> <text x=2 y=7>&zeta;7</text>
+          <use xlink:href=#s x=8 y=7 /> <text x=8 y=7>&alpha;0</text>
+          <use xlink:href=#s x=9 y=8 /> <text x=8.5 y=8.7>&theta;6</text>
+          <text style="fill: #000" y=9.5>Total brightness: 10</text>
+        </svg>
+      </svg>
+    </div>
+
+    <p>
+      Feel free to <a href="mailto:door@hey.com">email</a> <a href="/dougo/">me</a> if you need hints.
+      Or read the <a href="solution.html">full solution</a>.
+    </p>
+      
+  </body>
+</html>

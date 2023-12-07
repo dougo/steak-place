@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html land="en">
+  <head>
+    <title>Solution for Constellation Celebration</title>
+    <style>
+      .center { text-align: center }
+      rect { fill: #3c3b6e }
+      path { fill: #fff }
+      text { font-size: 0.3px; fill: #fff }
+      text.s { fill: #000; font-family: sans-serif; font-weight: bold; text-anchor: middle }
+      div.table { display: table; margin: 40px auto }
+      div.table-row { display: table-row }
+      span { display: table-cell; padding: 0px 10px }
+    </style>
+  </head>
+  <body>
+    <h1 class=center>Solution for Constellation Celebration</h1>
+    <h3 class=center>Author: <a href="/dougo/">Doug Orleans</a></h3>
+
+    <p>
+      As indicated in the instructions, there are two stages to solving <a href=".">this puzzle</a>:
+      assigning names to the constellations, and assembling them into a starfield.
+    </p>
+
+    <p>
+      The first thing to notice is that the "total brightness" of a constellation corresponds to the total number
+      of half-stars in the constellation, i.e. count each half-star as 1 and full star as 2. Next, notice that the
+      total brightnesses of the 13 constellations correspond to the enumerations of the 13 names (ignoring spaces
+      and punctuation), ranging from 4 (CNTV) to 12 (SHINY DIAMOND). Putting these together, each name can be
+      written on a constellation, with one letter in each half-star and two letters in each full star.
+    </p>
+
+    <p>
+      A useful thing to know about constellations is that its stars are typically assigned Greek letters in
+      alphabetical order, often in order of brightness. (Ignore the numbers for now.) This gives an ordering for
+      writing in the letters of a constellation's name onto the stars. This means you can go ahead and write the
+      names with unique enumerations onto the constellations with total brightnesses 4, 10, and 12 in the
+      corresponding Greek alphabet order (&alpha;, &beta;, &gamma;, etc).
+    </p>
+
+    <p>
+      For the constellation MAMMOTH MTN. (total brightness 10), this results in writing MA on the &alpha; star and
+      TN on the &theta; star. Likewise, for the constellation SHINY DIAMOND (total brightness 12), write HI on
+      &beta;, NY on &gamma;, IA on &epsilon;, and MO on &zeta;. It turns out that these bigrams are all US state
+      postal abbreviations; this allows you to uniquely assign the names to constellations so that every full star
+      is a different US state:
+      <ul style="font: 16px sans-serif; font-weight: bold; text-align: center">
+        <div>C-N-T-V</div>
+        <div>CO-NJ-O-I-NE-D</div>
+        <div>GA-LA-CT-I-C</div>
+        <div>IN-DE-MN-I-F-Y</div>
+        <div>K-A-V-AK-A-VA</div>
+        <div>MA-M-M-O-T-H-M-TN</div>
+        <div>M-U-N-T-Z</div>
+        <div>S-HI-NY-D-IA-MO-N-D</div>
+        <div>S-MI-R-K</div>
+        <div>S-PA-R-KS-NV</div>
+        <div>W-AR-M-TH</div>
+        <div>WA-X-CA-ND-L-E</div>
+        <div>WI-L-L-O-WY</div>
+      </ul>
+    </p>
+
+    <p>
+      The fact that each star corresponds to a US state, plus the color scheme of white stars on rectangular blue
+      backgrounds, indicates that the starfield to be assembled is, in fact, the canton of the US flag, also known
+      as the <a href="https://en.wikipedia.org/wiki/Jack_of_the_United_States">jack of the United States</a>. It
+      turns out that the left and right half-stars can be matched up to form all the remaining US state
+      abbreviations.  Conveniently, the numbers after the Greek letters are the same for matching pairs, which
+      should help with assembly. Also, the largest constellation, MAMMOTH MTN., covers almost the entire rectangle
+      of the starfield, so that's a useful place to anchor the assembly.
+    </p>
+
+    <div style="width: 925px; margin: 40px auto">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+           width="925" height="400" viewBox="0 0 23 10">
+        <defs>
+          <svg id=s width=1 height=1 viewBox="0 0 51 48"> <!-- TOOD: make this 50x50? -->
+            <path d="m25,1 6,17 h18 l-14,11 5,17 -15,-10 -15,10 5,-17 -14,-11 h18 z" />
+          </svg>
+        </defs>
+        <svg x=5 y=0>
+          <rect width=11 height=9 />
+          <use xlink:href=#s x=0 y=0 /> <text x=0.7 y=0.3>1</text> <text class=s x=0.5 y=0.64>IN</text>
+          <use xlink:href=#s x=2 y=0 /> <text x=2.7 y=0.3>8</text> <text class=s x=2.5 y=0.64>MI</text>
+          <use xlink:href=#s x=4 y=0 /> <text x=4.7 y=0.3>7</text> <text class=s x=4.5 y=0.64>CO</text>
+          <use xlink:href=#s x=6 y=0 /> <text x=6.7 y=0.3>2</text> <text class=s x=6.5 y=0.64>NM</text>
+          <use xlink:href=#s x=8 y=0 /> <text x=8.7 y=0.3>3</text> <text class=s x=8.5 y=0.64>TX</text>
+          <use xlink:href=#s x=10 y=0 /> <text x=10.7 y=0.3>1</text> <text class=s x=10.5 y=0.64>IA</text>
+
+          <use xlink:href=#s x=1 y=1 /> <text x=1.7 y=1.3>1</text> <text class=s x=1.5 y=1.64>NY</text>
+          <use xlink:href=#s x=3 y=1 /> <text x=3.7 y=1.3>1</text> <text class=s x=3.5 y=1.64>OR</text>
+          <use xlink:href=#s x=5 y=1 /> <text x=5.7 y=1.3>5</text> <text class=s x=5.5 y=1.64>NJ</text>
+          <use xlink:href=#s x=7 y=1 /> <text x=7.7 y=1.3>4</text> <text class=s x=7.5 y=1.64>AK</text>
+          <use xlink:href=#s x=9 y=1 /> <text x=9.7 y=1.3>7</text> <text class=s x=9.5 y=1.64>MD</text>
+
+          <use xlink:href=#s x=0 y=2 /> <text x=0.7 y=2.3>4</text> <text class=s x=0.5 y=2.64>ME</text>
+          <use xlink:href=#s x=2 y=2 /> <text x=2.7 y=2.3>7</text> <text class=s x=2.5 y=2.64>VT</text>
+          <use xlink:href=#s x=4 y=2 /> <text x=4.7 y=2.3>2</text> <text class=s x=4.5 y=2.64>ND</text>
+          <use xlink:href=#s x=6 y=2 /> <text x=6.7 y=2.3>1</text> <text class=s x=6.5 y=2.64>CA</text>
+          <use xlink:href=#s x=8 y=2 /> <text x=8.7 y=2.3>7</text> <text class=s x=8.5 y=2.64>FL</text>
+          <use xlink:href=#s x=10 y=2 /> <text x=10.7 y=2.3>9</text> <text class=s x=10.5 y=2.64>MS</text>
+
+          <use xlink:href=#s x=1 y=3 /> <text x=1.7 y=3.3>6</text> <text class=s x=1.5 y=3.64>NE</text>
+          <use xlink:href=#s x=3 y=3 /> <text x=3.7 y=3.3>2</text> <text class=s x=3.5 y=3.64>MN</text>
+          <use xlink:href=#s x=5 y=3 /> <text x=5.7 y=3.3>4</text> <text class=s x=5.5 y=3.64>WV</text>
+          <use xlink:href=#s x=7 y=3 /> <text x=7.7 y=3.3>1</text> <text class=s x=7.5 y=3.64>CT</text>
+          <use xlink:href=#s x=9 y=3 /> <text x=9.7 y=3.3>2</text> <text class=s x=9.5 y=3.64>NC</text>
+
+          <use xlink:href=#s x=0 y=4 /> <text x=0.7 y=4.3>5</text> <text class=s x=0.5 y=4.64>HI</text>
+          <use xlink:href=#s x=2 y=4 /> <text x=2.7 y=4.3>4</text> <text class=s x=2.5 y=4.64>SD</text>
+          <use xlink:href=#s x=4 y=4 /> <text x=4.7 y=4.3>2</text> <text class=s x=4.5 y=4.64>KS</text>
+          <use xlink:href=#s x=6 y=4 /> <text x=6.7 y=4.3>3</text> <text class=s x=6.5 y=4.64>OK</text>
+          <use xlink:href=#s x=8 y=4 /> <text x=8.7 y=4.3>5</text> <text class=s x=8.5 y=4.64>PA</text>
+          <use xlink:href=#s x=10 y=4 /> <text x=10.7 y=4.3>1</text> <text class=s x=10.5 y=4.64>RI</text>
+
+          <use xlink:href=#s x=1 y=5 /> <text x=1.7 y=5.3>5</text> <text class=s x=1.5 y=5.64>AR</text>
+          <use xlink:href=#s x=3 y=5 /> <text x=3.7 y=5.3>7</text> <text class=s x=3.5 y=5.64>IL</text>
+          <use xlink:href=#s x=5 y=5 /> <text x=5.7 y=5.3>1</text> <text class=s x=5.5 y=5.64>NH</text>
+          <use xlink:href=#s x=7 y=5 /> <text x=7.7 y=5.3>2</text> <text class=s x=7.5 y=5.64>MO</text>
+          <use xlink:href=#s x=9 y=5 /> <text x=9.7 y=5.3>5</text> <text class=s x=9.5 y=5.64>MT</text>
+
+          <use xlink:href=#s x=0 y=6 /> <text x=0.7 y=6.3>2</text> <text class=s x=0.5 y=6.64>NV</text>
+          <use xlink:href=#s x=2 y=6 /> <text x=2.7 y=6.3>7</text> <text class=s x=2.5 y=6.64>GA</text>
+          <use xlink:href=#s x=4 y=6 /> <text x=4.7 y=6.3>2</text> <text class=s x=4.5 y=6.64>ID</text>
+          <use xlink:href=#s x=6 y=6 /> <text x=6.7 y=6.3>1</text> <text class=s x=6.5 y=6.64>SC</text>
+          <use xlink:href=#s x=8 y=6 /> <text x=8.7 y=6.3>4</text> <text class=s x=8.5 y=6.64>WA</text>
+          <use xlink:href=#s x=10 y=6 /> <text x=10.7 y=6.3>2</text> <text class=s x=10.5 y=6.64>LA</text>
+
+          <use xlink:href=#s x=1 y=7 /> <text x=1.7 y=7.3>4</text> <text class=s x=1.5 y=7.64>UT</text>
+          <use xlink:href=#s x=3 y=7 /> <text x=3.7 y=7.3>7</text> <text class=s x=3.5 y=7.64>OH</text>
+          <use xlink:href=#s x=5 y=7 /> <text x=5.7 y=7.3>9</text> <text class=s x=5.5 y=7.64>AL</text>
+          <use xlink:href=#s x=7 y=7 /> <text x=7.7 y=7.3>4</text> <text class=s x=7.5 y=7.64>WY</text>
+          <use xlink:href=#s x=9 y=7 /> <text x=9.7 y=7.3>0</text> <text class=s x=9.5 y=7.64>MA</text>
+
+          <use xlink:href=#s x=0 y=8 /> <text x=0.7 y=8.3>3</text> <text class=s x=0.5 y=8.64>VA</text>
+          <use xlink:href=#s x=2 y=8 /> <text x=2.7 y=8.3>4</text> <text class=s x=2.5 y=8.64>KY</text>
+          <use xlink:href=#s x=4 y=8 /> <text x=4.7 y=8.3>2</text> <text class=s x=4.5 y=8.64>AZ</text>
+          <use xlink:href=#s x=6 y=8 /> <text x=6.7 y=8.3>5</text> <text class=s x=6.5 y=8.64>WI</text>
+          <use xlink:href=#s x=8 y=8 /> <text x=8.7 y=8.3>5</text> <text class=s x=8.5 y=8.64>DE</text>
+          <use xlink:href=#s x=10 y=8 /> <text x=10.7 y=8.3>6</text> <text class=s x=10.5 y=8.64>TN</text>
+        </svg>
+      </svg>
+    </div>
+
+    <p>
+      The next step is to take this ordered list of US state abbreviations and numbers (which haven't been used
+      yet, other than to help match up the half-stars) and use the numbers to index into the full state names:
+    </p>
+
+    <div style="width: 925px; margin: 40px auto">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+           width="925" height="400" viewBox="0 0 23 10">
+        <defs>
+          <svg id=s width=1 height=1 viewBox="0 0 51 48"> <!-- TOOD: make this 50x50? -->
+            <path d="m25,1 6,17 h18 l-14,11 5,17 -15,-10 -15,10 5,-17 -14,-11 h18 z" />
+          </svg>
+        </defs>
+        <svg x=5 y=0>
+          <rect width=11 height=9 />
+          <use xlink:href=#s x=0 y=0 /> <text x=0.7 y=0.3>1</text> <text class=s x=0.5 y=0.64>I</text>
+          <use xlink:href=#s x=2 y=0 /> <text x=2.7 y=0.3>8</text> <text class=s x=2.5 y=0.64>n</text>
+          <use xlink:href=#s x=4 y=0 /> <text x=4.7 y=0.3>7</text> <text class=s x=4.5 y=0.64>d</text>
+          <use xlink:href=#s x=6 y=0 /> <text x=6.7 y=0.3>2</text> <text class=s x=6.5 y=0.64>e</text>
+          <use xlink:href=#s x=8 y=0 /> <text x=8.7 y=0.3>3</text> <text class=s x=8.5 y=0.64>x</text>
+          <use xlink:href=#s x=10 y=0 /> <text x=10.7 y=0.3>1</text> <text class=s x=10.5 y=0.64>I</text>
+
+          <use xlink:href=#s x=1 y=1 /> <text x=1.7 y=1.3>1</text> <text class=s x=1.5 y=1.64>N</text>
+          <use xlink:href=#s x=3 y=1 /> <text x=3.7 y=1.3>1</text> <text class=s x=3.5 y=1.64>O</text>
+          <use xlink:href=#s x=5 y=1 /> <text x=5.7 y=1.3>5</text> <text class=s x=5.5 y=1.64>e</text>
+          <use xlink:href=#s x=7 y=1 /> <text x=7.7 y=1.3>4</text> <text class=s x=7.5 y=1.64>s</text>
+          <use xlink:href=#s x=9 y=1 /> <text x=9.7 y=1.3>7</text> <text class=s x=9.5 y=1.64>n</text>
+
+          <use xlink:href=#s x=0 y=2 /> <text x=0.7 y=2.3>4</text> <text class=s x=0.5 y=2.64>n</text>
+          <use xlink:href=#s x=2 y=2 /> <text x=2.7 y=2.3>7</text> <text class=s x=2.5 y=2.64>t</text>
+          <use xlink:href=#s x=4 y=2 /> <text x=4.7 y=2.3>2</text> <text class=s x=4.5 y=2.64>o</text>
+          <use xlink:href=#s x=6 y=2 /> <text x=6.7 y=2.3>1</text> <text class=s x=6.5 y=2.64>C</text>
+          <use xlink:href=#s x=8 y=2 /> <text x=8.7 y=2.3>7</text> <text class=s x=8.5 y=2.64>a</text>
+          <use xlink:href=#s x=10 y=2 /> <text x=10.7 y=2.3>9</text> <text class=s x=10.5 y=2.64>p</text>
+
+          <use xlink:href=#s x=1 y=3 /> <text x=1.7 y=3.3>6</text> <text class=s x=1.5 y=3.64>s</text>
+          <use xlink:href=#s x=3 y=3 /> <text x=3.7 y=3.3>2</text> <text class=s x=3.5 y=3.64>i</text>
+          <use xlink:href=#s x=5 y=3 /> <text x=5.7 y=3.3>4</text> <text class=s x=5.5 y=3.64>t</text>
+          <use xlink:href=#s x=7 y=3 /> <text x=7.7 y=3.3>1</text> <text class=s x=7.5 y=3.64>C</text>
+          <use xlink:href=#s x=9 y=3 /> <text x=9.7 y=3.3>2</text> <text class=s x=9.5 y=3.64>o</text>
+
+          <use xlink:href=#s x=0 y=4 /> <text x=0.7 y=4.3>5</text> <text class=s x=0.5 y=4.64>i</text>
+          <use xlink:href=#s x=2 y=4 /> <text x=2.7 y=4.3>4</text> <text class=s x=2.5 y=4.64>t</text>
+          <use xlink:href=#s x=4 y=4 /> <text x=4.7 y=4.3>2</text> <text class=s x=4.5 y=4.64>a</text>
+          <use xlink:href=#s x=6 y=4 /> <text x=6.7 y=4.3>3</text> <text class=s x=6.5 y=4.64>l</text>
+          <use xlink:href=#s x=8 y=4 /> <text x=8.7 y=4.3>5</text> <text class=s x=8.5 y=4.64>s</text>
+          <use xlink:href=#s x=10 y=4 /> <text x=10.7 y=4.3>1</text> <text class=s x=10.5 y=4.64>R</text>
+
+          <use xlink:href=#s x=1 y=5 /> <text x=1.7 y=5.3>5</text> <text class=s x=1.5 y=5.64>n</text>
+          <use xlink:href=#s x=3 y=5 /> <text x=3.7 y=5.3>7</text> <text class=s x=3.5 y=5.64>i</text>
+          <use xlink:href=#s x=5 y=5 /> <text x=5.7 y=5.3>1</text> <text class=s x=5.5 y=5.64>N</text>
+          <use xlink:href=#s x=7 y=5 /> <text x=7.7 y=5.3>2</text> <text class=s x=7.5 y=5.64>i</text>
+          <use xlink:href=#s x=9 y=5 /> <text x=9.7 y=5.3>5</text> <text class=s x=9.5 y=5.64>a</text>
+
+          <use xlink:href=#s x=0 y=6 /> <text x=0.7 y=6.3>2</text> <text class=s x=0.5 y=6.64>e</text>
+          <use xlink:href=#s x=2 y=6 /> <text x=2.7 y=6.3>7</text> <text class=s x=2.5 y=6.64>a</text>
+          <use xlink:href=#s x=4 y=6 /> <text x=4.7 y=6.3>2</text> <text class=s x=4.5 y=6.64>d</text>
+          <use xlink:href=#s x=6 y=6 /> <text x=6.7 y=6.3>1</text> <text class=s x=6.5 y=6.64>S</text>
+          <use xlink:href=#s x=8 y=6 /> <text x=8.7 y=6.3>4</text> <text class=s x=8.5 y=6.64>h</text>
+          <use xlink:href=#s x=10 y=6 /> <text x=10.7 y=6.3>2</text> <text class=s x=10.5 y=6.64>o</text>
+
+          <use xlink:href=#s x=1 y=7 /> <text x=1.7 y=7.3>4</text> <text class=s x=1.5 y=7.64>h</text>
+          <use xlink:href=#s x=3 y=7 /> <text x=3.7 y=7.3>7</text>
+          <use xlink:href=#s x=5 y=7 /> <text x=5.7 y=7.3>9</text>
+          <use xlink:href=#s x=7 y=7 /> <text x=7.7 y=7.3>4</text> <text class=s x=7.5 y=7.64>m</text>
+          <use xlink:href=#s x=9 y=7 /> <text x=9.7 y=7.3>0</text>
+
+          <use xlink:href=#s x=0 y=8 /> <text x=0.7 y=8.3>3</text> <text class=s x=0.5 y=8.64>r</text>
+          <use xlink:href=#s x=2 y=8 /> <text x=2.7 y=8.3>4</text> <text class=s x=2.5 y=8.64>t</text>
+          <use xlink:href=#s x=4 y=8 /> <text x=4.7 y=8.3>2</text> <text class=s x=4.5 y=8.64>r</text>
+          <use xlink:href=#s x=6 y=8 /> <text x=6.7 y=8.3>5</text> <text class=s x=6.5 y=8.64>o</text>
+          <use xlink:href=#s x=8 y=8 /> <text x=8.7 y=8.3>5</text> <text class=s x=8.5 y=8.64>w</text>
+          <use xlink:href=#s x=10 y=8 /> <text x=10.7 y=8.3>6</text> <text class=s x=10.5 y=8.64>s</text>
+        </svg>
+      </svg>
+    </div>
+
+    <p>
+      Most of the indexes in the penultimate row are too big for the length of the state name (or too small, in the
+      case of MA 0). This is a nudge to ignore the short rows, and read across the long rows:
+      "<b>IndexIntoCapitalsReadShortrows</b>". This instruction indicates that for the short rows you should use
+      the state capitals in place of the state names (a star also often represents a state capital on maps).
+    </p>
+
+    <div>
+      <div class=table>
+        <div class=table-row><span>New York</span><span>Albany</span></div>
+        <div class=table-row><span>Oregon</span><span>Salem</span></div>
+        <div class=table-row><span>New Jersey</span><span>Trenton</span></div>
+        <div class=table-row><span>Alaska</span><span>Juneau</span></div>
+        <div class=table-row><span>Maryland</span><span>Annapolis</span></div>
+        <div class=table-row><span>Nebraska</span><span>Lincoln</span></div>
+        <div class=table-row><span>Minnesota</span><span>Saint Paul</span></div>
+        <div class=table-row><span>West Virginia</span><span>Charleston</span></div>
+        <div class=table-row><span>Connecticut</span><span>Hartford</span></div>
+        <div class=table-row><span>North Carolina</span><span>Raleigh</span></div>
+        <div class=table-row><span>Arkansas</span><span>Little Rock</span></div>
+        <div class=table-row><span>Illinois</span><span>Springfield</span></div>
+        <div class=table-row><span>New Hampshire</span><span>Concord</span></div>
+        <div class=table-row><span>Missouri</span><span>Jefferson City</span></div>
+        <div class=table-row><span>Montana</span><span>Helena</span></div>
+        <div class=table-row><span>Utah</span><span>Salt Lake City</span></div>
+        <div class=table-row><span>Ohio</span><span>Columbus</span></div>
+        <div class=table-row><span>Alabama</span><span>Montgomery</span></div>
+        <div class=table-row><span>Wyoming</span><span>Cheyenne</span></div>
+        <div class=table-row><span>Massachusetts</span><span>Boston</span></div>
+      </div>
+    </div>
+
+    <div style="width: 925px; margin: 40px auto">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+           width="925" height="400" viewBox="0 0 23 10">
+        <defs>
+          <svg id=s width=1 height=1 viewBox="0 0 51 48"> <!-- TOOD: make this 50x50? -->
+            <path d="m25,1 6,17 h18 l-14,11 5,17 -15,-10 -15,10 5,-17 -14,-11 h18 z" />
+          </svg>
+        </defs>
+        <svg x=5 y=0>
+          <rect width=11 height=9 />
+          <use xlink:href=#s x=0 y=0 />
+          <use xlink:href=#s x=2 y=0 />
+          <use xlink:href=#s x=4 y=0 />
+          <use xlink:href=#s x=6 y=0 />
+          <use xlink:href=#s x=8 y=0 />
+          <use xlink:href=#s x=10 y=0 />
+
+          <use xlink:href=#s x=1 y=1 /> <text x=1.7 y=1.3>1</text> <text class=s x=1.5 y=1.64>A</text>
+          <use xlink:href=#s x=3 y=1 /> <text x=3.7 y=1.3>1</text> <text class=s x=3.5 y=1.64>S</text>
+          <use xlink:href=#s x=5 y=1 /> <text x=5.7 y=1.3>5</text> <text class=s x=5.5 y=1.64>t</text>
+          <use xlink:href=#s x=7 y=1 /> <text x=7.7 y=1.3>4</text> <text class=s x=7.5 y=1.64>e</text>
+          <use xlink:href=#s x=9 y=1 /> <text x=9.7 y=1.3>7</text> <text class=s x=9.5 y=1.64>l</text>
+
+          <use xlink:href=#s x=0 y=2 /> 
+          <use xlink:href=#s x=2 y=2 /> 
+          <use xlink:href=#s x=4 y=2 /> 
+          <use xlink:href=#s x=6 y=2 /> 
+          <use xlink:href=#s x=8 y=2 /> 
+          <use xlink:href=#s x=10 y=2 />
+
+          <use xlink:href=#s x=1 y=3 /> <text x=1.7 y=3.3>6</text> <text class=s x=1.5 y=3.64>l</text>
+          <use xlink:href=#s x=3 y=3 /> <text x=3.7 y=3.3>2</text> <text class=s x=3.5 y=3.64>a</text>
+          <use xlink:href=#s x=5 y=3 /> <text x=5.7 y=3.3>4</text> <text class=s x=5.5 y=3.64>r</text>
+          <use xlink:href=#s x=7 y=3 /> <text x=7.7 y=3.3>1</text> <text class=s x=7.5 y=3.64>H</text>
+          <use xlink:href=#s x=9 y=3 /> <text x=9.7 y=3.3>2</text> <text class=s x=9.5 y=3.64>a</text>
+
+          <use xlink:href=#s x=0 y=4 /> 
+          <use xlink:href=#s x=2 y=4 /> 
+          <use xlink:href=#s x=4 y=4 /> 
+          <use xlink:href=#s x=6 y=4 /> 
+          <use xlink:href=#s x=8 y=4 /> 
+          <use xlink:href=#s x=10 y=4 />
+
+          <use xlink:href=#s x=1 y=5 /> <text x=1.7 y=5.3>5</text> <text class=s x=1.5 y=5.64>l</text>
+          <use xlink:href=#s x=3 y=5 /> <text x=3.7 y=5.3>7</text> <text class=s x=3.5 y=5.64>f</text>
+          <use xlink:href=#s x=5 y=5 /> <text x=5.7 y=5.3>1</text> <text class=s x=5.5 y=5.64>C</text>
+          <use xlink:href=#s x=7 y=5 /> <text x=7.7 y=5.3>2</text> <text class=s x=7.5 y=5.64>e</text>
+          <use xlink:href=#s x=9 y=5 /> <text x=9.7 y=5.3>5</text> <text class=s x=9.5 y=5.64>n</text>
+
+          <use xlink:href=#s x=0 y=6 /> 
+          <use xlink:href=#s x=2 y=6 /> 
+          <use xlink:href=#s x=4 y=6 /> 
+          <use xlink:href=#s x=6 y=6 /> 
+          <use xlink:href=#s x=8 y=6 /> 
+          <use xlink:href=#s x=10 y=6 />
+
+          <use xlink:href=#s x=1 y=7 /> <text x=1.7 y=7.3>4</text> <text class=s x=1.5 y=7.64>t</text>
+          <use xlink:href=#s x=3 y=7 /> <text x=3.7 y=7.3>7</text> <text class=s x=3.5 y=7.64>u</text>
+          <use xlink:href=#s x=5 y=7 /> <text x=5.7 y=7.3>9</text> <text class=s x=5.5 y=7.64>r</text>
+          <use xlink:href=#s x=7 y=7 /> <text x=7.7 y=7.3>4</text> <text class=s x=7.5 y=7.64>y</text>
+          <use xlink:href=#s x=9 y=7 /> <text x=9.7 y=7.3>0</text>
+
+          <use xlink:href=#s x=0 y=8 /> 
+          <use xlink:href=#s x=2 y=8 /> 
+          <use xlink:href=#s x=4 y=8 /> 
+          <use xlink:href=#s x=6 y=8 /> 
+          <use xlink:href=#s x=8 y=8 /> 
+          <use xlink:href=#s x=10 y=8 />
+        </svg>
+      </svg>
+    </div>
+
+    <p>
+      Read across the short rows to find out what we're celebrating (in the final star,
+      Boston&mdash;<small>well, we're in Somerville, but close enough</small>) with these 50 stars:
+    </p>
+    <p class=center>
+      <big><b>A Stellar Half-Century</b>!</big>
+    </p>
+    <p class=center>
+      Happy 50th birthday, <a href="https://suberic.net/~dmm/astro/constellations_t.html">Denis</a>!
+    </p>
+  </body>
+</html>
